@@ -188,7 +188,7 @@ export default class Signup2 extends React.Component {
                 }
             })
             .catch(function (err) {
-                console.log('error', err);
+                ToastAndroid.show("Compruebe su conexión", ToastAndroid.LONG);
             })
     }
 

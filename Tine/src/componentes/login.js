@@ -5,8 +5,11 @@ const { server } = require('../config/keys');
 import styles from '../css/styleLogin';
 import { SafeAreaView } from 'react-navigation';
 
+var timer;
+
 export default class Login extends Component {
 
+    
 
     static navigationOptions = {
         title: 'Ingresar',
@@ -77,7 +80,7 @@ export default class Login extends Component {
                 }
             })
             .catch(function (err) {
-                console.log('error', err);
+                ToastAndroid.show("Compruebe su conexión", ToastAndroid.LONG);
             })
 
     }

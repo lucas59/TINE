@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, AsyncStorage, Keyboard, ToastAndroid } from 'react-native';
 const { server } = require('../config/keys');
-
-
+import BackgroundTimer from 'react-native-background-timer';
+var mytimer;
 export default class Inicio extends Component {
+    
+    componentDidMount() {
+        myTimer = BackgroundTimer.setInterval(() => {
+            console.log('timer');
+        }, 3000);
+    }
+    componentWillUnMount() {
+        // Code to stop timer.
+        BackgroundTimer.clearInterval(myTimer);
+    }
 
     static navigationOptions = {
         title: 'Inicio',
@@ -13,11 +23,15 @@ export default class Inicio extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            
+
         }
 
         this.Redirigir();
+
     }
+
+
+
 
     Redirigir = async () => {
         // await AsyncStorage.removeItem('usuario');
@@ -29,7 +43,7 @@ export default class Inicio extends Component {
             if (sessionParce.tipo == 0) {
                 this.props.navigation.navigate('modoTablet');
             }
-            else{
+            else {
                 this.props.navigation.navigate('lista_empresas');
             }
         }
