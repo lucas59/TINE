@@ -1,10 +1,10 @@
 import { ToastAndroid } from 'react-native';
-
 import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation : 1});
+const { server } = require('../config/keys');
 
-
+var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 const manejador = {};
+
 manejador.subirTareas = () => {
     console.log('entra');
     db.transaction(function (txn) {
@@ -15,6 +15,29 @@ manejador.subirTareas = () => {
         });
     });
 
+}
+
+manejador.bajarEmpleadosEmpresa = (documento) => {
+    console.log(documento);
+    var url = server.api + 'misEmpleados?documento=' + documento;
+    fetch(url)
+        .then(res => {
+            return res.json()
+        })
+        .then(data => {
+            var filas = data['filas'];
+            filas.forEach(element => {
+                db.transaction(function(txn) {
+                    txn.executeSql("INSERT INTO `usuario`(`id`, `pin`) VALUES (?,?)",[element.documento,element.pin],(tx,res)=>{
+                    console.log("Se agrego empleado");                        
+                    });
+                })
+            });
+        })
+        .catch(function (err) {
+            console.log("error: ", err)
+            ToastAndroid.show("Compruebe su conexión", ToastAndroid.LONG);
+        })
 }
 
 
