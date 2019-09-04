@@ -61,6 +61,17 @@ export default class modoTablet extends Component {
         const { codigo } = this.state;
         console.log("prueba");
         db.transaction(function (tx) {
+            tx.executeSql('INSERT INTO usuario (pin) VALUES (?)',[2712],(tx, results) => {
+                console.log('Results', results.rowsAffected);
+                if (results.rowsAffected > 0) {
+                    console.log("insertó");
+                } else {
+                    console.log("error");
+                }
+            });
+        });
+        db.transaction(function (tx) {
+            
             tx.executeSql('SELECT * FROM usuario', [], (tx, results) => {
                 console.log(results.rows.length);
                 for (var i = 0; i < results.rows.length; i++) {
@@ -68,26 +79,25 @@ export default class modoTablet extends Component {
                     console.log(codigo);
                     if (results.rows.item(i).pin == codigo) {
                         tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL', [results.rows.item(i).id], (tx, results) => {
-                            if (results.rowsAffected > 0) {
-                                tx.executeSql(
-                                    'INSERT INTO asistencia (fin) VALUES (?)',
-                                    [],
-                                    (tx, results) => {
-                                        console.log('Results', results.rowsAffected);
-                                        if (results.rowsAffected > 0) {
-                                            console.log("insertó");
-                                        } else {
-                                            console.log("error");
-                                        }
-                                    }
-                                );
+                            if (results.rows.length > 0) {
+                            
+                                ToastAndroid.show('Buen viaje, seleccione aceptar', ToastAndroid.LONG);
+                                var fin = moment(new Date()).format();
+                                this.setState({ fin: fin });
+                            }
+                            else {
+                               
+                                ToastAndroid.show('Bienvenido, seleccione aceptar', ToastAndroid.LONG);
+                                this.setState({ fin: null });
                             }
                         });
-                    }
+                }
+
                 }
             });
         });
     }
+
     /*
     fetch(server.api + 'login_tablet', {
         method: 'POST',
@@ -127,7 +137,7 @@ export default class modoTablet extends Component {
 
     Alta_asistencia = async (camera) => {
         Keyboard.dismiss();
-        const options = { quality: 0.5, base64: true };
+        const options = { quality: 0.5, base64: true, captureAudio: false };
         const data = await camera.takePictureAsync(options);
         console.log(data.base64);
         this.setState({ foto: data.base64 });
@@ -135,10 +145,29 @@ export default class modoTablet extends Component {
         this.setState({ inicio: inicio_fecha });
         const { inicio, fin, foto, empleado_id } = this.state;
         console.log(foto);
-
-
-
-
+        tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL', [empleado_id], (tx, results) => {
+            if (results.rows.length > 0) {
+                tx.executeSql('UPDATE asistencia SET fin = ? WHERE empleado_id = ?', [], (tx, results) => {
+                    if (results.rowsAffected > 0) {
+                        console.log("Actualizó");
+                    } else {
+                        console.log("error");
+                    }
+                }
+                );
+            }
+            else {
+                tx.executeSql('INSERT INTO asistencia (fin) VALUES (?)',[],(tx, results) => {
+                        console.log('Results', results.rowsAffected);
+                        if (results.rowsAffected > 0) {
+                            console.log("insertó");
+                        } else {
+                            console.log("error");
+                        }
+                    }
+                );
+            }
+        });
         /*
         tx.executeSql(
           'INSERT INTO usuario (documento) VALUES (?)',
@@ -162,32 +191,34 @@ export default class modoTablet extends Component {
             foto: foto,
             empleado_id: empleado_id
         }
-        fetch(server.api + 'Alta_asistencia', {
-            method: 'POST',
-            headers: {
-                'Aceptar': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(asistencia_send)
-        })
-            .then(res => {
-                return res.json()
-            })
-            .then(async data => {
-                const retorno = data;
-                console.log(this.state.fin);
-                if (retorno.retorno == true) {
-
-                    alert(retorno.mensaje);
-                } else {
-                    alert(retorno.mensaje);
-                }
-            })
-            .catch(function (err) {
-                console.log('error', err);
-            })
-
     }
+    /*
+    fetch(server.api + 'Alta_asistencia', {
+        method: 'POST',
+        headers: {
+            'Aceptar': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(asistencia_send)
+    })
+        .then(res => {
+            return res.json()
+        })
+        .then(async data => {
+            const retorno = data;
+            console.log(this.state.fin);
+            if (retorno.retorno == true) {
+
+                alert(retorno.mensaje);
+            } else {
+                alert(retorno.mensaje);
+            }
+        })
+        .catch(function (err) {
+            console.log('error', err);
+        })
+*/
+
 
 
 
