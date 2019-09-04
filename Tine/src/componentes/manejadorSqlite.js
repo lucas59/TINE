@@ -20,6 +20,14 @@ manejador.subirTareas = () => {
 manejador.bajarEmpleadosEmpresa = (documento) => {
     console.log(documento);
     var url = server.api + 'misEmpleados?documento=' + documento;
+
+    db.transaction(function (txn) {
+        txn.executeSql("DELETE FROM usuario", [], function (tx, res) {
+            console.log(res.rowsAffected);
+            console.log("vaciando lista");
+        })
+    })
+
     fetch(url)
         .then(res => {
             return res.json()
@@ -27,9 +35,11 @@ manejador.bajarEmpleadosEmpresa = (documento) => {
         .then(data => {
             var filas = data['filas'];
             filas.forEach(element => {
-                db.transaction(function(txn) {
-                    txn.executeSql("INSERT INTO `usuario`(`id`, `pin`) VALUES (?,?)",[element.documento,element.pin],(tx,res)=>{
-                    console.log("Se agrego empleado");                        
+                db.transaction(function (txn) {
+                    txn.executeSql("INSERT INTO `usuario`(`id`, `pin`) VALUES (?,?)", [element.documento, element.pin], (tx, res) => {
+                        if (res.rowsAffected) {
+                            console.log("Usuario agregado");
+                        }
                     });
                 })
             });
