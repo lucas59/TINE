@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Alert,ToastAndroid, ScrollView, Keyboard, AsyncStorage } from 'react-native';
+import { StyleSheet, View, Text, Alert, ToastAndroid, ScrollView, Keyboard, AsyncStorage } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 const { server } = require('../config/keys');
 import { ListItem, Icon, Divider } from 'react-native-elements';
 import { FloatingAction } from "react-native-floating-action";
 import moment from "moment";
 import BackgraundTask from 'react-native-background-task';
-
+const manejador  = require("./manejadorSqlite");
 
 import BackgroundTimer from 'react-native-background-timer';
 
@@ -17,15 +17,12 @@ export default class lista_tareas extends Component {
 
     componentDidMount() {
         myTimer = BackgroundTimer.setInterval(() => {
-            NetInfo.isConnected.addEventListener("connectionChange", hasInternetConnection =>{
-                
-            ToastAndroid.show('hasInternetConnection: ' +  hasInternetConnection, ToastAndroid.LONG);
-
+            NetInfo.isConnected.addEventListener("connectionChange", hasInternetConnection => {
+                manejador.subirTareas();
             });
-
-
         }, 5000);
     }
+
 
     static navigationOptions = {
         title: 'Listas de tareas',
