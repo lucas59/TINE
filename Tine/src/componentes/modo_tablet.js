@@ -58,40 +58,30 @@ export default class modoTablet extends Component {
 
     confirmar_usuario = async () => {
         Keyboard.dismiss();
-        const { codigo } = this.state;
-        console.log("prueba");
+        let session = await AsyncStorage.getItem('usuario');
+        let sesion = JSON.parse(session);
+        this.setState({ empleado_id: sesion.id });
+        const { inicio, fin, foto, empleado_id, codigo } = this.state;
         db.transaction(function (tx) {
-            tx.executeSql('INSERT INTO usuario (pin) VALUES (?)',[2712],(tx, results) => {
-                console.log('Results', results.rowsAffected);
-                if (results.rowsAffected > 0) {
-                    console.log("insertó");
-                } else {
-                    console.log("error");
-                }
-            });
-        });
-        db.transaction(function (tx) {
-            
             tx.executeSql('SELECT * FROM usuario', [], (tx, results) => {
-                console.log(results.rows.length);
                 for (var i = 0; i < results.rows.length; i++) {
-                    console.log(results.rows.item(i).pin);
-                    console.log(codigo);
                     if (results.rows.item(i).pin == codigo) {
-                        tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL', [results.rows.item(i).id], (tx, results) => {
+                        tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL', [empleado_id], (tx, results) => {
                             if (results.rows.length > 0) {
-                            
                                 ToastAndroid.show('Buen viaje, seleccione aceptar', ToastAndroid.LONG);
                                 var fin = moment(new Date()).format();
                                 this.setState({ fin: fin });
                             }
                             else {
-                               
+
                                 ToastAndroid.show('Bienvenido, seleccione aceptar', ToastAndroid.LONG);
                                 this.setState({ fin: null });
                             }
                         });
-                }
+                    }
+                    else{
+                        ToastAndroid.show('Pin incorrecto', ToastAndroid.LONG);
+                    }
 
                 }
             });
@@ -141,56 +131,74 @@ export default class modoTablet extends Component {
         const data = await camera.takePictureAsync(options);
         console.log(data.base64);
         this.setState({ foto: data.base64 });
-        var inicio_fecha = moment(new Date()).format();
-        this.setState({ inicio: inicio_fecha });
+        var fecha = moment(new Date()).format();
+        this.setState({ inicio: fecha });
         const { inicio, fin, foto, empleado_id } = this.state;
         console.log(foto);
-        tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL', [empleado_id], (tx, results) => {
-            if (results.rows.length > 0) {
-                tx.executeSql('UPDATE asistencia SET fin = ? WHERE empleado_id = ?', [], (tx, results) => {
-                    if (results.rowsAffected > 0) {
-                        console.log("Actualizó");
-                    } else {
-                        console.log("error");
-                    }
-                }
-                );
-            }
-            else {
-                tx.executeSql('INSERT INTO asistencia (fin) VALUES (?)',[],(tx, results) => {
-                        console.log('Results', results.rowsAffected);
-                        if (results.rowsAffected > 0) {
-                            console.log("insertó");
-                        } else {
-                            console.log("error");
+        console.log(empleado_id);
+        db.transaction(function (tx) {
+            tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL', [empleado_id], (tx, results) => {
+                if (results.rows.length > 0) {
+                    db.transaction(function (txt) {
+                        txt.executeSql('UPDATE asistencia SET fin = ? WHERE empleado_id = ?', [fecha, empleado_id], (tx, results) => {
+                            if (results.rowsAffected > 0) {
+                                console.log("Actualizó");
+                                ToastAndroid.show('La asistencia se actualizó correctamente', ToastAndroid.LONG);
+                                db.transaction(function (txr) {
+                                    console.log("we");
+                                    txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
+                                        console.log(results.rows.length);
+                                        for(var i = 0; i < results.rows.length; i++){
+                                            console.log("esta es: ", results.rows.item(i).pin);
+                                            console.log("esta es: ",results.rows.item(i).inicio);
+                                            console.log("esta es: ",results.rows.item(i).fin);
+                                            console.log("esta es: ", results.rows.item(i).foto);
+                                        }
+                                    });
+                                });
+                            } else {
+                                console.log("error");
+                            }
                         }
-                    }
-                );
-            }
+
+                        );
+                    });
+                }
+                else {
+                    db.transaction(function (txx) {
+                        console.log(empleado_id);
+                        console.log(foto);
+                        console.log(inicio);
+                        txx.executeSql('INSERT INTO asistencia (fin, empleado_id,foto,inicio) VALUES (null, ?,?,?)', [empleado_id, foto, fecha], (tx, results) => {
+                            if (results.rowsAffected > 0) {
+                                console.log("insertó");
+                                ToastAndroid.show('La asistencia se insertó correctamente', ToastAndroid.LONG);
+                                db.transaction(function (txr) {
+                                    console.log("we");
+                                    txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
+                                        console.log(results.rows.length);
+                                        for(var i = 0; i < results.rows.length; i++){
+                                            console.log("esta es: ", results.rows.item(i).pin);
+                                            console.log("esta es: ",results.rows.item(i).inicio);
+                                            console.log("esta es: ",results.rows.item(i).fin);
+                                            console.log("esta es: ", results.rows.item(i).foto);
+                                        }
+                                    });
+                                });
+                            } else {
+                                console.log("error");
+                            }
+                        }
+                        );
+                    });
+                }
+            });
+
         });
-        /*
-        tx.executeSql(
-          'INSERT INTO usuario (documento) VALUES (?)',
-          [1234],
-          (tx, results) => {
-            console.log('Results', results.rowsAffected);
-            if (results.rowsAffected > 0) {
-               
-              console.log("insertó");
-            } else {
-                console.log("error");
-            }
-          }
-        );
-        */
 
 
-        let asistencia_send = {
-            inicio: inicio,
-            fin: fin,
-            foto: foto,
-            empleado_id: empleado_id
-        }
+
+      
     }
     /*
     fetch(server.api + 'Alta_asistencia', {
@@ -236,6 +244,7 @@ export default class modoTablet extends Component {
                 <RNCamera
                     style={styles.preview}
                     type={RNCamera.Constants.Type.front}
+                    captureAudio={false}
                 >
                     {({ camera, status }) => {
                         if (status !== 'READY') return <PendingView />;
@@ -266,8 +275,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
     },
     preview: {
-        width: 400,
-        height: 400,
+        width: 300,
+        height: 200,
 
     },
     capture: {
