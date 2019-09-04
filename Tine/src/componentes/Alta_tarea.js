@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, PermissionsAndroid, Keyboard } from 'react-native';
 const { server } = require('../config/keys');
 import { Button, Input, Icon } from 'react-native-elements';
 import { TouchableHighlight } from 'react-native';
 import { Stopwatch } from 'react-native-stopwatch-timer';
-//import * as Location from 'expo-location';
-//import { Permissions } from 'expo';
+import Geolocation from '@react-native-community/geolocation';
 import moment from "moment";
-
 export default class Alta_tarea extends Component {
 
     static navigationOptions = {
@@ -56,19 +54,31 @@ export default class Alta_tarea extends Component {
         Keyboard.dismiss();
         this.setState({ stopwatchStart: !this.state.stopwatchStart, stopwatchReset: false });
         let fecha = moment(new Date()).format();
-//        await Permissions.askAsync(Permissions.LOCATION);
-        //var loc = await Location.getCurrentPositionAsync();
-        var longitud = loc.coords.longitude;
-        var latitud = loc.coords.latitude;
-        if (this.state.stopwatchStart) {
-            this.setState({ inicio: fecha });
-            this.setState({ long_ini: longitud });
-            this.setState({ lat_ini: latitud });
-        } else {
-            this.setState({ fin: fecha });
-            this.setState({ long_fin: longitud });
-            this.setState({ lat_fin: latitud });
-        }
+        var longitud;
+        var latitud;
+        Geolocation.getCurrentPosition(
+            (position) => {
+                longitud = JSON.stringify(position.coords.longitude);
+                latitud = JSON.stringify(position.coords.latitude);
+                if (this.state.stopwatchStart) {
+                    console.log("inicio" + longitud);
+                    console.log("inicio" + latitud);
+                    this.setState({ inicio: fecha });
+                    this.setState({ long_ini: longitud });
+                    this.setState({ lat_ini: latitud });
+                } else {
+                    console.log("fin" + longitud);
+                    console.log("fin" + latitud);
+                    this.setState({ fin: fecha });
+                    this.setState({ long_fin: longitud });
+                    this.setState({ lat_fin: latitud });
+                }
+            },
+            (error) => alert(error.message),
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+        );
+
+
     }
 
     resetStopwatch() {
@@ -118,6 +128,7 @@ export default class Alta_tarea extends Component {
             alert("Ingrese le nombre de la tarea");
         }
         else {
+            /*
             fetch(server.api + 'Alta_tarea', {
                 method: 'POST',
                 headers: {
@@ -143,6 +154,7 @@ export default class Alta_tarea extends Component {
                 .catch(function (err) {
                     console.log('error', err);
                 })
+*/
 
         }
     }

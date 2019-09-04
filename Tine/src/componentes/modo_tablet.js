@@ -1,12 +1,27 @@
 import React, { Component } from 'react';
-import { View, Button, Keyboard, ToastAndroid, AsyncStorage } from 'react-native';
+import { View, Button, Keyboard, ToastAndroid, AsyncStorage, TouchableOpacity, StyleSheet, Text } from 'react-native';
 const { server } = require('../config/keys');
-//import { ImagePicker, Permissions } from 'expo';
+import { RNCamera } from 'react-native-camera';
 import PinView from 'react-native-pin-view'
 import { Icon } from 'react-native-elements';
+import moment from "moment";
+import { openDatabase } from 'react-native-sqlite-storage';
+var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation : 1});
+const PendingView = () => (
+    <View
+        style={{
+            flex: 1,
+            backgroundColor: 'lightgreen',
+            justifyContent: 'center',
+            alignItems: 'center',
+        }}
+    >
+        <Text>Waiting</Text>
+    </View>
+);
 export default class modoTablet extends Component {
 
-    static navigationOptions = ({navigation}) => {
+    static navigationOptions = ({ navigation }) => {
         return {
             title: 'ModoTablet',
             headerRight: (
@@ -20,10 +35,7 @@ export default class modoTablet extends Component {
         }
     };
 
-    perfil = async () => {/*
-        var usuario = await AsyncStorage.getItem('usuario');
-        navigation.navigate('perfil', usuario);*/
-
+    perfil = async () => {
         var user = await AsyncStorage.getItem('usuario');
         console.log('usuario', user);
     }
@@ -36,20 +48,49 @@ export default class modoTablet extends Component {
             codigo: '',
             inicio: '',
             fin: null,
-            empleado_id: ''
+            empleado_id: '',
+            cameraType: 'front',
+            mirrorMode: false
         }
         this.perfil();
+
     }
 
 
     confirmar_usuario = async () => {
         Keyboard.dismiss();
         const { codigo } = this.state;
-
-        let loginDetails = {
-            codigo: codigo
-        }
-
+        console.log("prueba");
+        db.transaction(function(tx) {
+            tx.executeSql('SELECT * FROM usuario',[], (tx, results) => {
+                console.log(results.rows.length);
+                for(var i = 0; i < results.rows.length; i++){
+                    console.log(results.rows.item(i).pin);
+                    console.log(codigo);
+                    if(results.rows.item(i).pin == codigo){
+                        tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL',[results.rows.item(i).id], (tx, results) => {
+                            if(results.rowsAffected > 0){
+                                tx.executeSql(
+                                    'INSERT INTO asistencia (fin) VALUES (?)',
+                                    [],
+                                    (tx, results) => {
+                                      console.log('Results', results.rowsAffected);
+                                      if (results.rowsAffected > 0) {
+                                         
+                                        console.log("insertó");
+                                      } else {
+                                          console.log("error");
+                                      }
+                                    }
+                                  );
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    }
+        /*
         fetch(server.api + 'login_tablet', {
             method: 'POST',
             headers: {
@@ -58,7 +99,6 @@ export default class modoTablet extends Component {
             },
             body: JSON.stringify(loginDetails)
         })
-
             .then(res => {
                 return res.json()
             })
@@ -72,7 +112,7 @@ export default class modoTablet extends Component {
                     }
                     else {
                         ToastAndroid.show('Buen viaje, seleccione aceptar', ToastAndroid.LONG);
-                        var fin = new Date();
+                        var fin = moment(new Date()).format();
                         this.setState({ fin: fin });
                     }
                 } else {
@@ -82,14 +122,42 @@ export default class modoTablet extends Component {
             .catch(function (err) {
                 console.log('error', err);
             })
+*/
+    
 
-    }
 
 
-
-    Alta_asistencia = async () => {
+    Alta_asistencia = async (camera) => {
         Keyboard.dismiss();
+        const options = { quality: 0.5, base64: true };
+        const data = await camera.takePictureAsync(options);
+        console.log(data.base64);
+        this.setState({ foto: data.base64 });
+        var inicio_fecha = moment(new Date()).format();
+        this.setState({ inicio: inicio_fecha });
         const { inicio, fin, foto, empleado_id } = this.state;
+        console.log(foto);
+
+
+
+        
+            /*
+            tx.executeSql(
+              'INSERT INTO usuario (documento) VALUES (?)',
+              [1234],
+              (tx, results) => {
+                console.log('Results', results.rowsAffected);
+                if (results.rowsAffected > 0) {
+                   
+                  console.log("insertó");
+                } else {
+                    console.log("error");
+                }
+              }
+            );
+            */
+
+
         let asistencia_send = {
             inicio: inicio,
             fin: fin,
@@ -107,10 +175,11 @@ export default class modoTablet extends Component {
             .then(res => {
                 return res.json()
             })
-            .then(data => {
+            .then(async data => {
                 const retorno = data;
                 console.log(this.state.fin);
                 if (retorno.retorno == true) {
+
                     alert(retorno.mensaje);
                 } else {
                     alert(retorno.mensaje);
@@ -122,28 +191,11 @@ export default class modoTablet extends Component {
 
     }
 
-    takePicture = async () => {
-       // await Permissions.askAsync(Permissions.CAMERA);
-       /* const { base64, uri } = await ImagePicker.launchCameraAsync({
-            allowsEditing: false,
-            base64: true,
-            quality: 0.5
-        });*/
-        var base64 = 'asd'; 
-        var uri = 'asd';
-        this.setState({ foto: base64 });
-        if (uri == undefined) {
-            alert("Tome la foto antes de seguir");
-        } else {
-            var inicio = new Date();
-            this.setState({ inicio: inicio });
-            this.Alta_asistencia();
-        }
-    };
+
 
     render() {
         return (
-            <View style={{ position: 'absolute', top: 0, left: 30, bottom: 0, justifyContent: 'center' }}>
+            <View style={styles.camara}>
                 <PinView
                     onComplete={(val, clear) => { this.setState({ codigo: val }), clear(), this.confirmar_usuario() }}
                     pinLength={4}
@@ -151,8 +203,51 @@ export default class modoTablet extends Component {
                     inputBgOpacity={0.6}
 
                 />
-                <Button onPress={this.takePicture} title="Aceptar"></Button>
+
+                <RNCamera
+                    style={styles.preview}
+                    type={RNCamera.Constants.Type.front}
+                >
+                    {({ camera, status }) => {
+                        if (status !== 'READY') return <PendingView />;
+                        return (
+                            <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+                                <TouchableOpacity onPress={() => this.Alta_asistencia(camera)} style={styles.capture}>
+                                    <Text style={{ fontSize: 14 }}> Aceptar </Text>
+                                </TouchableOpacity>
+                            </View>
+                        );
+                    }}
+                </RNCamera>
             </View>
         )
     }
 }
+
+
+
+
+const styles = StyleSheet.create({
+    camara: {
+        position: 'absolute', top: 0, left: 30, bottom: 0, justifyContent: 'center'
+    },
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+        backgroundColor: 'black',
+    },
+    preview: {
+        width: 400,
+        height: 400,
+     
+    },
+    capture: {
+        flex: 0,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        padding: 15,
+        paddingHorizontal: 20,
+        alignSelf: 'center',
+        margin: 20,
+    },
+});
