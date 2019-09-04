@@ -53,7 +53,6 @@ export default class modoTablet extends Component {
             mirrorMode: false
         }
         this.perfil();
-
     }
 
 
