@@ -1,32 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Alert,ToastAndroid, ScrollView, Keyboard, AsyncStorage } from 'react-native';
-import NetInfo from "@react-native-community/netinfo";
+import { StyleSheet, View, Text, Alert, ScrollView, Keyboard, AsyncStorage } from 'react-native';
 const { server } = require('../config/keys');
 import { ListItem, Icon, Divider } from 'react-native-elements';
 import { FloatingAction } from "react-native-floating-action";
 import moment from "moment";
-import BackgraundTask from 'react-native-background-task';
-
-
-import BackgroundTimer from 'react-native-background-timer';
-
-var timer;
-
 
 export default class lista_tareas extends Component {
-
-    componentDidMount() {
-        myTimer = BackgroundTimer.setInterval(() => {
-            NetInfo.isConnected.addEventListener("connectionChange", hasInternetConnection =>{
-                
-            ToastAndroid.show('hasInternetConnection: ' +  hasInternetConnection, ToastAndroid.LONG);
-
-            });
-
-
-        }, 5000);
-    }
-
     static navigationOptions = {
         title: 'Listas de tareas',
         headerStyle: {
@@ -59,7 +38,9 @@ export default class lista_tareas extends Component {
     Listar = async () => {
         Keyboard.dismiss();
         let session = await AsyncStorage.getItem('usuario');
+        console.log(session);
         let sesion = JSON.parse(session);
+        console.log(sesion);
         let tarea_send = {
             id: sesion.id
         }
@@ -91,7 +72,7 @@ export default class lista_tareas extends Component {
                 //fecha pasa de Date a moment
                 const moment_inicio = moment(data.inicio);
                 const moment_final = moment(data.fin);
-
+                
                 const diff = moment_final.diff(moment_inicio);
                 const diffDuration = moment.duration(diff);
 
@@ -134,9 +115,9 @@ export default class lista_tareas extends Component {
         }
     }
 
-    EliminarTarea(id) {
+    EliminarTarea(id){
         let tarea_send = {
-            id: id
+           id: id
         }
         fetch(server.api + 'EliminarTarea', {
             method: 'POST',

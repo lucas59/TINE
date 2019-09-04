@@ -29,6 +29,8 @@ target 'Tine' do
 
   pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
 
+  pod 'react-native-sqlite-storage', :path => '../node_modules/react-native-sqlite-storage'
+
   target 'TineTests' do
     inherit! :search_paths
     # Pods for testing
