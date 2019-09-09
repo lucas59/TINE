@@ -42,7 +42,7 @@ manejador.bajarEmpleadosEmpresa = (documento) => { ///baja los empleado al inici
             console.log("vaciando lista");
         })
     })
-
+    
     fetch(url)
         .then(res => {
             return res.json()

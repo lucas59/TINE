@@ -6,7 +6,7 @@ import PinView from 'react-native-pin-view'
 import { Icon } from 'react-native-elements';
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation : 1});
+var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 const PendingView = () => (
     <View
         style={{
@@ -58,132 +58,174 @@ export default class modoTablet extends Component {
 
     confirmar_usuario = async () => {
         Keyboard.dismiss();
-        const { codigo } = this.state;
-        console.log("prueba");
-        db.transaction(function(tx) {
-            tx.executeSql('SELECT * FROM usuario',[], (tx, results) => {
-                console.log(results.rows.length);
-                for(var i = 0; i < results.rows.length; i++){
-                    console.log(results.rows.item(i).pin);
-                    console.log(codigo);
-                    if(results.rows.item(i).pin == codigo){
-                        tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL',[results.rows.item(i).id], (tx, results) => {
-                            if(results.rowsAffected > 0){
-                                tx.executeSql(
-                                    'INSERT INTO asistencia (fin) VALUES (?)',
-                                    [],
-                                    (tx, results) => {
-                                      console.log('Results', results.rowsAffected);
-                                      if (results.rowsAffected > 0) {
-                                         
-                                        console.log("insertó");
-                                      } else {
-                                          console.log("error");
-                                      }
-                                    }
-                                  );
+        let session = await AsyncStorage.getItem('usuario');
+        let sesion = JSON.parse(session);
+        this.setState({ empleado_id: sesion.id });
+        const { inicio, fin, foto, empleado_id, codigo } = this.state;
+        db.transaction(function (tx) {
+            tx.executeSql('SELECT * FROM usuario', [], (tx, results) => {
+                for (var i = 0; i < results.rows.length; i++) {
+                    if (results.rows.item(i).pin == codigo) {
+                        tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL', [empleado_id], (tx, results) => {
+                            if (results.rows.length > 0) {
+                                ToastAndroid.show('Buen viaje, seleccione aceptar', ToastAndroid.LONG);
+                                var fin = moment(new Date()).format();
+                                this.setState({ fin: fin });
+                            }
+                            else {
+
+                                ToastAndroid.show('Bienvenido, seleccione aceptar', ToastAndroid.LONG);
+                                this.setState({ fin: null });
                             }
                         });
                     }
+                    else{
+                        ToastAndroid.show('Pin incorrecto', ToastAndroid.LONG);
+                    }
+
                 }
             });
         });
     }
-        /*
-        fetch(server.api + 'login_tablet', {
-            method: 'POST',
-            headers: {
-                'Aceptar': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(loginDetails)
+
+    /*
+    fetch(server.api + 'login_tablet', {
+        method: 'POST',
+        headers: {
+            'Aceptar': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginDetails)
+    })
+        .then(res => {
+            return res.json()
         })
-            .then(res => {
-                return res.json()
-            })
-            .then(data => {
-                const retorno = data;
-                if (retorno.retorno == true) {
-                    this.state.empleado_id = retorno.id;
-                    if (retorno.estado_ree == 1) {
-                        ToastAndroid.show('Bienvenido, seleccione aceptar', ToastAndroid.LONG);
-                        this.setState({ fin: null });
-                    }
-                    else {
-                        ToastAndroid.show('Buen viaje, seleccione aceptar', ToastAndroid.LONG);
-                        var fin = moment(new Date()).format();
-                        this.setState({ fin: fin });
-                    }
-                } else {
-                    ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
+        .then(data => {
+            const retorno = data;
+            if (retorno.retorno == true) {
+                this.state.empleado_id = retorno.id;
+                if (retorno.estado_ree == 1) {
+                    ToastAndroid.show('Bienvenido, seleccione aceptar', ToastAndroid.LONG);
+                    this.setState({ fin: null });
                 }
-            })
-            .catch(function (err) {
-                console.log('error', err);
-            })
+                else {
+                    ToastAndroid.show('Buen viaje, seleccione aceptar', ToastAndroid.LONG);
+                    var fin = moment(new Date()).format();
+                    this.setState({ fin: fin });
+                }
+            } else {
+                ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
+            }
+        })
+        .catch(function (err) {
+            console.log('error', err);
+        })
 */
-    
+
 
 
 
     Alta_asistencia = async (camera) => {
         Keyboard.dismiss();
-        const options = { quality: 0.5, base64: true };
+        const options = { quality: 0.5, base64: true, captureAudio: false };
         const data = await camera.takePictureAsync(options);
         this.setState({ foto: data.base64 });
-        var inicio_fecha = moment(new Date()).format();
-        this.setState({ inicio: inicio_fecha });
+        var fecha = moment(new Date()).format();
+        this.setState({ inicio: fecha });
         const { inicio, fin, foto, empleado_id } = this.state;
-        
-            /*
-            tx.executeSql(
-              'INSERT INTO usuario (documento) VALUES (?)',
-              [1234],
-              (tx, results) => {
-                console.log('Results', results.rowsAffected);
-                if (results.rowsAffected > 0) {
-                   
-                  console.log("insertó");
-                } else {
-                    console.log("error");
+        console.log(foto);
+        console.log(empleado_id);
+        db.transaction(function (tx) {
+            tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL', [empleado_id], (tx, results) => {
+                if (results.rows.length > 0) {
+                    db.transaction(function (txt) {
+                        txt.executeSql('UPDATE asistencia SET fin = ? WHERE empleado_id = ?', [fecha, empleado_id], (tx, results) => {
+                            if (results.rowsAffected > 0) {
+                                console.log("Actualizó");
+                                ToastAndroid.show('La asistencia se actualizó correctamente', ToastAndroid.LONG);
+                                db.transaction(function (txr) {
+                                    console.log("we");
+                                    txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
+                                        console.log(results.rows.length);
+                                        for(var i = 0; i < results.rows.length; i++){
+                                            console.log("esta es: ", results.rows.item(i).pin);
+                                            console.log("esta es: ",results.rows.item(i).inicio);
+                                            console.log("esta es: ",results.rows.item(i).fin);
+                                            console.log("esta es: ", results.rows.item(i).foto);
+                                        }
+                                    });
+                                });
+                            } else {
+                                console.log("error");
+                            }
+                        }
+
+                        );
+                    });
                 }
-              }
-            );
-            */
-
-
-        let asistencia_send = {
-            inicio: inicio,
-            fin: fin,
-            foto: foto,
-            empleado_id: empleado_id
-        }
-        fetch(server.api + 'Alta_asistencia', {
-            method: 'POST',
-            headers: {
-                'Aceptar': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(asistencia_send)
-        })
-            .then(res => {
-                return res.json()
-            })
-            .then(async data => {
-                const retorno = data;
-                console.log(this.state.fin);
-                if (retorno.retorno == true) {
-
-                    alert(retorno.mensaje);
-                } else {
-                    alert(retorno.mensaje);
+                else {
+                    db.transaction(function (txx) {
+                        console.log(empleado_id);
+                        console.log(foto);
+                        console.log(inicio);
+                        txx.executeSql('INSERT INTO asistencia (fin, empleado_id,foto,inicio) VALUES (null, ?,?,?)', [empleado_id, foto, fecha], (tx, results) => {
+                            if (results.rowsAffected > 0) {
+                                console.log("insertó");
+                                ToastAndroid.show('La asistencia se insertó correctamente', ToastAndroid.LONG);
+                                db.transaction(function (txr) {
+                                    console.log("we");
+                                    txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
+                                        console.log(results.rows.length);
+                                        for(var i = 0; i < results.rows.length; i++){
+                                            console.log("esta es: ", results.rows.item(i).pin);
+                                            console.log("esta es: ",results.rows.item(i).inicio);
+                                            console.log("esta es: ",results.rows.item(i).fin);
+                                            console.log("esta es: ", results.rows.item(i).foto);
+                                        }
+                                    });
+                                });
+                            } else {
+                                console.log("error");
+                            }
+                        }
+                        );
+                    });
                 }
-            })
-            .catch(function (err) {
-                console.log('error', err);
-            })
+            });
 
+        });
+
+
+
+      
     }
+    /*
+    fetch(server.api + 'Alta_asistencia', {
+        method: 'POST',
+        headers: {
+            'Aceptar': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(asistencia_send)
+    })
+        .then(res => {
+            return res.json()
+        })
+        .then(async data => {
+            const retorno = data;
+            console.log(this.state.fin);
+            if (retorno.retorno == true) {
+
+                alert(retorno.mensaje);
+            } else {
+                alert(retorno.mensaje);
+            }
+        })
+        .catch(function (err) {
+            console.log('error', err);
+        })
+*/
+
 
 
 
@@ -201,6 +243,7 @@ export default class modoTablet extends Component {
                 <RNCamera
                     style={styles.preview}
                     type={RNCamera.Constants.Type.front}
+                    captureAudio={false}
                 >
                     {({ camera, status }) => {
                         if (status !== 'READY') return <PendingView />;
@@ -231,9 +274,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
     },
     preview: {
-        width: 400,
-        height: 400,
-     
+        width: 300,
+        height: 200,
+
     },
     capture: {
         flex: 0,
