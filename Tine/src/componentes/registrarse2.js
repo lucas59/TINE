@@ -178,7 +178,7 @@ export default class Signup2 extends React.Component {
                     
                     var nuevaSession = {
                         id:datosFinales.documento,
-                        tipo:datosFinales.email
+                        tipo:datosFinales.tipo
                     }
 
                     AsyncStorage.setItem('usuario', JSON.stringify(nuevaSession));

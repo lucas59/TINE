@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, Alert, ToastAndroid, ScrollView, Keyboard, AsyncStorage } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
+
 const { server } = require('../config/keys');
 import { ListItem, Icon, Divider } from 'react-native-elements';
 import { FloatingAction } from "react-native-floating-action";
@@ -20,6 +21,8 @@ export default class lista_tareas extends Component {
         myTimer = BackgroundTimer.setInterval(() => {
             NetInfo.isConnected.addEventListener("connectionChange", hasInternetConnection => {
                 manejador.subirTareas();
+                manejador.subirAsistencia();
+                ToastAndroid.show("estado",NetInfo.isConnected.toString(),ToastAndroid.LONG);
             });
         }, 5000);
     }

@@ -129,7 +129,6 @@ export default class modoTablet extends Component {
         Keyboard.dismiss();
         const options = { quality: 0.5, base64: true, captureAudio: false };
         const data = await camera.takePictureAsync(options);
-        console.log(data.base64);
         this.setState({ foto: data.base64 });
         var fecha = moment(new Date()).format();
         this.setState({ inicio: fecha });
