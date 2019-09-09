@@ -5,7 +5,8 @@ const { server } = require('../config/keys');
 import { ListItem, Icon, Divider } from 'react-native-elements';
 import { FloatingAction } from "react-native-floating-action";
 import moment from "moment";
-import BackgraundTask from 'react-native-background-task';
+import { openDatabase } from 'react-native-sqlite-storage';
+var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 const manejador  = require("./manejadorSqlite");
 
 import BackgroundTimer from 'react-native-background-timer';
@@ -55,10 +56,23 @@ export default class lista_tareas extends Component {
 
     Listar = async () => {
         Keyboard.dismiss();
+
+        db.transaction(function (txn) {
+            txn.executeSql("SELECT seq FROM sqlite_sequence where name = 'tarea'", [], (tx, res) => {
+                this.setState({ listaT: res.rows });  
+            });
+        });
+
+
+        /*
         let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
+        let session_2 = await AsyncStorage.getItem('empresa');
+        let empresa = JSON.parse(session_2);
+        console.log(empresa[0]);
         let tarea_send = {
-            id: sesion.id
+            id: sesion.id,
+            id_empresa: empresa[0]
         }
         await fetch(server.api + '/Tareas/ListaTareas', {
             method: 'POST',
@@ -73,6 +87,7 @@ export default class lista_tareas extends Component {
             })
             .then(data => {
                 const retorno = data;
+                console.log(retorno);
                 if (retorno.retorno == true) {
                     this.setState({ listaT: retorno.mensaje });
                 }
@@ -80,6 +95,7 @@ export default class lista_tareas extends Component {
             .catch(function (err) {
                 console.log('error', err);
             })
+            */
     }
     parseData() {
         if (this.state.listaT) {

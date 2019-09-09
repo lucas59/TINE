@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, PermissionsAndroid, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ToastAndroid, Keyboard } from 'react-native';
 const { server } = require('../config/keys');
 import { Button, Input, Icon } from 'react-native-elements';
 import { TouchableHighlight } from 'react-native';
 import { Stopwatch } from 'react-native-stopwatch-timer';
 import Geolocation from '@react-native-community/geolocation';
 import moment from "moment";
+import { openDatabase } from 'react-native-sqlite-storage';
+var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 export default class Alta_tarea extends Component {
 
     static navigationOptions = {
@@ -56,7 +58,7 @@ export default class Alta_tarea extends Component {
         let fecha = moment(new Date()).format();
         var longitud;
         var latitud;
-        Geolocation.getCurrentPosition(
+        await Geolocation.getCurrentPosition(
             (position) => {
                 longitud = JSON.stringify(position.coords.longitude);
                 latitud = JSON.stringify(position.coords.latitude);
@@ -72,6 +74,7 @@ export default class Alta_tarea extends Component {
                     this.setState({ fin: fecha });
                     this.setState({ long_fin: longitud });
                     this.setState({ lat_fin: latitud });
+                    this.saveData();
                 }
             },
             (error) => alert(error.message),
@@ -128,6 +131,41 @@ export default class Alta_tarea extends Component {
             alert("Ingrese le nombre de la tarea");
         }
         else {
+            var ult_tarea;
+            db.transaction(function (txx) {
+                txx.executeSql('INSERT INTO tarea (fin, inicio,titulo,empleado_id,empresa_id) VALUES (?,?,?,?,?)', [fin, inicio, titulo, tarea_send.empleado_id, tarea_send.empresa_id], (tx, results) => {
+                    if (results.rowsAffected > 0) {
+                        console.log("insertó");
+                    } else {
+                        console.log("error");
+                    }
+                }
+                );
+            });
+            db.transaction(function (txn) {
+                txn.executeSql("SELECT seq FROM sqlite_sequence where name = 'tarea'", [], (tx, res) => {
+                        ult_tarea = res.rows.item(0).seq;  
+                });
+            });
+
+                db.transaction(function (txr) {
+                    txr.executeSql('INSERT INTO ubicacion (latitud,longitud, tipo, tarea_id,usuario_id) VALUES (?,?,?,?,?)', [lat_ini, long_ini, 0, ult_tarea, tarea_send.empleado_id], (tx, results) => {
+                        if (results.rowsAffected > 0) {
+                            console.log("insertó primera ubicación");
+                        }
+                    });
+                });
+  
+                db.transaction(function (txr) {
+                    txr.executeSql('INSERT INTO ubicacion (latitud,longitud, tipo, tarea_id,usuario_id) VALUES (?,?,?,?,?)', [lat_fin, long_fin, 1, ult_tarea, tarea_send.empleado_id], (tx, results) => {
+                        if (results.rowsAffected > 0) {
+                            console.log("insertó segunda ubicación");
+                        }
+                    });
+                });
+                ToastAndroid.show('La tarea se ingresó correctamente', ToastAndroid.LONG);
+                this.props.navigation.navigate('lista_tareas');
+
             /*
             fetch(server.api + 'Alta_tarea', {
                 method: 'POST',
@@ -176,10 +214,6 @@ export default class Alta_tarea extends Component {
                     <TouchableHighlight onPress={this.toggleStopwatch}>
                         <Text style={{ fontSize: 30 }}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
                     </TouchableHighlight>
-
-                    <TouchableOpacity style={styles.button}>
-                        <Button style={styles.buttonText} onPress={this.saveData} title="Aceptar" loading={this.state.cargando} />
-                    </TouchableOpacity>
 
                 </View>
             </>
