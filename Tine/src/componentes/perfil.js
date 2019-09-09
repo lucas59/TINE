@@ -56,6 +56,7 @@ export default class Profile extends Component {
     const { navigation } = this.props;
     const session = JSON.parse(navigation.getParam('session'));
     console.log('session', session);
+    
     if (session.tipo == 0) {
       fetch(server.api + 'userEmpresa', {
         method: 'POST',

@@ -6,10 +6,8 @@ var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 const manejador = {};
 
 manejador.subirTareas = () => {
-    console.log('entra');
     db.transaction(function (txn) {
-        console.log('asd');
-        txn.executeSql("SELECT * FROM usuario", [], (tx, res) => {
+        txn.executeSql("SELECT * FROM tarea", [], (tx, res) => {
             console.log(res.rows.length);
             ToastAndroid.show('tareas' + res.rows.length, ToastAndroid.SHORT);
         });
@@ -17,7 +15,24 @@ manejador.subirTareas = () => {
 
 }
 
-manejador.bajarEmpleadosEmpresa = (documento) => {
+manejador.subirAsistencia = () => {
+    console.log("subiendo asistencias");
+    db.transaction(function (txn) {
+        txn.executeSql("SELECT * FROM asistencia", [], (tx, res) => {
+            if (res.rows.length > 0) {
+                res.rows.forEach(element => {
+                    console.log(element.fin);
+                
+                });
+            } else {
+                console.log("no hay asistencias");
+            }
+        });
+    });
+
+}
+
+manejador.bajarEmpleadosEmpresa = (documento) => { ///baja los empleado al iniciar una session empresa
     console.log(documento);
     var url = server.api + 'misEmpleados?documento=' + documento;
 
