@@ -16,14 +16,15 @@ manejador.subirTareas = () => {
 }
 
 manejador.subirAsistencia = () => {
-    console.log("subiendo asistencias");
     db.transaction(function (txn) {
         txn.executeSql("SELECT * FROM asistencia", [], (tx, res) => {
+            console.log("cantidadAsistencias: ", res.rows.length);
             if (res.rows.length > 0) {
-                res.rows.forEach(element => {
-                    console.log(element.fin);
-                
-                });
+                console.log("entra2");
+                for(var i = 0; i < res.rows.length; i++){
+                    console.log("esta es: ", res.rows.item(i).pin);
+                    console.log("entra");
+                }
             } else {
                 console.log("no hay asistencias");
             }

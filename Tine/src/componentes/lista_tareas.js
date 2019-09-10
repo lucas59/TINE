@@ -7,7 +7,7 @@ import { ListItem, Icon, Divider } from 'react-native-elements';
 import { FloatingAction } from "react-native-floating-action";
 import moment from "moment";
 import BackgraundTask from 'react-native-background-task';
-const manejador  = require("./manejadorSqlite");
+const manejador = require("./manejadorSqlite");
 
 import BackgroundTimer from 'react-native-background-timer';
 
@@ -17,14 +17,26 @@ var timer;
 export default class lista_tareas extends Component {
 
     componentDidMount() {
+
+
         myTimer = BackgroundTimer.setInterval(() => {
-            NetInfo.isConnected.addEventListener("connectionChange", hasInternetConnection => {
-                manejador.subirTareas();
+            NetInfo.isConnected.fetch().done((isConnected) => {
+                if (isConnected == true) {
+                    this.setState({ connection_Status: "Online" })
+                }
+                else {
+                    this.setState({ connection_Status: "Offline" })
+                }
+            })
+            if (this.state.connection_Status == "Online") {
+                //manejador.subirTareas();
                 manejador.subirAsistencia();
-                ToastAndroid.show("estado",NetInfo.isConnected.toString(),ToastAndroid.LONG);
-            });
+                //ToastAndroid.show("estado", NetInfo.isConnected.toString(), ToastAndroid.LONG);
+            }
         }, 5000);
     }
+
+
 
 
     static navigationOptions = {
@@ -51,6 +63,8 @@ export default class lista_tareas extends Component {
         super(props);
         this.state = {
             listaT: '',
+            connection_Status: ""
+
         }
         this.Listar();
     }
