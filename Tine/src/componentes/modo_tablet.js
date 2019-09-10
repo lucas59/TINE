@@ -49,42 +49,56 @@ export default class modoTablet extends Component {
             inicio: '',
             fin: null,
             empleado_id: '',
+            empresa_id: '',
             cameraType: 'front',
             mirrorMode: false
         }
         this.perfil();
     }
 
-
+    promesa() {
+        return new Promise(function (resolve, reject) {
+            setTimeout(() => {
+                db.transaction(function (tx) {
+                    tx.executeSql('SELECT * FROM usuario WHERE pin = ?', [codigo], (tx, results) => {
+                        for (var i = 0; i < results.rows.length; i++) {
+                            if (results.rows.item(i).pin == codigo) {
+                                tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND empresa_id = ? AND fin IS NULL', [results.rows.item(i).id, this.state.empresa_id], (tx, results) => {
+                                    if (results.rows.length > 0) {
+                                        resolve(1);
+                                    }
+                                    else {
+                                        resolve(2);
+                                    }
+                                });
+                            }
+                            else {
+                                resolve(3);
+                            }
+                        }
+                    });
+                });
+            }, 1000);
+        });
+    }
     confirmar_usuario = async () => {
         Keyboard.dismiss();
         let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
-        this.setState({ empleado_id: sesion.id });
-        const { inicio, fin, foto, empleado_id, codigo } = this.state;
-        db.transaction(function (tx) {
-            tx.executeSql('SELECT * FROM usuario', [], (tx, results) => {
-                for (var i = 0; i < results.rows.length; i++) {
-                    if (results.rows.item(i).pin == codigo) {
-                        tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL', [empleado_id], (tx, results) => {
-                            if (results.rows.length > 0) {
-                                ToastAndroid.show('Buen viaje, seleccione aceptar', ToastAndroid.LONG);
-                                var fin = moment(new Date()).format();
-                                this.setState({ fin: fin });
-                            }
-                            else {
-
-                                ToastAndroid.show('Bienvenido, seleccione aceptar', ToastAndroid.LONG);
-                                this.setState({ fin: null });
-                            }
-                        });
-                    }
-                    else{
-                        ToastAndroid.show('Pin incorrecto', ToastAndroid.LONG);
-                    }
-
-                }
-            });
+        this.setState({ empresa_id: sesion.id });
+        this.promesa().then((data) => {
+            if (data == 1) {
+                ToastAndroid.show('Buen viaje, seleccione aceptar', ToastAndroid.LONG);
+                var fin = moment(new Date()).format();
+                this.setState({ fin: fin });
+            }
+            else if (data == 2) {
+                ToastAndroid.show('Bienvenido, seleccione aceptar', ToastAndroid.LONG);
+                this.setState({ fin: null });
+            }
+            else if (data == 3) {
+                ToastAndroid.show('Pin incorrecto', ToastAndroid.LONG);
+            }
         });
     }
 
@@ -147,10 +161,10 @@ export default class modoTablet extends Component {
                                     console.log("we");
                                     txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
                                         console.log(results.rows.length);
-                                        for(var i = 0; i < results.rows.length; i++){
+                                        for (var i = 0; i < results.rows.length; i++) {
                                             console.log("esta es: ", results.rows.item(i).pin);
-                                            console.log("esta es: ",results.rows.item(i).inicio);
-                                            console.log("esta es: ",results.rows.item(i).fin);
+                                            console.log("esta es: ", results.rows.item(i).inicio);
+                                            console.log("esta es: ", results.rows.item(i).fin);
                                             console.log("esta es: ", results.rows.item(i).foto);
                                         }
                                     });
@@ -168,7 +182,7 @@ export default class modoTablet extends Component {
                         console.log(empleado_id);
                         console.log(foto);
                         console.log(inicio);
-                        txx.executeSql('INSERT INTO asistencia (fin, empleado_id,foto,inicio) VALUES (null, ?,?,?)', [empleado_id, foto, fecha], (tx, results) => {
+                        txx.executeSql('INSERT INTO asistencia (fin, empleado_id,foto,inicio,empresa_id) VALUES (null, ?,?,?,?)', [empleado_id, foto, fecha], (tx, results) => {
                             if (results.rowsAffected > 0) {
                                 console.log("insertó");
                                 ToastAndroid.show('La asistencia se insertó correctamente', ToastAndroid.LONG);
@@ -176,10 +190,10 @@ export default class modoTablet extends Component {
                                     console.log("we");
                                     txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
                                         console.log(results.rows.length);
-                                        for(var i = 0; i < results.rows.length; i++){
+                                        for (var i = 0; i < results.rows.length; i++) {
                                             console.log("esta es: ", results.rows.item(i).pin);
-                                            console.log("esta es: ",results.rows.item(i).inicio);
-                                            console.log("esta es: ",results.rows.item(i).fin);
+                                            console.log("esta es: ", results.rows.item(i).inicio);
+                                            console.log("esta es: ", results.rows.item(i).fin);
                                             console.log("esta es: ", results.rows.item(i).foto);
                                         }
                                     });
@@ -197,7 +211,7 @@ export default class modoTablet extends Component {
 
 
 
-      
+
     }
     /*
     fetch(server.api + 'Alta_asistencia', {

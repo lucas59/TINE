@@ -63,6 +63,8 @@ export default class lista_tareas extends Component {
         super(props);
         this.state = {
             listaT: '',
+            usuario: '',
+            empresa: ''
         }
     }
 
@@ -102,11 +104,16 @@ export default class lista_tareas extends Component {
             */
     }
 
-    promesa() {
+
+    promesa = async () => {
+        let session = await AsyncStorage.getItem('usuario');
+        let sesion = JSON.parse(session);
+        let session_2 = await AsyncStorage.getItem('empresa');
+        let empresa = JSON.parse(session_2);
         return new Promise(function (resolve, reject) {
             setTimeout(() => {
                 db.transaction(async function (txn) {
-                    txn.executeSql("SELECT * FROM tarea", [], (tx, res) => {
+                    txn.executeSql("SELECT * FROM tarea WHERE empleado_id = ? AND empresa_id = ?", [sesion.id, empresa[0]], (tx, res) => {
                         resolve(res.rows.raw());
                     });
                 });
@@ -172,6 +179,18 @@ export default class lista_tareas extends Component {
     }
 
     EliminarTarea(id) {
+        
+        db.transaction(function (txx) {
+            txx.executeSql('DELETE FROM tarea WHERE id = ?', [id], (tx, results) => {
+                if (results.rowsAffected > 0) {
+                    console.log("Eliminó");
+                } else {
+                    console.log("error");
+                }
+            }
+            );
+        });
+        /*
         let tarea_send = {
             id: id
         }
@@ -197,7 +216,7 @@ export default class lista_tareas extends Component {
             .catch(function (err) {
                 console.log('error', err);
             })
-
+*/
     }
     redireccionar_alta = async (name) => {
         if (name == "bt_tarea") {

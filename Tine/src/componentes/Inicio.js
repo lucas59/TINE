@@ -7,7 +7,7 @@ export default class Inicio extends Component {
     
     componentDidMount() {
         myTimer = BackgroundTimer.setInterval(() => {
-            console.log('timer');
+            //console.log('timer');
         }, 3000);
     }
     componentWillUnMount() {
