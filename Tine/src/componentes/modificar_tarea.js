@@ -65,6 +65,7 @@ export default class Alta_tarea extends Component {
         console.log(modificar_tarea);
         db.transaction(function (txx) {
             txx.executeSql('UPDATE tarea SET estado = ? ,fin = ?, inicio = ?, titulo = ? WHERE id = ?', [1, modificar_tarea.fin, modificar_tarea.inicio, modificar_tarea.titulo, modificar_tarea.id], (tx, results) => {
+                console.log(tx);
                 if (results.rowsAffected > 0) {
                     console.log("Modificó");
                 } else {

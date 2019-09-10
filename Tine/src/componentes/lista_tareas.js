@@ -121,17 +121,10 @@ export default class lista_tareas extends Component {
         });
         if (this.state.listaT.length > 0) {
             var fecha = null;
-            return this.state.listaT.map((data,i) => {
-                //fecha pasa de Date a moment
-                const moment_inicio = moment(data.inicio);
-                const moment_final = moment(data.fin);
-
-            if (lista_SC.lenght > 0) {
-                var fecha = null;
-                for (var i = 0; i < lista_SC.lenght; i++) {
+                return this.state.listaT.map((data,i) => {
                     //fecha pasa de Date a moment
-                    const moment_inicio = moment(lista_SC.item(i).inicio);
-                    const moment_final = moment(lista_SC.item(i).fin);
+                    const moment_inicio = moment(data.inicio);
+                    const moment_final = moment(data.fin);
 
                     const diff = moment_final.diff(moment_inicio);
                     const diffDuration = moment.duration(diff);
@@ -147,11 +140,11 @@ export default class lista_tareas extends Component {
                             {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{moment(data.inicio).format('MMMM Do YYYY')}</Text> : null}
                             <ListItem
                                 leftIcon={{ name: 'assignment' }}
-                                title={lista_SC.item(i).titulo}
+                                title={data.titulo}
                                 rightTitle={diffDuration.hours() + "h " + diffDuration.minutes() + "m " + diffDuration.seconds() + "s"}
                                 onPress={() => Alert.alert(
                                     "Opciones",
-                                    "de tarea " + lista_SC.item(i).titulo,
+                                    "de tarea " + data.titulo,
                                     [
                                         { text: "Modificar", onPress: () => this.redireccionar_modificar(data.id, data.inicio, data.fin, data.titulo) },
                                         {
@@ -166,41 +159,16 @@ export default class lista_tareas extends Component {
                             />
                         </View>
                     )
-                }
+                });
             }
             else {
                 return (
-                    <View key={i}>
-                        {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{moment(data.inicio).format('MMMM Do YYYY')}</Text> : null}
-                        <ListItem
-                            leftIcon={{ name: 'assignment' }}
-                            title={data.titulo}
-                            rightTitle={diffDuration.hours() + "h " + diffDuration.minutes() + "m " + diffDuration.seconds() + "s"}
-                            onPress={() => Alert.alert(
-                                "Opciones",
-                                "de tarea " + data.titulo,
-                                [
-                                    { text: "Modificar", onPress: () => this.redireccionar_modificar(data.id, data.inicio, data.fin, data.titulo) },
-                                    {
-                                        text: "Eliminar",
-                                        onPress: () => this.EliminarTarea(data.id),
-                                        style: "cancel"
-                                    },
-                                ],
-                                { cancelable: true }
-                            )
-                            }
-                        />
-                    </View>
+                    <Text style={{ textAlign: "center" }}>No existen tareas</Text>
                 )
-                
-            });
-        }
-        else {
-            return (
-                <Text style={{ textAlign: "center" }}>No existen tareas</Text>
-            )
-        }
+            }
+
+
+
     }
 
     EliminarTarea(id) {
