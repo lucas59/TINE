@@ -51,7 +51,6 @@ export default class lista_tareas extends Component {
         super(props);
         this.state = {
             listaT: '',
-            lista_SC: ''
         }
     }
 
@@ -96,7 +95,7 @@ export default class lista_tareas extends Component {
             setTimeout(() => {
                 db.transaction(async function (txn) {
                     txn.executeSql("SELECT * FROM tarea", [], (tx, res) => {
-                        resolve(res.rows);
+                        resolve(res.rows.raw());
                     });
                 });
             }, 1000);
@@ -106,15 +105,14 @@ export default class lista_tareas extends Component {
     parseData() {
         Keyboard.dismiss();
         this.promesa().then((lista_SC) => {
-            this.setState({ lista_SC: lista_SC});
-            console.log(lista_SC);
-            
-        if (lista_SC.lenght > 0){
+            this.setState({listaT: lista_SC});
+        });
+        if (this.state.listaT.length > 0) {
             var fecha = null;
-            for(var i = 0; i < lista_SC.lenght;i++){
+            return this.state.listaT.map((data,i) => {
                 //fecha pasa de Date a moment
-                const moment_inicio = moment(lista_SC.item(i).inicio);
-                const moment_final = moment(lista_SC.item(i).fin);
+                const moment_inicio = moment(data.inicio);
+                const moment_final = moment(data.fin);
 
                 const diff = moment_final.diff(moment_inicio);
                 const diffDuration = moment.duration(diff);
@@ -130,11 +128,11 @@ export default class lista_tareas extends Component {
                         {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{moment(data.inicio).format('MMMM Do YYYY')}</Text> : null}
                         <ListItem
                             leftIcon={{ name: 'assignment' }}
-                            title={lista_SC.item(i).titulo}
+                            title={data.titulo}
                             rightTitle={diffDuration.hours() + "h " + diffDuration.minutes() + "m " + diffDuration.seconds() + "s"}
                             onPress={() => Alert.alert(
                                 "Opciones",
-                                "de tarea " + lista_SC.item(i).titulo,
+                                "de tarea " + data.titulo,
                                 [
                                     { text: "Modificar", onPress: () => this.redireccionar_modificar(data.id, data.inicio, data.fin, data.titulo) },
                                     {
@@ -149,18 +147,15 @@ export default class lista_tareas extends Component {
                         />
                     </View>
                 )
-            }
+                
+            });
         }
         else {
             return (
                 <Text style={{ textAlign: "center" }}>No existen tareas</Text>
             )
         }
-        
-    });
-
-    
-  }
+    }
 
     EliminarTarea(id) {
         let tarea_send = {
