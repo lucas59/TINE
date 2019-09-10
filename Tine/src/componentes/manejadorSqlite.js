@@ -7,9 +7,10 @@ const manejador = {};
 
 manejador.subirTareas = () => {
     db.transaction(function (txn) {
-        txn.executeSql("SELECT * FROM tarea", [], (tx, res) => {
-            console.log(res.rows.length);
-            ToastAndroid.show('tareas' + res.rows.length, ToastAndroid.SHORT);
+        console.log('asd');
+        txn.executeSql("SELECT * FROM usuario", [], (tx, res) => {
+          //  console.log(res.rows.length);
+          //  ToastAndroid.show('tareas' + res.rows.length, ToastAndroid.SHORT);
         });
     });
 
@@ -43,7 +44,8 @@ manejador.bajarEmpleadosEmpresa = (documento) => { ///baja los empleado al inici
             console.log("vaciando lista");
         })
     })
-    
+
+
     fetch(url)
         .then(res => {
             return res.json()

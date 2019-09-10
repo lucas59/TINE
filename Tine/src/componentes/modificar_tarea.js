@@ -4,7 +4,8 @@ const { server } = require('../config/keys');
 import { Button, Icon, Divider, Input } from 'react-native-elements';
 import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from "moment";
-import 'moment/min/moment-with-locales'
+import { openDatabase } from 'react-native-sqlite-storage';
+var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 
 export default class Alta_tarea extends Component {
     static navigationOptions = {
@@ -54,12 +55,26 @@ export default class Alta_tarea extends Component {
 
     saveData = async () => {
         const { tarea_titulo, tarea_id, tarea_inicio, tarea_fin } = this.state;
-        let loginDetails = {
+        let modificar_tarea = {
             titulo: tarea_titulo,
             inicio: tarea_inicio,
             fin: tarea_fin,
             id: tarea_id
         }
+        console.log("prueba");
+        db.transaction(function (txx) {
+            txx.executeSql('UPDATE tarea SET estado = ? ,fin = ?, inicio = ?, titulo = ? WHERE id = ?', [1, modificar_tarea.fin, modificar_tarea.inicio, modificar_tarea.titulo, modificar_tarea.id], (tx, results) => {
+                if (results.rowsAffected > 0) {
+                    console.log("Modificó");
+                } else {
+                    console.log("error");
+                }
+            }
+            );
+        });
+
+
+        /*
         console.log(loginDetails);
         fetch(server.api + 'Modificar_tarea', {
             method: 'POST',
@@ -87,7 +102,7 @@ export default class Alta_tarea extends Component {
                 console.log('error', err);
             })
 
-        Keyboard.dismiss();
+       */
     }
 
     showDateTimePicker_inicio = () => {
