@@ -6,14 +6,13 @@ const { server } = require('../config/keys');
 import { ListItem, Icon, Divider } from 'react-native-elements';
 import { FloatingAction } from "react-native-floating-action";
 import moment from "moment";
+import BackgraundTask from 'react-native-background-task';
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
-const manejador  = require("./manejadorSqlite");
+const manejador = require("./manejadorSqlite");
 
 import BackgroundTimer from 'react-native-background-timer';
-
 var timer;
-
 
 export default class lista_tareas extends Component {
 
@@ -22,7 +21,7 @@ export default class lista_tareas extends Component {
             NetInfo.isConnected.addEventListener("connectionChange", hasInternetConnection => {
                 manejador.subirTareas();
                 manejador.subirAsistencia();
-                ToastAndroid.show("estado",NetInfo.isConnected.toString(),ToastAndroid.LONG);
+                //  ToastAndroid.show("estado",NetInfo.isConnected.toString(),ToastAndroid.LONG);
             });
         }, 5000);
     }
@@ -52,21 +51,12 @@ export default class lista_tareas extends Component {
         super(props);
         this.state = {
             listaT: '',
+            lista_SC: ''
         }
-        this.Listar();
     }
 
 
     Listar = async () => {
-        Keyboard.dismiss();
-
-        db.transaction(function (txn) {
-            txn.executeSql("SELECT seq FROM sqlite_sequence where name = 'tarea'", [], (tx, res) => {
-                this.setState({ listaT: res.rows });  
-            });
-        });
-
-
         /*
         let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
@@ -100,13 +90,31 @@ export default class lista_tareas extends Component {
             })
             */
     }
+
+    promesa() {
+        return new Promise(function (resolve, reject) {
+            setTimeout(() => {
+                db.transaction(async function (txn) {
+                    txn.executeSql("SELECT * FROM tarea", [], (tx, res) => {
+                        resolve(res.rows);
+                    });
+                });
+            }, 1000);
+        });
+    }
+
     parseData() {
-        if (this.state.listaT) {
+        Keyboard.dismiss();
+        this.promesa().then((lista_SC) => {
+            this.setState({ lista_SC: lista_SC});
+            console.log(lista_SC);
+            
+        if (lista_SC.lenght > 0){
             var fecha = null;
-            return this.state.listaT.map((data, i) => {
+            for(var i = 0; i < lista_SC.lenght;i++){
                 //fecha pasa de Date a moment
-                const moment_inicio = moment(data.inicio);
-                const moment_final = moment(data.fin);
+                const moment_inicio = moment(lista_SC.item(i).inicio);
+                const moment_final = moment(lista_SC.item(i).fin);
 
                 const diff = moment_final.diff(moment_inicio);
                 const diffDuration = moment.duration(diff);
@@ -122,11 +130,11 @@ export default class lista_tareas extends Component {
                         {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{moment(data.inicio).format('MMMM Do YYYY')}</Text> : null}
                         <ListItem
                             leftIcon={{ name: 'assignment' }}
-                            title={data.titulo}
+                            title={lista_SC.item(i).titulo}
                             rightTitle={diffDuration.hours() + "h " + diffDuration.minutes() + "m " + diffDuration.seconds() + "s"}
                             onPress={() => Alert.alert(
                                 "Opciones",
-                                "de tarea " + data.titulo,
+                                "de tarea " + lista_SC.item(i).titulo,
                                 [
                                     { text: "Modificar", onPress: () => this.redireccionar_modificar(data.id, data.inicio, data.fin, data.titulo) },
                                     {
@@ -141,14 +149,18 @@ export default class lista_tareas extends Component {
                         />
                     </View>
                 )
-            })
+            }
         }
         else {
             return (
                 <Text style={{ textAlign: "center" }}>No existen tareas</Text>
             )
         }
-    }
+        
+    });
+
+    
+  }
 
     EliminarTarea(id) {
         let tarea_send = {
