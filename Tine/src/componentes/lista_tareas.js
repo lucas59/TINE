@@ -17,14 +17,26 @@ var timer;
 export default class lista_tareas extends Component {
 
     componentDidMount() {
+
+
         myTimer = BackgroundTimer.setInterval(() => {
-            NetInfo.isConnected.addEventListener("connectionChange", hasInternetConnection => {
-                manejador.subirTareas();
+            NetInfo.isConnected.fetch().done((isConnected) => {
+                if (isConnected == true) {
+                    this.setState({ connection_Status: "Online" })
+                }
+                else {
+                    this.setState({ connection_Status: "Offline" })
+                }
+            })
+            if (this.state.connection_Status == "Online") {
+                //manejador.subirTareas();
                 manejador.subirAsistencia();
-                //  ToastAndroid.show("estado",NetInfo.isConnected.toString(),ToastAndroid.LONG);
-            });
+                //ToastAndroid.show("estado", NetInfo.isConnected.toString(), ToastAndroid.LONG);
+            }
         }, 5000);
     }
+
+
 
 
     static navigationOptions = {
@@ -114,15 +126,49 @@ export default class lista_tareas extends Component {
                 const moment_inicio = moment(data.inicio);
                 const moment_final = moment(data.fin);
 
-                const diff = moment_final.diff(moment_inicio);
-                const diffDuration = moment.duration(diff);
+            if (lista_SC.lenght > 0) {
+                var fecha = null;
+                for (var i = 0; i < lista_SC.lenght; i++) {
+                    //fecha pasa de Date a moment
+                    const moment_inicio = moment(lista_SC.item(i).inicio);
+                    const moment_final = moment(lista_SC.item(i).fin);
+
+                    const diff = moment_final.diff(moment_inicio);
+                    const diffDuration = moment.duration(diff);
 
 
-                //setear la fecha de la tarea en una variable para luego compararla con la fecha de la tarea actual
-                var comp = fecha;
+                    //setear la fecha de la tarea en una variable para luego compararla con la fecha de la tarea actual
+                    var comp = fecha;
 
-                //fecha es igual a la fecha de la tarea actual
-                fecha = moment(data.inicio).format('MMMM Do YYYY');
+                    //fecha es igual a la fecha de la tarea actual
+                    fecha = moment(data.inicio).format('MMMM Do YYYY');
+                    return (
+                        <View key={i}>
+                            {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{moment(data.inicio).format('MMMM Do YYYY')}</Text> : null}
+                            <ListItem
+                                leftIcon={{ name: 'assignment' }}
+                                title={lista_SC.item(i).titulo}
+                                rightTitle={diffDuration.hours() + "h " + diffDuration.minutes() + "m " + diffDuration.seconds() + "s"}
+                                onPress={() => Alert.alert(
+                                    "Opciones",
+                                    "de tarea " + lista_SC.item(i).titulo,
+                                    [
+                                        { text: "Modificar", onPress: () => this.redireccionar_modificar(data.id, data.inicio, data.fin, data.titulo) },
+                                        {
+                                            text: "Eliminar",
+                                            onPress: () => this.EliminarTarea(data.id),
+                                            style: "cancel"
+                                        },
+                                    ],
+                                    { cancelable: true }
+                                )
+                                }
+                            />
+                        </View>
+                    )
+                }
+            }
+            else {
                 return (
                     <View key={i}>
                         {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{moment(data.inicio).format('MMMM Do YYYY')}</Text> : null}
