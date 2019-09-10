@@ -33,7 +33,7 @@ export default class lista_tareas extends Component {
                 manejador.subirAsistencia();
                 //ToastAndroid.show("estado", NetInfo.isConnected.toString(), ToastAndroid.LONG);
             }
-        }, 5000);
+        }, 10000);
     }
 
 
@@ -120,7 +120,6 @@ export default class lista_tareas extends Component {
         Keyboard.dismiss();
         this.promesa().then((lista_SC) => {
             this.setState({ lista_SC: lista_SC });
-            console.log(lista_SC);
 
             if (lista_SC.lenght > 0) {
                 var fecha = null;

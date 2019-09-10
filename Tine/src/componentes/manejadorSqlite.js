@@ -9,8 +9,8 @@ manejador.subirTareas = () => {
     db.transaction(function (txn) {
         console.log('asd');
         txn.executeSql("SELECT * FROM usuario", [], (tx, res) => {
-          //  console.log(res.rows.length);
-          //  ToastAndroid.show('tareas' + res.rows.length, ToastAndroid.SHORT);
+            //  console.log(res.rows.length);
+            //  ToastAndroid.show('tareas' + res.rows.length, ToastAndroid.SHORT);
         });
     });
 
@@ -19,12 +19,42 @@ manejador.subirTareas = () => {
 manejador.subirAsistencia = () => {
     db.transaction(function (txn) {
         txn.executeSql("SELECT * FROM asistencia", [], (tx, res) => {
-            console.log("cantidadAsistencias: ", res.rows.length);
             if (res.rows.length > 0) {
-                console.log("entra2");
-                for(var i = 0; i < res.rows.length; i++){
-                    console.log("esta es: ", res.rows.item(i).pin);
-                    console.log("entra");
+                for (var i = 0; i < res.rows.length; i++) {
+                    var datos = {
+                        inicio:res.rows.item(i).inicio,
+                        fin:res.rows.item(i).fin,
+                        foto:res.rows.item(i).foto,
+                        empleado_id:res.rows.item(i).empleado_id,
+                    }
+                    console.log(datos);
+
+                    fetch(server.api + 'Alta_asistencia', {
+                        method: 'POST',
+                        headers: {
+                            'Aceptar': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(datos)
+                    })
+                        .then(res => {
+                            return res.json()
+                        })
+                        .then(async data => {
+                            const retorno = data;
+                            console.log(this.state.fin);
+                            if (retorno.retorno == true) {
+
+                                alert(retorno.mensaje);
+                            } else {
+                                alert(retorno.mensaje);
+                            }
+                        })
+                        .catch(function (err) {
+                            console.log('error', err);
+                        })
+
+
                 }
             } else {
                 console.log("no hay asistencias");
