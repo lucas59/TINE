@@ -114,10 +114,9 @@ export default class Alta_tarea extends Component {
     promesa() {
         return new Promise(function (resolve, reject) {
             setTimeout(() => {
-                var id;
                 db.transaction(function (txn) {
                     txn.executeSql("SELECT seq FROM sqlite_sequence where name = 'tarea'", [], (tx, res) => {
-                        id = res.rows.item(0).seq;
+                        resolve(res.rows.item(0).seq);
                     });
                 });
             }, 1000);
