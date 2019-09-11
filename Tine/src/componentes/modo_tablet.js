@@ -7,6 +7,8 @@ import { Icon } from 'react-native-elements';
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
+var idempleado;
+
 const PendingView = () => (
     <View
         style={{
@@ -57,13 +59,16 @@ export default class modoTablet extends Component {
     }
 
     promesa() {
+        var codigo = this.state.codigo;
+        var empresa_id = this.state.empresa_id;
         return new Promise(function (resolve, reject) {
             setTimeout(() => {
                 db.transaction(function (tx) {
-                    tx.executeSql('SELECT * FROM usuario WHERE pin = ?', [codigo], (tx, results) => {
+                    tx.executeSql('SELECT * FROM usuario', [], (tx, results) => {
                         for (var i = 0; i < results.rows.length; i++) {
                             if (results.rows.item(i).pin == codigo) {
-                                tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND empresa_id = ? AND fin IS NULL', [results.rows.item(i).id, this.state.empresa_id], (tx, results) => {
+                                idempleado = results.rows.item(i).id;
+                                tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND empresa_id = ? AND fin IS NULL', [results.rows.item(i).id, empresa_id], (tx, results) => {
                                     if (results.rows.length > 0) {
                                         resolve(1);
                                     }
@@ -147,25 +152,25 @@ export default class modoTablet extends Component {
         var fecha = moment(new Date()).format();
         this.setState({ inicio: fecha });
         const { inicio, fin, foto, empleado_id } = this.state;
-        console.log(foto);
-        console.log(empleado_id);
+        var empresa_id = this.state.empresa_id;
+        console.log(idempleado);
         db.transaction(function (tx) {
-            tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL', [empleado_id], (tx, results) => {
+            tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL', [idempleado], (tx, results) => {
+                console.log(results.rows.length);
                 if (results.rows.length > 0) {
                     db.transaction(function (txt) {
-                        txt.executeSql('UPDATE asistencia SET fin = ? WHERE empleado_id = ?', [fecha, empleado_id], (tx, results) => {
+                        txt.executeSql('UPDATE asistencia SET fin = ? WHERE empleado_id = ? AND empresa_id = ?', [fecha, idempleado, empresa_id], (tx, results) => {
                             if (results.rowsAffected > 0) {
                                 console.log("Actualizó");
                                 ToastAndroid.show('La asistencia se actualizó correctamente', ToastAndroid.LONG);
                                 db.transaction(function (txr) {
-                                    console.log("we");
                                     txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
                                         console.log(results.rows.length);
                                         for (var i = 0; i < results.rows.length; i++) {
-                                            console.log("esta es: ", results.rows.item(i).pin);
-                                            console.log("esta es: ", results.rows.item(i).inicio);
-                                            console.log("esta es: ", results.rows.item(i).fin);
-                                            console.log("esta es: ", results.rows.item(i).foto);
+                                            console.log("Empleado: : ", results.rows.item(i).empleado_id);
+                                            console.log("Empresa: : ", results.rows.item(i).empresa_id);
+                                            console.log("Inicio : ", results.rows.item(i).inicio);
+                                            console.log("Fin : ", results.rows.item(i).fin);
                                         }
                                     });
                                 });
@@ -179,22 +184,19 @@ export default class modoTablet extends Component {
                 }
                 else {
                     db.transaction(function (txx) {
-                        console.log(empleado_id);
-                        console.log(foto);
-                        console.log(inicio);
-                        txx.executeSql('INSERT INTO asistencia (fin, empleado_id,foto,inicio,empresa_id) VALUES (null, ?,?,?,?)', [empleado_id, foto, fecha], (tx, results) => {
+                        txx.executeSql('INSERT INTO asistencia (fin, empleado_id,foto,inicio,empresa_id) VALUES (?, ?,?,?,?)', [null, idempleado, foto, fecha, empresa_id], (tx, results) => {
+                            console.log(results.rowsAffected);
                             if (results.rowsAffected > 0) {
                                 console.log("insertó");
                                 ToastAndroid.show('La asistencia se insertó correctamente', ToastAndroid.LONG);
                                 db.transaction(function (txr) {
-                                    console.log("we");
                                     txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
                                         console.log(results.rows.length);
                                         for (var i = 0; i < results.rows.length; i++) {
-                                            console.log("esta es: ", results.rows.item(i).pin);
-                                            console.log("esta es: ", results.rows.item(i).inicio);
-                                            console.log("esta es: ", results.rows.item(i).fin);
-                                            console.log("esta es: ", results.rows.item(i).foto);
+                                            console.log("Empleado: : ", results.rows.item(i).empleado_id);
+                                            console.log("Empresa: : ", results.rows.item(i).empresa_id);
+                                            console.log("Inicio : ", results.rows.item(i).inicio);
+                                            console.log("Fin : ", results.rows.item(i).fin);
                                         }
                                     });
                                 });

@@ -22,10 +22,16 @@ export default class lista_tareas extends Component {
         myTimer = BackgroundTimer.setInterval(() => {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
-                    this.setState({ connection_Status: "Online" })
+                    this.setState({ connection_Status: "Online" });
+                    console.log("online");
+                    this.Listar();
                 }
                 else {
-                    this.setState({ connection_Status: "Offline" })
+                    this.setState({ connection_Status: "Offline" });
+                    console.log("offline");
+                    this.promesa().then((lista_SC) => {
+                        this.setState({ listaT: lista_SC });
+                    });
                 }
             })
             if (this.state.connection_Status == "Online") {
@@ -70,7 +76,6 @@ export default class lista_tareas extends Component {
 
 
     Listar = async () => {
-        /*
         let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
         let session_2 = await AsyncStorage.getItem('empresa');
@@ -101,7 +106,7 @@ export default class lista_tareas extends Component {
             .catch(function (err) {
                 console.log('error', err);
             })
-            */
+
     }
 
 
@@ -123,63 +128,60 @@ export default class lista_tareas extends Component {
 
     parseData() {
         Keyboard.dismiss();
-        this.promesa().then((lista_SC) => {
-            this.setState({listaT: lista_SC});
-        });
         if (this.state.listaT.length > 0) {
             var fecha = null;
-                return this.state.listaT.map((data,i) => {
-                    //fecha pasa de Date a moment
-                    const moment_inicio = moment(data.inicio);
-                    const moment_final = moment(data.fin);
+            return this.state.listaT.map((data, i) => {
+                //fecha pasa de Date a moment
+                const moment_inicio = moment(data.inicio);
+                const moment_final = moment(data.fin);
 
-                    const diff = moment_final.diff(moment_inicio);
-                    const diffDuration = moment.duration(diff);
+                const diff = moment_final.diff(moment_inicio);
+                const diffDuration = moment.duration(diff);
 
 
-                    //setear la fecha de la tarea en una variable para luego compararla con la fecha de la tarea actual
-                    var comp = fecha;
+                //setear la fecha de la tarea en una variable para luego compararla con la fecha de la tarea actual
+                var comp = fecha;
 
-                    //fecha es igual a la fecha de la tarea actual
-                    fecha = moment(data.inicio).format('MMMM Do YYYY');
-                    return (
-                        <View key={i}>
-                            {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{moment(data.inicio).format('MMMM Do YYYY')}</Text> : null}
-                            <ListItem
-                                leftIcon={{ name: 'assignment' }}
-                                title={data.titulo}
-                                rightTitle={diffDuration.hours() + "h " + diffDuration.minutes() + "m " + diffDuration.seconds() + "s"}
-                                onPress={() => Alert.alert(
-                                    "Opciones",
-                                    "de tarea " + data.titulo,
-                                    [
-                                        { text: "Modificar", onPress: () => this.redireccionar_modificar(data.id, data.inicio, data.fin, data.titulo) },
-                                        {
-                                            text: "Eliminar",
-                                            onPress: () => this.EliminarTarea(data.id),
-                                            style: "cancel"
-                                        },
-                                    ],
-                                    { cancelable: true }
-                                )
-                                }
-                            />
-                        </View>
-                    )
-                });
-            }
-            else {
+                //fecha es igual a la fecha de la tarea actual
+                fecha = moment(data.inicio).format('MMMM Do YYYY');
                 return (
-                    <Text style={{ textAlign: "center" }}>No existen tareas</Text>
+                    <View key={i}>
+                        {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{moment(data.inicio).format('MMMM Do YYYY')}</Text> : null}
+                        <ListItem
+                            leftIcon={{ name: 'assignment' }}
+                            title={data.titulo}
+                            rightTitle={diffDuration.hours() + "h " + diffDuration.minutes() + "m " + diffDuration.seconds() + "s"}
+                            onPress={() => Alert.alert(
+                                "Opciones",
+                                "de tarea " + data.titulo,
+                                [
+                                    { text: "Modificar", onPress: () => this.redireccionar_modificar(data.id, data.inicio, data.fin, data.titulo) },
+                                    {
+                                        text: "Eliminar",
+                                        onPress: () => this.EliminarTarea(data.id),
+                                        style: "cancel"
+                                    },
+                                ],
+                                { cancelable: true }
+                            )
+                            }
+                        />
+                    </View>
                 )
-            }
+            });
+        }
+        else {
+            return (
+                <Text style={{ textAlign: "center" }}>No existen tareas</Text>
+            )
+        }
 
 
 
     }
 
     EliminarTarea(id) {
-        
+
         db.transaction(function (txx) {
             txx.executeSql('DELETE FROM tarea WHERE id = ?', [id], (tx, results) => {
                 if (results.rowsAffected > 0) {
