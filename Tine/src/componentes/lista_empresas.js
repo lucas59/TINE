@@ -76,7 +76,6 @@ export default class lista_empresas extends Component {
             .catch(function (err) {
                 console.log('error', err);
             })
-
     }
 
     redireccionar_alta = async (id, nombre) => {

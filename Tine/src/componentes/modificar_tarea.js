@@ -6,6 +6,7 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
+import NetInfo from "@react-native-community/netinfo";
 
 export default class Alta_tarea extends Component {
     static navigationOptions = {
@@ -28,6 +29,21 @@ export default class Alta_tarea extends Component {
 
     };
 
+    componentDidMount() {
+        myTimer = BackgroundTimer.setInterval(() => {
+            NetInfo.isConnected.fetch().done((isConnected) => {
+                if (isConnected == true) {
+                    this.setState({ connection_Status: "Online" });
+                    console.log("online");
+                }
+                else {
+                    this.setState({ connection_Status: "Offline" });
+                    console.log("offline");
+                }
+            })
+
+        }, 10000);
+    }
 
     constructor(props) {
         super(props);
@@ -48,13 +64,13 @@ export default class Alta_tarea extends Component {
         var hora_inicio = moment(new Date(tarea_2[1])).format();
         var hora_fin = moment(new Date(tarea_2[2])).format();
         this.setState({ tarea_id: tarea_2[0] });
-        this.setState({ tarea_titulo: tarea_2[3]});
-        this.setState({ tarea_inicio: hora_inicio});
+        this.setState({ tarea_titulo: tarea_2[3] });
+        this.setState({ tarea_inicio: hora_inicio });
         this.setState({ tarea_fin: hora_fin });
     }
 
     saveData = async () => {
-        
+
         const { tarea_titulo, tarea_id, tarea_inicio, tarea_fin } = this.state;
         let modificar_tarea = {
             titulo: tarea_titulo,
@@ -63,48 +79,49 @@ export default class Alta_tarea extends Component {
             id: tarea_id
         }
         console.log(modificar_tarea);
-        db.transaction(function (txx) {
-            txx.executeSql('UPDATE tarea SET estado = ? ,fin = ?, inicio = ?, titulo = ? WHERE id = ?', [1, modificar_tarea.fin, modificar_tarea.inicio, modificar_tarea.titulo, modificar_tarea.id], (tx, results) => {
-                console.log(results);
-                if (results.rowsAffected > 0) {
-                    console.log("Modificó");
-                } else {
-                    console.log("error");
+        if (this.state.connection_Status == "offline") {
+            db.transaction(function (txx) {
+                txx.executeSql('UPDATE tarea SET estado = ? ,fin = ?, inicio = ?, titulo = ? WHERE id = ?', [1, modificar_tarea.fin, modificar_tarea.inicio, modificar_tarea.titulo, modificar_tarea.id], (tx, results) => {
+                    console.log(results);
+                    if (results.rowsAffected > 0) {
+                        console.log("Modificó");
+                    } else {
+                        console.log("error");
+                    }
                 }
-            }
-            );
-        });
+                );
+            });
+        }
+        else {
 
+            console.log(loginDetails);
+            fetch(server.api + 'Modificar_tarea', {
+                method: 'POST',
+                headers: {
+                    'Aceptar': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginDetails)
+            })
+                .then(res => {
+                    return res.json()
+                })
+                .then(data => {
+                    const retorno = data;
+                    console.log(retorno.mensaje);
+                    if (retorno.retorno == true) {
+                        alert("Exito");
+                        AsyncStorage.setItem('tarea', JSON.stringify(loginDetails));
+                        navigate(Signup);
+                    } else {
+                        alert(retorno.mensaje);
+                    }
+                })
+                .catch(function (err) {
+                    console.log('error', err);
+                })
 
-        /*
-        console.log(loginDetails);
-        fetch(server.api + 'Modificar_tarea', {
-            method: 'POST',
-            headers: {
-                'Aceptar': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(loginDetails)
-        })
-            .then(res => {
-                return res.json()
-            })
-            .then(data => {
-                const retorno = data;
-                console.log(retorno.mensaje);
-                if (retorno.retorno == true) {
-                    alert("Exito");
-                    AsyncStorage.setItem('tarea', JSON.stringify(loginDetails));
-                    navigate(Signup);
-                } else {
-                    alert(retorno.mensaje);
-                }
-            })
-            .catch(function (err) {
-                console.log('error', err);
-            })
-
-       */
+        }
     }
 
     showDateTimePicker_inicio = () => {

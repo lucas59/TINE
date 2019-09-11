@@ -25,11 +25,6 @@ export default class Alta_tarea extends Component {
                     console.log("offline");
                 }
             })
-            if (this.state.connection_Status == "Online") {
-                //manejador.subirTareas();
-                manejador.subirAsistencia();
-                //ToastAndroid.show("estado", NetInfo.isConnected.toString(), ToastAndroid.LONG);
-            }
         }, 5000);
     }
 

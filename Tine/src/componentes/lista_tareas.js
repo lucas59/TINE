@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, Alert, ToastAndroid, ScrollView, Keyboard, AsyncStorage } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
-
 const { server } = require('../config/keys');
 import { ListItem, Icon, Divider } from 'react-native-elements';
 import { FloatingAction } from "react-native-floating-action";
@@ -15,10 +14,7 @@ import BackgroundTimer from 'react-native-background-timer';
 var timer;
 
 export default class lista_tareas extends Component {
-
     componentDidMount() {
-
-
         myTimer = BackgroundTimer.setInterval(() => {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
@@ -175,50 +171,48 @@ export default class lista_tareas extends Component {
                 <Text style={{ textAlign: "center" }}>No existen tareas</Text>
             )
         }
-
-
-
     }
 
     EliminarTarea(id) {
-
-        db.transaction(function (txx) {
-            txx.executeSql('DELETE FROM tarea WHERE id = ?', [id], (tx, results) => {
-                if (results.rowsAffected > 0) {
-                    console.log("Eliminó");
-                } else {
-                    console.log("error");
+        if (this.state.connection_Status == "Online") {
+            db.transaction(function (txx) {
+                txx.executeSql('DELETE FROM tarea WHERE id = ?', [id], (tx, results) => {
+                    if (results.rowsAffected > 0) {
+                        console.log("Eliminó");
+                    } else {
+                        console.log("error");
+                    }
                 }
-            }
-            );
-        });
-        /*
-        let tarea_send = {
-            id: id
+                );
+            });
         }
-        fetch(server.api + 'EliminarTarea', {
-            method: 'POST',
-            headers: {
-                'Aceptar': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(tarea_send)
-        })
-            .then(res => {
-                return res.json()
+        else {
+            let tarea_send = {
+                id: id
+            }
+            fetch(server.api + 'EliminarTarea', {
+                method: 'POST',
+                headers: {
+                    'Aceptar': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(tarea_send)
             })
-            .then(data => {
-                const retorno = data;
-                if (retorno.retorno == true) {
-                    alert("La tarea se eliminó correctamente");
-                } else {
-                    alert(retorno.mensaje);
-                }
-            })
-            .catch(function (err) {
-                console.log('error', err);
-            })
-*/
+                .then(res => {
+                    return res.json()
+                })
+                .then(data => {
+                    const retorno = data;
+                    if (retorno.retorno == true) {
+                        alert("La tarea se eliminó correctamente");
+                    } else {
+                        alert(retorno.mensaje);
+                    }
+                })
+                .catch(function (err) {
+                    console.log('error', err);
+                })
+        }
     }
     redireccionar_alta = async (name) => {
         if (name == "bt_tarea") {
