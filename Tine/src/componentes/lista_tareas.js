@@ -35,7 +35,7 @@ export default class lista_tareas extends Component {
                 //manejador.subirAsistencia();
                 //ToastAndroid.show("estado", NetInfo.isConnected.toString(), ToastAndroid.LONG);
             }
-        }, 10000);
+        }, 5000);
     }
 
 
@@ -69,7 +69,6 @@ export default class lista_tareas extends Component {
             empresa: ''
         }
     }
-
 
     Listar = async () => {
         let session = await AsyncStorage.getItem('usuario');
