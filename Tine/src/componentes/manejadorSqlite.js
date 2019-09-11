@@ -8,9 +8,52 @@ const manejador = {};
 manejador.subirTareas = () => {
     db.transaction(function (txn) {
         console.log('asd');
-        txn.executeSql("SELECT * FROM usuario", [], (tx, res) => {
+        txn.executeSql("SELECT * FROM tarea", [], (tx, res) => {
             //  console.log(res.rows.length);
             //  ToastAndroid.show('tareas' + res.rows.length, ToastAndroid.SHORT);
+            console.log('total: ', res.rows.length);
+
+            if (res.rows.length > 0) {
+                for (var i = 0; i < res.rows.length; i++) {
+
+                    let tarea_send = {
+                        titulo: res.rows.item(i).titulo,
+                        inicio: res.rows.item(i).inicio
+
+                    }
+                    console.log("tareas: ",tarea_send);
+
+                    /*  fetch(server.api + 'Alta_tarea', {
+                          method: 'POST',
+                          headers: {
+                              'Aceptar': 'application/json',
+                              'Content-Type': 'application/json',
+                          },
+                          body: JSON.stringify(tarea_send)
+                      })
+                          .then(res => {
+                              return res.json()
+                          })
+                          .then(data => {
+                              const retorno = data;
+                              console.log(retorno.mensaje);
+                              if (retorno.retorno == true) {
+                                  this.setState({ cargando: false });
+                                  alert("La tarea se dio de alta correctamente");
+                                  AsyncStorage.setItem('tarea', JSON.stringify(tarea_send));
+                              } else {
+                                  alert(retorno.mensaje);
+                              }
+                          })
+                          .catch(function (err) {
+                              console.log('error', err);
+                          })
+  
+  */
+
+                }
+            }
+
         });
     });
 
@@ -22,10 +65,10 @@ manejador.subirAsistencia = () => {
             if (res.rows.length > 0) {
                 for (var i = 0; i < res.rows.length; i++) {
                     var datos = {
-                        inicio:res.rows.item(i).inicio,
-                        fin:res.rows.item(i).fin,
-                        foto:res.rows.item(i).foto,
-                        empleado_id:res.rows.item(i).empleado_id,
+                        inicio: res.rows.item(i).inicio,
+                        fin: res.rows.item(i).fin,
+                        foto: res.rows.item(i).foto,
+                        empleado_id: res.rows.item(i).empleado_id,
                     }
                     console.log(datos);
 
@@ -41,8 +84,6 @@ manejador.subirAsistencia = () => {
                             return res.json()
                         })
                         .then(async data => {
-                            const retorno = data;
-                            console.log(this.state.fin);
                             if (retorno.retorno == true) {
 
                                 alert(retorno.mensaje);

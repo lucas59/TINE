@@ -29,8 +29,8 @@ export default class lista_tareas extends Component {
                 }
             })
             if (this.state.connection_Status == "Online") {
-                //manejador.subirTareas();
-                manejador.subirAsistencia();
+                manejador.subirTareas();
+                //manejador.subirAsistencia();
                 //ToastAndroid.show("estado", NetInfo.isConnected.toString(), ToastAndroid.LONG);
             }
         }, 10000);

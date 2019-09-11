@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, ToastAndroid, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Platform, AsyncStorage, ToastAndroid, Keyboard } from 'react-native';
 const { server } = require('../config/keys');
 import { Button, Input, Icon } from 'react-native-elements';
 import { TouchableHighlight } from 'react-native';
 import { Stopwatch } from 'react-native-stopwatch-timer';
-import Geolocation from '@react-native-community/geolocation';
+//import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
+
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
+import BackgroundTimer from 'react-native-background-timer';
+
 export default class Alta_tarea extends Component {
+
 
     static navigationOptions = {
         title: 'TINE',
@@ -45,7 +50,7 @@ export default class Alta_tarea extends Component {
             lat_ini: null,
             lat_fin: null,
             long_fin: null,
-            cargando: false
+            cargando: false,
         };
         this.toggleStopwatch = this.toggleStopwatch.bind(this);
         this.resetStopwatch = this.resetStopwatch.bind(this);
@@ -53,7 +58,6 @@ export default class Alta_tarea extends Component {
     }
 
     toggleStopwatch = async () => {
-        Keyboard.dismiss();
         this.setState({ stopwatchStart: !this.state.stopwatchStart, stopwatchReset: false });
         let fecha = moment(new Date()).format();
         var longitud;
@@ -96,7 +100,6 @@ export default class Alta_tarea extends Component {
 
     saveData = async () => {
         this.setState({ cargando: true });
-        Keyboard.dismiss();
         let myArray = await AsyncStorage.getItem('empresa');
         let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
@@ -144,27 +147,27 @@ export default class Alta_tarea extends Component {
             });
             db.transaction(function (txn) {
                 txn.executeSql("SELECT seq FROM sqlite_sequence where name = 'tarea'", [], (tx, res) => {
-                        ult_tarea = res.rows.item(0).seq;  
+                    ult_tarea = res.rows.item(0).seq;
                 });
             });
 
-                db.transaction(function (txr) {
-                    txr.executeSql('INSERT INTO ubicacion (latitud,longitud, tipo, tarea_id,usuario_id) VALUES (?,?,?,?,?)', [lat_ini, long_ini, 0, ult_tarea, tarea_send.empleado_id], (tx, results) => {
-                        if (results.rowsAffected > 0) {
-                            console.log("insertó primera ubicación");
-                        }
-                    });
+            db.transaction(function (txr) {
+                txr.executeSql('INSERT INTO ubicacion (latitud,longitud, tipo, tarea_id,usuario_id) VALUES (?,?,?,?,?)', [lat_ini, long_ini, 0, ult_tarea, tarea_send.empleado_id], (tx, results) => {
+                    if (results.rowsAffected > 0) {
+                        console.log("insertó primera ubicación");
+                    }
                 });
-  
-                db.transaction(function (txr) {
-                    txr.executeSql('INSERT INTO ubicacion (latitud,longitud, tipo, tarea_id,usuario_id) VALUES (?,?,?,?,?)', [lat_fin, long_fin, 1, ult_tarea, tarea_send.empleado_id], (tx, results) => {
-                        if (results.rowsAffected > 0) {
-                            console.log("insertó segunda ubicación");
-                        }
-                    });
+            });
+
+            db.transaction(function (txr) {
+                txr.executeSql('INSERT INTO ubicacion (latitud,longitud, tipo, tarea_id,usuario_id) VALUES (?,?,?,?,?)', [lat_fin, long_fin, 1, ult_tarea, tarea_send.empleado_id], (tx, results) => {
+                    if (results.rowsAffected > 0) {
+                        console.log("insertó segunda ubicación");
+                    }
                 });
-                ToastAndroid.show('La tarea se ingresó correctamente', ToastAndroid.LONG);
-                this.props.navigation.navigate('lista_tareas');
+            });
+            ToastAndroid.show('La tarea se ingresó correctamente', ToastAndroid.LONG);
+            this.props.navigation.navigate('lista_tareas');
 
             /*
             fetch(server.api + 'Alta_tarea', {
