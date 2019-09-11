@@ -45,8 +45,8 @@ export default class Alta_tarea extends Component {
     obtener_tarea = async () => {
         var tarea = await AsyncStorage.getItem('tarea_mod');
         var tarea_2 = JSON.parse(tarea);
-        var hora_inicio = new Date(tarea_2[1]);
-        var hora_fin = new Date(tarea_2[2]);
+        var hora_inicio = moment(new Date(tarea_2[1])).format();
+        var hora_fin = moment(new Date(tarea_2[2])).format();
         this.setState({ tarea_id: tarea_2[0] });
         this.setState({ tarea_titulo: tarea_2[3]});
         this.setState({ tarea_inicio: hora_inicio});
@@ -65,7 +65,7 @@ export default class Alta_tarea extends Component {
         console.log(modificar_tarea);
         db.transaction(function (txx) {
             txx.executeSql('UPDATE tarea SET estado = ? ,fin = ?, inicio = ?, titulo = ? WHERE id = ?', [1, modificar_tarea.fin, modificar_tarea.inicio, modificar_tarea.titulo, modificar_tarea.id], (tx, results) => {
-                console.log(tx);
+                console.log(results);
                 if (results.rowsAffected > 0) {
                     console.log("Modificó");
                 } else {

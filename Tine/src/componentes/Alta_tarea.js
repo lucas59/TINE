@@ -104,9 +104,6 @@ export default class Alta_tarea extends Component {
         let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
         let empresa_id = JSON.parse(myArray);
-
-        console.log(sesion.documento);
-        console.log(myArray);
         const { titulo, inicio, fin, long_ini, lat_ini, long_fin, lat_fin } = this.state;
         let tarea_send = {
             titulo: titulo,
@@ -120,7 +117,6 @@ export default class Alta_tarea extends Component {
             empresa_id: empresa_id[0]
 
         }
-        console.log(tarea_send);
         if (tarea_send.inicio == '' && tarea_send.fin == '') {
             this.setState({ cargando: false });
             alert("Inicie la tarea");
