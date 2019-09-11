@@ -111,6 +111,19 @@ export default class Alta_tarea extends Component {
         this.currentTime = time;
     };
 
+    promesa() {
+        return new Promise(function (resolve, reject) {
+            setTimeout(() => {
+                var id;
+                db.transaction(function (txn) {
+                    txn.executeSql("SELECT seq FROM sqlite_sequence where name = 'tarea'", [], (tx, res) => {
+                        id = res.rows.item(0).seq;
+                    });
+                });
+            }, 1000);
+        });
+    }
+
     saveData = async () => {
         this.setState({ cargando: true });
         let myArray = await AsyncStorage.getItem('empresa');
@@ -143,71 +156,80 @@ export default class Alta_tarea extends Component {
             alert("Ingrese le nombre de la tarea");
         }
         else {
-            if (this.state.connection_Status == "Online") {
 
-                var ult_tarea;
-                db.transaction(function (txx) {
-                    txx.executeSql('INSERT INTO tarea (fin, inicio,titulo,empleado_id,empresa_id) VALUES (?,?,?,?,?)', [fin, inicio, titulo, tarea_send.empleado_id, tarea_send.empresa_id], (tx, results) => {
-                        if (results.rowsAffected > 0) {
-                            console.log("insertó");
-                        } else {
-                            console.log("error");
-                        }
-                    }
-                    );
-                });
-                db.transaction(function (txn) {
-                    txn.executeSql("SELECT seq FROM sqlite_sequence where name = 'tarea'", [], (tx, res) => {
-                        ult_tarea = res.rows.item(0).seq;
-                    });
-                });
+            this.promesa().then((ult_tarea) => {
+                if (this.state.connection_Status == "Offline") {
 
-                db.transaction(function (txr) {
-                    txr.executeSql('INSERT INTO ubicacion (latitud,longitud, tipo, tarea_id,usuario_id) VALUES (?,?,?,?,?)', [lat_ini, long_ini, 0, ult_tarea, tarea_send.empleado_id], (tx, results) => {
-                        if (results.rowsAffected > 0) {
-                            console.log("insertó primera ubicación");
+                    var ult_tarea;
+                    db.transaction(function (txx) {
+                        txx.executeSql('INSERT INTO tarea (fin, inicio,titulo,empleado_id,empresa_id) VALUES (?,?,?,?,?)', [fin, inicio, titulo, tarea_send.empleado_id, tarea_send.empresa_id], (tx, results) => {
+                            if (results.rowsAffected > 0) {
+                                console.log("insertó");
+                            } else {
+                                console.log("error");
+                            }
                         }
+                        );
                     });
-                });
 
-                db.transaction(function (txr) {
-                    txr.executeSql('INSERT INTO ubicacion (latitud,longitud, tipo, tarea_id,usuario_id) VALUES (?,?,?,?,?)', [lat_fin, long_fin, 1, ult_tarea, tarea_send.empleado_id], (tx, results) => {
-                        if (results.rowsAffected > 0) {
-                            console.log("insertó segunda ubicación");
-                        }
+
+
+                    console.log("latitud ini: " + lat_ini);
+                    console.log("long ini: " + long_ini);
+                    console.log("ult_tarea: " + ult_tarea);
+                    console.log("empleado: " + tarea_send.empleado_id);
+                    db.transaction(function (txr) {
+                        txr.executeSql('INSERT INTO ubicacion (latitud,longitud, tipo, tarea_id,usuario_id) VALUES (?,?,?,?,?)', [lat_ini, long_ini, 0, ult_tarea, tarea_send.empleado_id], (tx, results) => {
+                            if (results.rowsAffected > 0) {
+                                console.log("insertó primera ubicación");
+                            }
+                        });
                     });
-                });
-                ToastAndroid.show('La tarea se ingresó correctamente', ToastAndroid.LONG);
-                this.props.navigation.navigate('lista_tareas');
-            }
-            else {
-                fetch(server.api + 'Alta_tarea', {
-                    method: 'POST',
-                    headers: {
-                        'Aceptar': 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(tarea_send)
-                })
-                    .then(res => {
-                        return res.json()
+                    console.log("latitud fin: " + lat_fin);
+                    console.log("long fin: " + long_fin);
+                    console.log("ult_tarea: " + ult_tarea);
+                    console.log("empleado: " + tarea_send.empleado_id);
+                    db.transaction(function (txr) {
+                        txr.executeSql('INSERT INTO ubicacion (latitud,longitud, tipo, tarea_id,usuario_id) VALUES (?,?,?,?,?)', [lat_fin, long_fin, 1, ult_tarea, tarea_send.empleado_id], (tx, results) => {
+                            if (results.rowsAffected > 0) {
+                                console.log("insertó segunda ubicación");
+                            }
+                        });
+                    });
+                    ToastAndroid.show('La tarea se ingresó correctamente', ToastAndroid.LONG);
+                    this.props.navigation.navigate('lista_tareas');
+
+                }
+                else {
+                    fetch(server.api + 'Alta_tarea', {
+                        method: 'POST',
+                        headers: {
+                            'Aceptar': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(tarea_send)
                     })
-                    .then(data => {
-                        const retorno = data;
-                        console.log(retorno.mensaje);
-                        if (retorno.retorno == true) {
-                            this.setState({ cargando: false });
-                            alert("La tarea se dio de alta correctamente");
-                            AsyncStorage.setItem('tarea', JSON.stringify(tarea_send));
-                        } else {
-                            alert(retorno.mensaje);
-                        }
-                    })
-                    .catch(function (err) {
-                        console.log('error', err);
-                    })
-    
-            }
+                        .then(res => {
+                            return res.json()
+                        })
+                        .then(data => {
+                            const retorno = data;
+                            console.log(retorno.mensaje);
+                            if (retorno.retorno == true) {
+                                this.setState({ cargando: false });
+                                alert("La tarea se dio de alta correctamente");
+                                AsyncStorage.setItem('tarea', JSON.stringify(tarea_send));
+                                this.props.navigation.navigate('lista_tareas');
+                            } else {
+                                alert(retorno.mensaje);
+                            }
+                        })
+                        .catch(function (err) {
+                            console.log('error', err);
+                        })
+
+                }
+            });
         }
     }
 
