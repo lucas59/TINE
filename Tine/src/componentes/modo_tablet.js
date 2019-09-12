@@ -8,6 +8,10 @@ import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 var idempleado;
+import NetInfo from "@react-native-community/netinfo";
+
+
+
 
 const PendingView = () => (
     <View
@@ -23,6 +27,20 @@ const PendingView = () => (
 );
 export default class modoTablet extends Component {
 
+    componentDidMount() {
+        myTimer = BackgroundTimer.setInterval(() => {
+            NetInfo.isConnected.fetch().done((isConnected) => {
+                if (isConnected == true) {
+                    this.setState({ connection_Status: "Online" });
+                    console.log("online");
+                }
+                else {
+                    this.setState({ connection_Status: "Offline" });
+                    console.log("offline");
+                }
+            })
+        }, 5000);
+    }
     static navigationOptions = ({ navigation }) => {
         return {
             title: 'ModoTablet',
@@ -158,6 +176,11 @@ export default class modoTablet extends Component {
             tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL', [idempleado], (tx, results) => {
                 console.log(results.rows.length);
                 if (results.rows.length > 0) {
+                    if (this.state.connection_Status == "Online") {
+                        //manejador.subirTareas();
+                        //manejador.subirAsistencia();
+                        //ToastAndroid.show("estado", NetInfo.isConnected.toString(), ToastAndroid.LONG);
+                    }
                     db.transaction(function (txt) {
                         txt.executeSql('UPDATE asistencia SET fin = ? WHERE empleado_id = ? AND empresa_id = ?', [fecha, idempleado, empresa_id], (tx, results) => {
                             if (results.rowsAffected > 0) {
@@ -187,6 +210,11 @@ export default class modoTablet extends Component {
                         txx.executeSql('INSERT INTO asistencia (fin, empleado_id,foto,inicio,empresa_id) VALUES (?, ?,?,?,?)', [null, idempleado, foto, fecha, empresa_id], (tx, results) => {
                             console.log(results.rowsAffected);
                             if (results.rowsAffected > 0) {
+                                if (this.state.connection_Status == "Online") {
+                                    //manejador.subirTareas();
+                                    //manejador.subirAsistencia();
+                                    //ToastAndroid.show("estado", NetInfo.isConnected.toString(), ToastAndroid.LONG);
+                                }
                                 console.log("insertó");
                                 ToastAndroid.show('La asistencia se insertó correctamente', ToastAndroid.LONG);
                                 db.transaction(function (txr) {
@@ -210,10 +238,6 @@ export default class modoTablet extends Component {
             });
 
         });
-
-
-
-
     }
     /*
     fetch(server.api + 'Alta_asistencia', {
@@ -247,32 +271,36 @@ export default class modoTablet extends Component {
 
     render() {
         return (
-            <View style={styles.camara}>
-                <PinView
-                    onComplete={(val, clear) => { this.setState({ codigo: val }), clear(), this.confirmar_usuario() }}
-                    pinLength={4}
-                    inputBgColor="#0083D0"
-                    inputBgOpacity={0.6}
+            <>
+                <View style={styles.pin}>
+                    <PinView
 
-                />
+                        onComplete={(val, clear) => { this.setState({ codigo: val }), clear(), this.confirmar_usuario() }}
+                        pinLength={4}
+                        inputBgColor="#0083D0"
+                        inputBgOpacity={0.6}
 
-                <RNCamera
-                    style={styles.preview}
-                    type={RNCamera.Constants.Type.front}
-                    captureAudio={false}
-                >
-                    {({ camera, status }) => {
-                        if (status !== 'READY') return <PendingView />;
-                        return (
-                            <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-                                <TouchableOpacity onPress={() => this.Alta_asistencia(camera)} style={styles.capture}>
-                                    <Text style={{ fontSize: 14 }}> Aceptar </Text>
-                                </TouchableOpacity>
-                            </View>
-                        );
-                    }}
-                </RNCamera>
-            </View>
+                    />
+                </View>
+                <View >
+                    <RNCamera
+                        style={styles.camara}
+                        type={RNCamera.Constants.Type.front}
+                        captureAudio={false}
+                    >
+                        {({ camera, status }) => {
+                            if (status !== 'READY') return <PendingView />;
+                            return (
+                                <View style={{ position: 'relative', top: 300 }}>
+                                    <TouchableOpacity onPress={() => this.Alta_asistencia(camera)} style={styles.capture}>
+                                        <Text style={{ fontSize: 14, color: 'white' }}> Aceptar </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            );
+                        }}
+                    </RNCamera>
+                </View>
+            </>
         )
     }
 }
@@ -281,26 +309,26 @@ export default class modoTablet extends Component {
 
 
 const styles = StyleSheet.create({
-    camara: {
-        position: 'absolute', top: 0, left: 30, bottom: 0, justifyContent: 'center'
+    pin: {
+        position: 'absolute', top: 0, left: 100, bottom: 0, justifyContent: 'center'
     },
     container: {
         flex: 1,
         flexDirection: 'column',
         backgroundColor: 'black',
     },
-    preview: {
-        width: 300,
-        height: 200,
-
+    camara: {
+        width: 400,
+        height: 300,
+        position: 'absolute', top: 180, right: 100, bottom: 0
     },
     capture: {
         flex: 0,
-        backgroundColor: '#fff',
+        backgroundColor: '#1E8AF1',
         borderRadius: 5,
         padding: 15,
-        paddingHorizontal: 20,
         alignSelf: 'center',
+        paddingHorizontal: 20,
         margin: 20,
     },
 });

@@ -31,7 +31,7 @@ export default class lista_tareas extends Component {
                 }
             })
             if (this.state.connection_Status == "Online") {
-                manejador.subirTareas();
+                //manejador.subirTareas();
                 //manejador.subirAsistencia();
                 //ToastAndroid.show("estado", NetInfo.isConnected.toString(), ToastAndroid.LONG);
             }
@@ -217,9 +217,6 @@ export default class lista_tareas extends Component {
         if (name == "bt_tarea") {
             this.props.navigation.navigate('altaTarea');
         }
-        else {
-            this.props.navigation.navigate('modoTablet');
-        }
     }
 
 
@@ -239,12 +236,6 @@ export default class lista_tareas extends Component {
                 icon: require("../imagenes/agregar_tarea.png"),
                 name: "bt_tarea",
                 position: 1
-            },
-            {
-                text: "Alta asistencia",
-                icon: require("../imagenes/agregar_asistencia.png"),
-                name: "bt_asistencia",
-                position: 2
             }
         ];
 
