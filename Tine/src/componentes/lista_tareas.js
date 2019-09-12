@@ -24,7 +24,7 @@ export default class lista_tareas extends Component {
                 }
                 else {
                     this.setState({ connection_Status: "Offline" });
-                    console.log("offline");
+                    console.log("ofline");
                     this.promesa().then((lista_SC) => {
                         this.setState({ listaT: lista_SC });
                     });

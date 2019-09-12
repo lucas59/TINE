@@ -143,7 +143,7 @@ export default class Alta_tarea extends Component {
             alert("Ingrese le nombre de la tarea");
         }
         else {
-            if (this.state.connection_Status == "Online") {
+            if (this.state.connection_Status == "Offline") {
 
                 var ult_tarea;
                 db.transaction(function (txx) {
@@ -178,6 +178,12 @@ export default class Alta_tarea extends Component {
                     });
                 });
                 ToastAndroid.show('La tarea se ingresó correctamente', ToastAndroid.LONG);
+
+                db.transaction(function (txr) {
+                    txr.executeSql("SELECT * FROM ubicacion", [], (tx, res) => {
+                        console.log("cantubicaciones: ", res.rows.length);
+                    })
+                })
                 this.props.navigation.navigate('lista_tareas');
             }
             else {
@@ -206,7 +212,7 @@ export default class Alta_tarea extends Component {
                     .catch(function (err) {
                         console.log('error', err);
                     })
-    
+
             }
         }
     }

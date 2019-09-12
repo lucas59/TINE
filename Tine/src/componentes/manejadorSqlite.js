@@ -16,14 +16,23 @@ manejador.subirTareas = () => {
             if (res.rows.length > 0) {
                 for (var i = 0; i < res.rows.length; i++) {
 
-                    let tarea_send = {
+                    let tarea = {
+                        id: res.rows.item(i).id,
                         titulo: res.rows.item(i).titulo,
-                        inicio: res.rows.item(i).inicio
-
+                        inicio: res.rows.item(i).inicio,
+                        fin: res.rows.item(i).fin,
+                        empleado_id: res.rows.item(i).empleado_id,
+                        empresa_id: res.rows.item(i).empresa_id,
+                        latitud_ini:req.rows.item(i).latitud_ini,
+                        longitud_ini:req.rows.item(i).longitud_ini,
+                        latitud_fin:req.rows.item(i).latitud_fin,
+                        longitud_fin:req.rows.item(i).longitud_fin                    
                     }
-                    console.log("tareas: ",tarea_send);
 
-                    /*  fetch(server.api + 'Alta_tarea', {
+
+                    console.log("tarea: ", tarea);
+
+                      fetch(server.api + 'Alta_tarea', {
                           method: 'POST',
                           headers: {
                               'Aceptar': 'application/json',
@@ -48,8 +57,6 @@ manejador.subirTareas = () => {
                           .catch(function (err) {
                               console.log('error', err);
                           })
-  
-  */
 
                 }
             }
@@ -57,7 +64,38 @@ manejador.subirTareas = () => {
         });
     });
 
+    db.transaction(function (txr) {
+        txr.executeSql("SELECT * FROM ubicacion", [], (tx, res) => {
+            console.log("cantubicaciones: ",res.rows.length);
+        })
+    })
+
 }
+
+manejador.getUbicacion = (idTarea) => {
+    console.log(idTarea);
+    const ubicaciones = {};
+    db.transaction(function (txr) {
+        txr.executeSql("SELECT * FROM ubicacion WHERE tarea_id=?", [idTarea], (tx, res) => {
+            console.log(res.rows.length);
+            if (res.rows.length > 0) {
+                for (let i = 0; i < res.rows.length.length; i++) {
+                    const element = array[i];
+                    if (element.tipo == 0) {
+                        ubicaciones.lat_ini = element.latitud;
+                        ubicaciones.long_ini = element.longitud;
+                    } else {
+                        ubicaciones.lat_fin = element.latitud;
+                        ubicaciones.long_fin = element.longitud;
+                    }
+                }
+            }
+        })
+    })
+    return JSON.stringify(ubicaciones);
+
+}
+
 
 manejador.subirAsistencia = () => {
     db.transaction(function (txn) {
