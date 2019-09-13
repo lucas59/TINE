@@ -8,7 +8,7 @@ const manejador = {};
 manejador.subirTareas = () => {
     db.transaction(function (txn) {
         console.log('asd');
-        txn.executeSql("SELECT * FROM tarea", [], (tx, res) => {
+        txn.executeSql("SELECT * FROM tarea WHERE estado = 0", [], (tx, res) => {
             //  console.log(res.rows.length);
             //  ToastAndroid.show('tareas' + res.rows.length, ToastAndroid.SHORT);
             console.log('total: ', res.rows.length);
@@ -23,40 +23,39 @@ manejador.subirTareas = () => {
                         fin: res.rows.item(i).fin,
                         empleado_id: res.rows.item(i).empleado_id,
                         empresa_id: res.rows.item(i).empresa_id,
-                        latitud_ini:req.rows.item(i).latitud_ini,
-                        longitud_ini:req.rows.item(i).longitud_ini,
-                        latitud_fin:req.rows.item(i).latitud_fin,
-                        longitud_fin:req.rows.item(i).longitud_fin                    
+                        latitud_ini: req.rows.item(i).latitud_ini,
+                        longitud_ini: req.rows.item(i).longitud_ini,
+                        latitud_fin: req.rows.item(i).latitud_fin,
+                        longitud_fin: req.rows.item(i).longitud_fin
                     }
 
 
-                    console.log("tarea: ", tarea);
 
-                      fetch(server.api + 'Alta_tarea', {
-                          method: 'POST',
-                          headers: {
-                              'Aceptar': 'application/json',
-                              'Content-Type': 'application/json',
-                          },
-                          body: JSON.stringify(tarea_send)
-                      })
-                          .then(res => {
-                              return res.json()
-                          })
-                          .then(data => {
-                              const retorno = data;
-                              console.log(retorno.mensaje);
-                              if (retorno.retorno == true) {
-                                  this.setState({ cargando: false });
-                                  alert("La tarea se dio de alta correctamente");
-                                  AsyncStorage.setItem('tarea', JSON.stringify(tarea_send));
-                              } else {
-                                  alert(retorno.mensaje);
-                              }
-                          })
-                          .catch(function (err) {
-                              console.log('error', err);
-                          })
+                    fetch(server.api + 'Alta_tarea', {
+                        method: 'POST',
+                        headers: {
+                            'Aceptar': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(tarea_send)
+                    })
+                        .then(res => {
+                            return res.json()
+                        })
+                        .then(data => {
+                            const retorno = data;
+                            console.log(retorno.mensaje);
+                            if (retorno.retorno == true) {
+                                this.setState({ cargando: false });
+                                console.log("La tarea se dio de alta correctamente");
+                                this.marcarTarea(tarea.id);
+                            } else {
+                                alert(retorno.mensaje);
+                            }
+                        })
+                        .catch(function (err) {
+                            console.log('error', err);
+                        })
 
                 }
             }
@@ -66,40 +65,28 @@ manejador.subirTareas = () => {
 
     db.transaction(function (txr) {
         txr.executeSql("SELECT * FROM ubicacion", [], (tx, res) => {
-            console.log("cantubicaciones: ",res.rows.length);
+            console.log("cantubicaciones: ", res.rows.length);
         })
     })
 
 }
 
-manejador.getUbicacion = (idTarea) => {
-    console.log(idTarea);
-    const ubicaciones = {};
-    db.transaction(function (txr) {
-        txr.executeSql("SELECT * FROM ubicacion WHERE tarea_id=?", [idTarea], (tx, res) => {
-            console.log(res.rows.length);
-            if (res.rows.length > 0) {
-                for (let i = 0; i < res.rows.length.length; i++) {
-                    const element = array[i];
-                    if (element.tipo == 0) {
-                        ubicaciones.lat_ini = element.latitud;
-                        ubicaciones.long_ini = element.longitud;
-                    } else {
-                        ubicaciones.lat_fin = element.latitud;
-                        ubicaciones.long_fin = element.longitud;
-                    }
-                }
+manejador.marcarTarea = (id) => {
+
+    db.transaction(function(txn){
+        txn.executeSql("UPDATE tarea SET estado=1 WHERE tarea_id = ?",[id], (tx,res)=>{
+            if (results.rowsAffected > 0) {
+                console.log("Se modifico el estado de la tarea ", id);
+            } else {
+                console.log("error");
             }
         })
     })
-    return JSON.stringify(ubicaciones);
 
 }
-
-
-manejador.subirAsistencia = () => {
+manejador.subirAsistencias = () => {
     db.transaction(function (txn) {
-        txn.executeSql("SELECT * FROM asistencia", [], (tx, res) => {
+        txn.executeSql("SELECT * FROM asistencia WHERE estado = 0", [], (tx, res) => {
             if (res.rows.length > 0) {
                 for (var i = 0; i < res.rows.length; i++) {
                     var datos = {

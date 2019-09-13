@@ -26,37 +26,55 @@ import BackgroundTimer from 'react-native-background-timer';
 var cont = 0;
 export default class lista_tareas extends Component {
     componentDidMount() {
+        myTimer = BackgroundTimer.setInterval(() => {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
-                   // this.setState({ connection_Status: "Online" });
-                    console.log("online 4");
-                    
-                    if (cont == 0) {
-                        this.Listar();
-                        this.setState({cargando: false});
-                        cont = 1;
-                    }
+                    manejador.subirTareas();
+                    //manejador.subirAsistencias();
+
                 }
                 else {
-                   // this.setState({ connection_Status: "Offline" });
-                    console.log("ofline 4");
-                   
-                    if (cont == 0) {
-                        this.promesa().then((lista_SC) => {
-                            this.setState({ listaT: lista_SC });
-                        });
-                        this.setState({cargando: false});
-                        cont = 1;
-                    }
+                    /* this.setState({ connection_Status: "Offline" });
+                     console.log("ofline");
+                     this.promesa().then((lista_SC) => {
+                         this.setState({ listaT: lista_SC });
+                     });*/
+                     console.log("sin internet")
                 }
             })
-        
+        }, 5000);
+
+        NetInfo.isConnected.fetch().done((isConnected) => {
+            if (isConnected == true) {
+                // this.setState({ connection_Status: "Online" });
+                console.log("online 4");
+
+                if (cont == 0) {
+                    this.Listar();
+                    this.setState({ cargando: false });
+                    cont = 1;
+                }
+            }
+            else {
+                // this.setState({ connection_Status: "Offline" });
+                console.log("ofline 4");
+
+                if (cont == 0) {
+                    this.promesa().then((lista_SC) => {
+                        this.setState({ listaT: lista_SC });
+                    });
+                    this.setState({ cargando: false });
+                    cont = 1;
+                }
+            }
+        })
+
     }
 
 
-componentWillUnmount(){
-    BackgroundTimer.clearInterval(myTimer);
-}
+    componentWillUnmount() {
+        BackgroundTimer.clearInterval(myTimer);
+    }
 
     static navigationOptions = {
         title: 'Listas de tareas',
@@ -184,7 +202,7 @@ componentWillUnmount(){
             console.log(this.state.cargando);
             return (
                 <View>
-                {this.state.cargando ? <PulseIndicator color='#1E8AF1' size= {60} style={{marginTop: 30}} /> : <Text style={{ textAlign: "center" }}> No existen tareas </Text>}
+                    {this.state.cargando ? <PulseIndicator color='#1E8AF1' size={60} style={{ marginTop: 30 }} /> : <Text style={{ textAlign: "center" }}> No existen tareas </Text>}
                 </View>
             )
 

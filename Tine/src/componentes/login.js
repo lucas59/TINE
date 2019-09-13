@@ -4,13 +4,14 @@ import Signup from '../componentes/registrarse';
 const { server } = require('../config/keys');
 import styles from '../css/styleLogin';
 import { SafeAreaView } from 'react-navigation';
-const manejador  = require("./manejadorSqlite");
+const manejador = require("./manejadorSqlite");
+import socketIOClient from "socket.io-client";
 
 var timer;
 
 export default class Login extends Component {
 
-    
+
 
     static navigationOptions = {
         title: 'Ingresar',
@@ -20,10 +21,19 @@ export default class Login extends Component {
         super(props);
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            endpoint: "http://localhost:4005"
+
         }
         this.checkSession();
     }
+
+    componentDidMount() {
+        const { endpoint } = this.state;
+        const socket = socketIOClient(endpoint);
+        socket.on("FromAPI", data => console.log(data));
+    }
+
     checkSession = async () => {
         let usuario = await AsyncStorage.getItem('usuario');
         if (usuario != null) {
