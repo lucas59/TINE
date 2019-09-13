@@ -11,6 +11,7 @@ import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 import BackgroundTimer from 'react-native-background-timer';
+var mytimer;
 
 export default class Alta_tarea extends Component {
     /*componentDidMount() {
@@ -142,6 +143,7 @@ export default class Alta_tarea extends Component {
             empresa_id: empresa_id[0]
 
         }
+        console.log(tarea_send);
         if (tarea_send.inicio == '' && tarea_send.fin == '') {
             this.setState({ cargando: false });
             alert("Inicie la tarea");
@@ -155,151 +157,130 @@ export default class Alta_tarea extends Component {
             alert("Ingrese le nombre de la tarea");
         }
         else {
+            console.log(this.state.connection_Status);
             if (this.state.connection_Status == "Offline") {
-
-                this.promesa().then((ult_tarea) => {
-                    if (this.state.connection_Status == "Offline") {
-
-                        var ult_tarea;
-                        db.transaction(function (txx) {
-                            txx.executeSql('INSERT INTO tarea (fin, inicio,titulo,empleado_id,empresa_id) VALUES (?,?,?,?,?)', [fin, inicio, titulo, tarea_send.empleado_id, tarea_send.empresa_id], (tx, results) => {
-                                if (results.rowsAffected > 0) {
-                                    console.log("insertó");
-                                } else {
-                                    console.log("error");
-                                }
-                            }
-                            );
-                        });
-
-
-
-                        console.log("latitud ini: " + lat_ini);
-                        console.log("long ini: " + long_ini);
-                        console.log("ult_tarea: " + ult_tarea);
-                        console.log("empleado: " + tarea_send.empleado_id);
-                        db.transaction(function (txr) {
-                            txr.executeSql('INSERT INTO ubicacion (latitud,longitud, tipo, tarea_id,usuario_id) VALUES (?,?,?,?,?)', [lat_ini, long_ini, 0, ult_tarea, tarea_send.empleado_id], (tx, results) => {
-                                if (results.rowsAffected > 0) {
-                                    console.log("insertó primera ubicación");
-                                }
-                            });
-                        });
-                        console.log("latitud fin: " + lat_fin);
-                        console.log("long fin: " + long_fin);
-                        console.log("ult_tarea: " + ult_tarea);
-                        console.log("empleado: " + tarea_send.empleado_id);
-                        db.transaction(function (txr) {
-                            txr.executeSql('INSERT INTO ubicacion (latitud,longitud, tipo, tarea_id,usuario_id) VALUES (?,?,?,?,?)', [lat_fin, long_fin, 1, ult_tarea, tarea_send.empleado_id], (tx, results) => {
-                                if (results.rowsAffected > 0) {
-                                    console.log("insertó segunda ubicación");
-                                }
-                            });
-                        });
-                        ToastAndroid.show('La tarea se ingresó correctamente', ToastAndroid.LONG);
-                        this.props.navigation.navigate('lista_tareas');
-
+                console.log(fin);
+                console.log(inicio);
+                console.log(titulo);
+                console.log(tarea_send.empleado_id);
+                console.log(tarea_send.empresa_id);
+                console.log("latitud ini: " + lat_ini);
+                console.log("long ini: " + long_ini);
+                console.log("latitud fin: " + lat_fin);
+                console.log("long fin: " + long_fin);
+                var ult_tarea;
+                db.transaction(function (txx) {
+                    txx.executeSql('INSERT INTO tarea (fin, inicio,titulo,empleado_id,empresa_id, latitud_ini, longitud_ini, latitud_fin, longitud_fin, estado) VALUES (?,?,?,?,?,?,?,?,?,?)', [fin, inicio, titulo, tarea_send.empleado_id, tarea_send.empresa_id, lat_ini, long_ini, lat_fin, long_fin,0], (tx, results) => {
+                        if (results.rowsAffected > 0) {
+                            console.log("insertó");
+                        } else {
+                            console.log("error");
+                        }
                     }
-                    else {
-                        fetch(server.api + 'Alta_tarea', {
-                            method: 'POST',
-                            headers: {
-                                'Aceptar': 'application/json',
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(tarea_send)
-                        })
-                            .then(res => {
-                                return res.json()
-                            })
-                            .then(data => {
-                                const retorno = data;
-                                console.log(retorno.mensaje);
-                                if (retorno.retorno == true) {
-                                    this.setState({ cargando: false });
-                                    alert("La tarea se dio de alta correctamente");
-                                    AsyncStorage.setItem('tarea', JSON.stringify(tarea_send));
-                                    this.props.navigation.navigate('lista_tareas');
-                                } else {
-                                    alert(retorno.mensaje);
-                                }
-                            })
-                            .catch(function (err) {
-                                console.log('error', err);
-                            })
-
-                    }
+                    );
                 });
+                ToastAndroid.show('La tarea se ingresó correctamente', ToastAndroid.LONG);
+                this.props.navigation.navigate('lista_tareas');
+
+            }
+            else {
+                fetch(server.api + 'Alta_tarea', {
+                    method: 'POST',
+                    headers: {
+                        'Aceptar': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(tarea_send)
+                })
+                    .then(res => {
+                        return res.json()
+                    })
+                    .then(data => {
+                        const retorno = data;
+                        console.log(retorno.mensaje);
+                        if (retorno.retorno == true) {
+                            this.setState({ cargando: false });
+                            alert("La tarea se dio de alta correctamente");
+                            AsyncStorage.setItem('tarea', JSON.stringify(tarea_send));
+                            this.props.navigation.navigate('lista_tareas');
+                        } else {
+                            alert(retorno.mensaje);
+                        }
+                    })
+                    .catch(function (err) {
+                        console.log('error', err);
+                    })
+
             }
         }
     }
 
 
-        render() {
-            return (
+    render() {
+        return (
 
-                <>
-                    <View style={styles.container}>
-                        <Input
-                            onChangeText={(titulo) => this.setState({ titulo })}
-                            placeholder="Titulo de la tarea"
-                        />
-                        <Stopwatch laps msecs start={this.state.stopwatchStart}
-                            reset={this.state.stopwatchReset}
-                            options={options}
-                            getTime={this.getFormattedTime} />
-                        <TouchableHighlight onPress={this.toggleStopwatch}>
-                            <Text style={{ fontSize: 30 }}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
-                        </TouchableHighlight>
+            <>
+                <View style={styles.container}>
+                    <Input
+                        onChangeText={(titulo) => this.setState({ titulo })}
+                        placeholder="Titulo de la tarea"
+                    />
+                    <Stopwatch laps msecs start={this.state.stopwatchStart}
+                        reset={this.state.stopwatchReset}
+                        options={options}
+                        getTime={this.getFormattedTime} />
+                    <TouchableHighlight onPress={this.toggleStopwatch}>
+                        <Text style={{ fontSize: 30 }}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
+                    </TouchableHighlight>
 
-                    </View>
-                </>
-            )
-        }
+                </View>
+            </>
+        )
     }
+}
 
-    const styles = StyleSheet.create({
-        container: {
-            justifyContent: 'center',
-            alignItems: 'center',
-        },
-        inputBox: {
-            width: 300,
-            backgroundColor: '#eeeeee',
-            borderRadius: 25,
-            paddingHorizontal: 16,
-            fontSize: 16,
-            color: '#002f6c',
-            marginVertical: 10
-        },
-        button: {
-            width: 300,
-        },
-        buttonText: {
-            fontSize: 16,
-            fontWeight: '500',
-            textAlign: 'center'
-        },
-        container: {
-            flex: 1,
-            alignItems: 'center',
-            backgroundColor: '#fff',
-        }
-    });
+const styles = StyleSheet.create({
+    container: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    inputBox: {
+        width: 300,
+        backgroundColor: '#eeeeee',
+        borderRadius: 25,
+        paddingHorizontal: 16,
+        fontSize: 16,
+        color: '#002f6c',
+        marginVertical: 10
+    },
+    button: {
+        width: 300,
+    },
+    buttonText: {
+        fontSize: 16,
+        fontWeight: '500',
+        textAlign: 'center'
+    },
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    }
+});
 
 
 
-    const options = {
-        container: {
-            backgroundColor: '#000',
-            padding: 5,
-            borderRadius: 5,
-            width: 220,
-        },
-        text: {
-            fontSize: 30,
-            color: '#FFF',
-            marginLeft: 7,
-        }
-    };
+const options = {
+    container: {
+        backgroundColor: '#000',
+        padding: 5,
+        borderRadius: 5,
+        width: 220,
+    },
+    text: {
+        fontSize: 30,
+        color: '#FFF',
+        marginLeft: 7,
+    }
+};
 
