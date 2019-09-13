@@ -9,6 +9,7 @@ import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 var idempleado;
 import NetInfo from "@react-native-community/netinfo";
+import BackgroundTimer from 'react-native-background-timer';
 
 
 
@@ -40,6 +41,9 @@ export default class modoTablet extends Component {
                 }
             })
         }, 5000);
+    }
+    componentWillUnmount(){
+        BackgroundTimer.clearInterval(myTimer);
     }
     static navigationOptions = ({ navigation }) => {
         return {
@@ -168,107 +172,101 @@ export default class modoTablet extends Component {
         const data = await camera.takePictureAsync(options);
         this.setState({ foto: data.base64 });
         var fecha = moment(new Date()).format();
-        this.setState({ inicio: fecha });
-        const { inicio, fin, foto, empleado_id } = this.state;
+        this.setState({ fecha: fecha });
+        const { foto } = this.state;
         var empresa_id = this.state.empresa_id;
         console.log(idempleado);
-        db.transaction(function (tx) {
-            tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL', [idempleado], (tx, results) => {
-                console.log(results.rows.length);
-                if (results.rows.length > 0) {
-                    if (this.state.connection_Status == "Online") {
-                        //manejador.subirTareas();
-                        //manejador.subirAsistencia();
-                        //ToastAndroid.show("estado", NetInfo.isConnected.toString(), ToastAndroid.LONG);
-                    }
-                    db.transaction(function (txt) {
-                        txt.executeSql('UPDATE asistencia SET fin = ? WHERE empleado_id = ? AND empresa_id = ?', [fecha, idempleado, empresa_id], (tx, results) => {
-                            if (results.rowsAffected > 0) {
-                                console.log("Actualizó");
-                                ToastAndroid.show('La asistencia se actualizó correctamente', ToastAndroid.LONG);
-                                db.transaction(function (txr) {
-                                    txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
-                                        console.log(results.rows.length);
-                                        for (var i = 0; i < results.rows.length; i++) {
-                                            console.log("Empleado: : ", results.rows.item(i).empleado_id);
-                                            console.log("Empresa: : ", results.rows.item(i).empresa_id);
-                                            console.log("Inicio : ", results.rows.item(i).inicio);
-                                            console.log("Fin : ", results.rows.item(i).fin);
-                                        }
+        if (this.state.connection_Status == "Offline") {
+            db.transaction(function (tx) {
+                tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND fin IS NULL', [idempleado], (tx, results) => {
+                    console.log(results.rows.length);
+                    if (results.rows.length > 0) {
+                        db.transaction(function (txt) {
+                            txt.executeSql('UPDATE asistencia SET fin = ? WHERE empleado_id = ? AND empresa_id = ?', [fecha, idempleado, empresa_id], (tx, results) => {
+                                if (results.rowsAffected > 0) {
+                                    console.log("Actualizó");
+                                    ToastAndroid.show('La asistencia se actualizó correctamente', ToastAndroid.LONG);
+                                    db.transaction(function (txr) {
+                                        txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
+                                            console.log(results.rows.length);
+                                            for (var i = 0; i < results.rows.length; i++) {
+                                                console.log("Empleado: : ", results.rows.item(i).empleado_id);
+                                                console.log("Empresa: : ", results.rows.item(i).empresa_id);
+                                                console.log("Inicio : ", results.rows.item(i).inicio);
+                                                console.log("Fin : ", results.rows.item(i).fin);
+                                            }
+                                        });
                                     });
-                                });
-                            } else {
-                                console.log("error");
-                            }
-                        }
-
-                        );
-                    });
-                }
-                else {
-                    db.transaction(function (txx) {
-                        txx.executeSql('INSERT INTO asistencia (fin, empleado_id,foto,inicio,empresa_id) VALUES (?, ?,?,?,?)', [null, idempleado, foto, fecha, empresa_id], (tx, results) => {
-                            console.log(results.rowsAffected);
-                            if (results.rowsAffected > 0) {
-                                if (this.state.connection_Status == "Online") {
-                                    //manejador.subirTareas();
-                                    //manejador.subirAsistencia();
-                                    //ToastAndroid.show("estado", NetInfo.isConnected.toString(), ToastAndroid.LONG);
+                                } else {
+                                    console.log("error");
                                 }
-                                console.log("insertó");
-                                ToastAndroid.show('La asistencia se insertó correctamente', ToastAndroid.LONG);
-                                db.transaction(function (txr) {
-                                    txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
-                                        console.log(results.rows.length);
-                                        for (var i = 0; i < results.rows.length; i++) {
-                                            console.log("Empleado: : ", results.rows.item(i).empleado_id);
-                                            console.log("Empresa: : ", results.rows.item(i).empresa_id);
-                                            console.log("Inicio : ", results.rows.item(i).inicio);
-                                            console.log("Fin : ", results.rows.item(i).fin);
-                                        }
-                                    });
-                                });
-                            } else {
-                                console.log("error");
                             }
-                        }
-                        );
-                    });
-                }
+
+                            );
+                        });
+                    }
+                    else {
+                        db.transaction(function (txx) {
+                            txx.executeSql('INSERT INTO asistencia (fin, empleado_id,foto,inicio,empresa_id) VALUES (?, ?,?,?,?)', [null, idempleado, foto, fecha, empresa_id], (tx, results) => {
+                                console.log(results.rowsAffected);
+                                if (results.rowsAffected > 0) {
+                                    console.log("insertó");
+                                    ToastAndroid.show('La asistencia se insertó correctamente', ToastAndroid.LONG);
+                                    db.transaction(function (txr) {
+                                        txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
+                                            console.log(results.rows.length);
+                                            for (var i = 0; i < results.rows.length; i++) {
+                                                console.log("Empleado: : ", results.rows.item(i).empleado_id);
+                                                console.log("Empresa: : ", results.rows.item(i).empresa_id);
+                                                console.log("Inicio : ", results.rows.item(i).inicio);
+                                                console.log("Fin : ", results.rows.item(i).fin);
+                                            }
+                                        });
+                                    });
+                                } else {
+                                    console.log("error");
+                                }
+                            }
+                            );
+                        });
+                    }
+                });
+
             });
-
-        });
-    }
-    /*
-    fetch(server.api + 'Alta_asistencia', {
-        method: 'POST',
-        headers: {
-            'Aceptar': 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(asistencia_send)
-    })
-        .then(res => {
-            return res.json()
-        })
-        .then(async data => {
-            const retorno = data;
-            console.log(this.state.fin);
-            if (retorno.retorno == true) {
-
-                alert(retorno.mensaje);
-            } else {
-                alert(retorno.mensaje);
+        }
+        else {
+            const { foto} = this.state;
+            let asistencia_send = {
+                fecha: fecha,
+                foto: foto,
+                empleado_id: idempleado
             }
-        })
-        .catch(function (err) {
-            console.log('error', err);
-        })
-*/
+            fetch(server.api + 'Alta_asistencia', {
+                method: 'POST',
+                headers: {
+                    'Aceptar': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(asistencia_send)
+            })
+                .then(res => {
+                    return res.json()
+                })
+                .then(async data => {
+                    const retorno = data;
+                    console.log(this.state.fin);
+                    if (retorno.retorno == true) {
 
-
-
-
+                        alert(retorno.mensaje);
+                    } else {
+                        alert(retorno.mensaje);
+                    }
+                })
+                .catch(function (err) {
+                    console.log('error', err);
+                })
+        }
+    }
     render() {
         return (
             <>
