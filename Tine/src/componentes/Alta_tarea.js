@@ -14,20 +14,18 @@ import BackgroundTimer from 'react-native-background-timer';
 var mytimer;
 
 export default class Alta_tarea extends Component {
-    /*componentDidMount() {
-        myTimer = BackgroundTimer.setInterval(() => {
-            NetInfo.isConnected.fetch().done((isConnected) => {
-                if (isConnected == true) {
-                //    this.setState({ connection_Status: "Online" });
-                    console.log("online");
-                }
-                else {
-               //     this.setState({ connection_Status: "Offline" });
-                    console.log("offline");
-                }
-            })
-        }, 5000);
-    }*/
+    componentDidMount() {
+        NetInfo.isConnected.fetch().done((isConnected) => {
+            if (isConnected == true) {
+                this.setState({ connection_Status: "Online" });
+                console.log("online");
+            }
+            else {
+                this.setState({ connection_Status: "Offline" });
+                console.log("offline");
+            }
+        })
+    }
 
     static navigationOptions = {
         title: 'TINE',
@@ -170,7 +168,7 @@ export default class Alta_tarea extends Component {
                 console.log("long fin: " + long_fin);
                 var ult_tarea;
                 db.transaction(function (txx) {
-                    txx.executeSql('INSERT INTO tarea (fin, inicio,titulo,empleado_id,empresa_id, latitud_ini, longitud_ini, latitud_fin, longitud_fin, estado) VALUES (?,?,?,?,?,?,?,?,?,?)', [fin, inicio, titulo, tarea_send.empleado_id, tarea_send.empresa_id, lat_ini, long_ini, lat_fin, long_fin,0], (tx, results) => {
+                    txx.executeSql('INSERT INTO tarea (fin, inicio,titulo,empleado_id,empresa_id, latitud_ini, longitud_ini, latitud_fin, longitud_fin, estado) VALUES (?,?,?,?,?,?,?,?,?,?)', [fin, inicio, titulo, tarea_send.empleado_id, tarea_send.empresa_id, lat_ini, long_ini, lat_fin, long_fin, 0], (tx, results) => {
                         if (results.rowsAffected > 0) {
                             console.log("insertó");
                         } else {

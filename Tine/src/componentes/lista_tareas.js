@@ -30,7 +30,7 @@ export default class lista_tareas extends Component {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
                     manejador.subirTareas();
-                    manejador.subirAsistencias();
+                    //manejador.subirAsistencias();
 
                 }
                 else {
@@ -39,10 +39,11 @@ export default class lista_tareas extends Component {
                      this.promesa().then((lista_SC) => {
                          this.setState({ listaT: lista_SC });
                      });*/
+                     console.log("sin internet")
                 }
             })
         }, 5000);
-        
+
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
                 // this.setState({ connection_Status: "Online" });
