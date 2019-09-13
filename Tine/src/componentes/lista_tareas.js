@@ -30,20 +30,13 @@ export default class lista_tareas extends Component {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
                     manejador.subirTareas();
-                    //manejador.subirAsistencias();
-
+                    console.log("online");
                 }
                 else {
-                    /* this.setState({ connection_Status: "Offline" });
-                     console.log("ofline");
-                     this.promesa().then((lista_SC) => {
-                         this.setState({ listaT: lista_SC });
-                     });*/
-                     console.log("sin internet")
+                    console.log("offline");
                 }
             })
         }, 5000);
-
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
                 // this.setState({ connection_Status: "Online" });
@@ -61,6 +54,7 @@ export default class lista_tareas extends Component {
 
                 if (cont == 0) {
                     this.promesa().then((lista_SC) => {
+                        console.log("lista tareas: ", lista_SC)
                         this.setState({ listaT: lista_SC });
                     });
                     this.setState({ cargando: false });
@@ -323,3 +317,8 @@ const styles = StyleSheet.create({
         right: 10,
     }
 });
+
+
+
+
+

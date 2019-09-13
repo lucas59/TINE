@@ -15,7 +15,7 @@ manejador.subirTareas = () => {
 
             if (res.rows.length > 0) {
                 for (var i = 0; i < res.rows.length; i++) {
-
+                  //  console.log("123",res.rows.item(i));
                     let tarea = {
                         id: res.rows.item(i).id,
                         titulo: res.rows.item(i).titulo,
@@ -23,12 +23,12 @@ manejador.subirTareas = () => {
                         fin: res.rows.item(i).fin,
                         empleado_id: res.rows.item(i).empleado_id,
                         empresa_id: res.rows.item(i).empresa_id,
-                        latitud_ini: req.rows.item(i).latitud_ini,
-                        longitud_ini: req.rows.item(i).longitud_ini,
-                        latitud_fin: req.rows.item(i).latitud_fin,
-                        longitud_fin: req.rows.item(i).longitud_fin
+                        lat_ini: res.rows.item(i).latitud_ini,
+                        long_ini: res.rows.item(i).longitud_ini,
+                        lat_fin: res.rows.item(i).latitud_fin,
+                        long_fin: res.rows.item(i).longitud_fin
                     }
-
+                    console.log("tarea: ",JSON.stringify(tarea))
 
 
                     fetch(server.api + 'Alta_tarea', {
@@ -37,7 +37,7 @@ manejador.subirTareas = () => {
                             'Aceptar': 'application/json',
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify(tarea_send)
+                        body: JSON.stringify(tarea)
                     })
                         .then(res => {
                             return res.json()
@@ -46,9 +46,8 @@ manejador.subirTareas = () => {
                             const retorno = data;
                             console.log(retorno.mensaje);
                             if (retorno.retorno == true) {
-                                this.setState({ cargando: false });
                                 console.log("La tarea se dio de alta correctamente");
-                                this.marcarTarea(tarea.id);
+                                manejador.marcarTarea(tarea.id);
                             } else {
                                 alert(retorno.mensaje);
                             }
@@ -72,10 +71,12 @@ manejador.subirTareas = () => {
 }
 
 manejador.marcarTarea = (id) => {
+    console.log("id ",id)
 
     db.transaction(function(txn){
-        txn.executeSql("UPDATE tarea SET estado=1 WHERE tarea_id = ?",[id], (tx,res)=>{
-            if (results.rowsAffected > 0) {
+        txn.executeSql("UPDATE tarea SET estado=1 WHERE id = ?",[id], (tx,res)=>{
+            console.log(res.rowsAffected)
+            if (res.rowsAffected > 0) {
                 console.log("Se modifico el estado de la tarea ", id);
             } else {
                 console.log("error");

@@ -1,3 +1,8 @@
+
+
+
+
+
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Platform, AsyncStorage, ToastAndroid, Keyboard } from 'react-native';
 const { server } = require('../config/keys');
@@ -22,7 +27,6 @@ export default class Alta_tarea extends Component {
             }
             else {
                 this.setState({ connection_Status: "Offline" });
-                console.log("offline");
             }
         })
     }
@@ -155,7 +159,7 @@ export default class Alta_tarea extends Component {
             alert("Ingrese le nombre de la tarea");
         }
         else {
-            console.log(this.state.connection_Status);
+            console.log("estao: ",this.state.connection_Status);
             if (this.state.connection_Status == "Offline") {
                 console.log(fin);
                 console.log(inicio);
@@ -281,4 +285,3 @@ const options = {
         marginLeft: 7,
     }
 };
-
