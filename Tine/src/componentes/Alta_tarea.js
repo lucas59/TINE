@@ -13,20 +13,20 @@ var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 import BackgroundTimer from 'react-native-background-timer';
 
 export default class Alta_tarea extends Component {
-    componentDidMount() {
+    /*componentDidMount() {
         myTimer = BackgroundTimer.setInterval(() => {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
-                    this.setState({ connection_Status: "Online" });
+                //    this.setState({ connection_Status: "Online" });
                     console.log("online");
                 }
                 else {
-                    this.setState({ connection_Status: "Offline" });
+               //     this.setState({ connection_Status: "Offline" });
                     console.log("offline");
                 }
             })
         }, 5000);
-    }
+    }*/
 
     static navigationOptions = {
         title: 'TINE',

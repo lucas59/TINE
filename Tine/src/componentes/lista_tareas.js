@@ -18,23 +18,18 @@ export default class lista_tareas extends Component {
         myTimer = BackgroundTimer.setInterval(() => {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
-                    this.setState({ connection_Status: "Online" });
-                    console.log("online");
-                    this.Listar();
+              manejador.subirTareas();
+              manejador.subirAsistencias();
+              
                 }
                 else {
-                    this.setState({ connection_Status: "Offline" });
+                   /* this.setState({ connection_Status: "Offline" });
                     console.log("ofline");
                     this.promesa().then((lista_SC) => {
                         this.setState({ listaT: lista_SC });
-                    });
+                    });*/
                 }
             })
-            if (this.state.connection_Status == "Online") {
-                //manejador.subirTareas();
-                //manejador.subirAsistencia();
-                //ToastAndroid.show("estado", NetInfo.isConnected.toString(), ToastAndroid.LONG);
-            }
         }, 5000);
     }
 
