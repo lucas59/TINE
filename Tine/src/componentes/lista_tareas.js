@@ -9,37 +9,54 @@ import BackgraundTask from 'react-native-background-task';
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 const manejador = require("./manejadorSqlite");
+import {
+    BallIndicator,
+    BarIndicator,
+    DotIndicator,
+    MaterialIndicator,
+    PacmanIndicator,
+    PulseIndicator,
+    SkypeIndicator,
+    UIActivityIndicator,
+    WaveIndicator,
+} from 'react-native-indicators';
+
 
 import BackgroundTimer from 'react-native-background-timer';
-var timer;
-
+var cont = 0;
 export default class lista_tareas extends Component {
     componentDidMount() {
-        myTimer = BackgroundTimer.setInterval(() => {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
-                    this.setState({ connection_Status: "Online" });
-                    console.log("online");
-                    this.Listar();
+                   // this.setState({ connection_Status: "Online" });
+                    console.log("online 4");
+                    
+                    if (cont == 0) {
+                        this.Listar();
+                        this.setState({cargando: false});
+                        cont = 1;
+                    }
                 }
                 else {
-                    this.setState({ connection_Status: "Offline" });
-                    console.log("ofline");
-                    this.promesa().then((lista_SC) => {
-                        this.setState({ listaT: lista_SC });
-                    });
+                   // this.setState({ connection_Status: "Offline" });
+                    console.log("ofline 4");
+                   
+                    if (cont == 0) {
+                        this.promesa().then((lista_SC) => {
+                            this.setState({ listaT: lista_SC });
+                        });
+                        this.setState({cargando: false});
+                        cont = 1;
+                    }
                 }
             })
-            if (this.state.connection_Status == "Online") {
-                //manejador.subirTareas();
-                //manejador.subirAsistencia();
-                //ToastAndroid.show("estado", NetInfo.isConnected.toString(), ToastAndroid.LONG);
-            }
-        }, 5000);
+        
     }
 
 
-
+componentWillUnmount(){
+    BackgroundTimer.clearInterval(myTimer);
+}
 
     static navigationOptions = {
         title: 'Listas de tareas',
@@ -66,8 +83,10 @@ export default class lista_tareas extends Component {
         this.state = {
             listaT: '',
             usuario: '',
-            empresa: ''
+            empresa: '',
+            cargando: false
         }
+        cont = 0;
     }
 
     Listar = async () => {
@@ -129,14 +148,10 @@ export default class lista_tareas extends Component {
                 //fecha pasa de Date a moment
                 const moment_inicio = moment(data.inicio);
                 const moment_final = moment(data.fin);
-
                 const diff = moment_final.diff(moment_inicio);
                 const diffDuration = moment.duration(diff);
-
-
                 //setear la fecha de la tarea en una variable para luego compararla con la fecha de la tarea actual
                 var comp = fecha;
-
                 //fecha es igual a la fecha de la tarea actual
                 fecha = moment(data.inicio).format('MMMM Do YYYY');
                 return (
@@ -166,9 +181,13 @@ export default class lista_tareas extends Component {
             });
         }
         else {
+            console.log(this.state.cargando);
             return (
-                <Text style={{ textAlign: "center" }}>No existen tareas</Text>
+                <View>
+                {this.state.cargando ? <PulseIndicator color='#1E8AF1' size= {60} style={{marginTop: 30}} /> : <Text style={{ textAlign: "center" }}> No existen tareas </Text>}
+                </View>
             )
+
         }
     }
 
@@ -186,6 +205,7 @@ export default class lista_tareas extends Component {
             });
         }
         else {
+            console.log(id);
             let tarea_send = {
                 id: id
             }
@@ -202,7 +222,9 @@ export default class lista_tareas extends Component {
                 })
                 .then(data => {
                     const retorno = data;
+                    console.log(retorno.retorno);
                     if (retorno.retorno == true) {
+                        console.log("prueba");
                         alert("La tarea se eliminó correctamente");
                     } else {
                         alert(retorno.mensaje);
@@ -210,6 +232,7 @@ export default class lista_tareas extends Component {
                 })
                 .catch(function (err) {
                     console.log('error', err);
+                    alert("Hubo un problema con la conexión");
                 })
         }
     }

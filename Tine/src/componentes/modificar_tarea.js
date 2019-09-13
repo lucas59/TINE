@@ -7,6 +7,8 @@ import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 import NetInfo from "@react-native-community/netinfo";
+import BackgroundTimer from 'react-native-background-timer';
+
 
 export default class Alta_tarea extends Component {
     static navigationOptions = {
@@ -42,7 +44,12 @@ export default class Alta_tarea extends Component {
                 }
             })
 
-        }, 10000);
+        }, 5000);
+
+    }
+
+    componentWillUnmount(){
+        BackgroundTimer.clearInterval(myTimer);
     }
 
     constructor(props) {
@@ -85,6 +92,7 @@ export default class Alta_tarea extends Component {
                     console.log(results);
                     if (results.rowsAffected > 0) {
                         console.log("Modificó");
+                        this.props.navigation.navigate('lista_tareas');
                     } else {
                         console.log("error");
                     }
@@ -94,14 +102,14 @@ export default class Alta_tarea extends Component {
         }
         else {
 
-            console.log(loginDetails);
+            console.log(modificar_tarea);
             fetch(server.api + 'Modificar_tarea', {
                 method: 'POST',
                 headers: {
                     'Aceptar': 'application/json',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(loginDetails)
+                body: JSON.stringify(modificar_tarea)
             })
                 .then(res => {
                     return res.json()
@@ -111,8 +119,7 @@ export default class Alta_tarea extends Component {
                     console.log(retorno.mensaje);
                     if (retorno.retorno == true) {
                         alert("Exito");
-                        AsyncStorage.setItem('tarea', JSON.stringify(loginDetails));
-                        navigate(Signup);
+                        this.props.navigation.navigate('lista_tareas');
                     } else {
                         alert(retorno.mensaje);
                     }
@@ -122,6 +129,7 @@ export default class Alta_tarea extends Component {
                 })
 
         }
+        
     }
 
     showDateTimePicker_inicio = () => {
