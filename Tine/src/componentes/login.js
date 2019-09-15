@@ -5,7 +5,7 @@ const { server } = require('../config/keys');
 import styles from '../css/styleLogin';
 import { SafeAreaView } from 'react-navigation';
 const manejador = require("./manejadorSqlite");
-import socketIOClient from "socket.io-client";
+//import socketIOClient from "socket.io-client";
 
 var timer;
 
@@ -28,12 +28,12 @@ export default class Login extends Component {
         this.checkSession();
     }
 
-    componentDidMount() {
+ /*   componentDidMount() {
         const { endpoint } = this.state;
         const socket = socketIOClient(endpoint);
         socket.on("FromAPI", data => console.log(data));
     }
-
+*/
     checkSession = async () => {
         let usuario = await AsyncStorage.getItem('usuario');
         if (usuario != null) {

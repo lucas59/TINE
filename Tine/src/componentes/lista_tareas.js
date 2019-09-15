@@ -26,27 +26,9 @@ import BackgroundTimer from 'react-native-background-timer';
 var cont = 0;
 export default class lista_tareas extends Component {
     componentDidMount() {
-        myTimer = BackgroundTimer.setInterval(() => {
-            NetInfo.isConnected.fetch().done((isConnected) => {
-                if (isConnected == true) {
-                    manejador.subirTareas();
-                    //manejador.subirAsistencias();
-
-                }
-                else {
-                    /* this.setState({ connection_Status: "Offline" });
-                     console.log("ofline");
-                     this.promesa().then((lista_SC) => {
-                         this.setState({ listaT: lista_SC });
-                     });*/
-                     console.log("sin internet")
-                }
-            })
-        }, 5000);
-
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
-                // this.setState({ connection_Status: "Online" });
+                 this.setState({ connection_Status: "Online" });
                 console.log("online 4");
 
                 if (cont == 0) {
@@ -56,7 +38,7 @@ export default class lista_tareas extends Component {
                 }
             }
             else {
-                // this.setState({ connection_Status: "Offline" });
+                 this.setState({ connection_Status: "Offline" });
                 console.log("ofline 4");
 
                 if (cont == 0) {
