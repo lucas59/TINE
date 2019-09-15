@@ -26,6 +26,17 @@ import BackgroundTimer from 'react-native-background-timer';
 var cont = 0;
 export default class lista_tareas extends Component {
     componentDidMount() {
+        myTimer = BackgroundTimer.setInterval(() => {
+            NetInfo.isConnected.fetch().done((isConnected) => {
+                if (isConnected == true) {
+                    manejador.subirTareas();
+                    console.log("online");
+                }
+                else {
+                    console.log("offline");
+                }
+            })
+        }, 5000);
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
                  this.setState({ connection_Status: "Online" });
@@ -43,6 +54,7 @@ export default class lista_tareas extends Component {
 
                 if (cont == 0) {
                     this.promesa().then((lista_SC) => {
+                        console.log("lista tareas: ", lista_SC)
                         this.setState({ listaT: lista_SC });
                     });
                     this.setState({ cargando: false });
@@ -305,3 +317,8 @@ const styles = StyleSheet.create({
         right: 10,
     }
 });
+
+
+
+
+
