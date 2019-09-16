@@ -23,7 +23,7 @@ const PendingView = () => (
             alignItems: 'center',
         }}
     >
-        <Text>Waiting</Text>
+        <Text>Cargando</Text>
     </View>
 );
 export default class modoTablet extends Component {
@@ -71,7 +71,6 @@ export default class modoTablet extends Component {
             foto: '',
             codigo: '',
             inicio: '',
-            fin: null,
             empleado_id: '',
             empresa_id: '',
             cameraType: 'front',
@@ -90,7 +89,7 @@ export default class modoTablet extends Component {
                         for (var i = 0; i < results.rows.length; i++) {
                             if (results.rows.item(i).pin == codigo) {
                                 idempleado = results.rows.item(i).id;
-                                tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND empresa_id = ? AND fin IS NULL', [results.rows.item(i).id, empresa_id], (tx, results) => {
+                                tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND empresa_id = ? AND tipo = 0', [results.rows.item(i).id, empresa_id], (tx, results) => {
                                     if (results.rows.length > 0) {
                                         resolve(1);
                                     }
@@ -116,12 +115,9 @@ export default class modoTablet extends Component {
         this.promesa().then((data) => {
             if (data == 1) {
                 ToastAndroid.show('Buen viaje, seleccione aceptar', ToastAndroid.LONG);
-                var fin = moment(new Date()).format();
-                this.setState({ fin: fin });
             }
             else if (data == 2) {
                 ToastAndroid.show('Bienvenido, seleccione aceptar', ToastAndroid.LONG);
-                this.setState({ fin: null });
             }
             else if (data == 3) {
                 ToastAndroid.show('Pin incorrecto', ToastAndroid.LONG);
@@ -179,7 +175,7 @@ export default class modoTablet extends Component {
         if (this.state.connection_Status == "Offline") {
             db.transaction(function (tx) {                    
                         db.transaction(function (txx) {
-                            txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo) VALUES (?, ?,?,?,?)', [idempleado, foto, fecha, empresa_id,estado], (tx, results) => {
+                            txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo,estado) VALUES (?, ?,?,?,?,?)', [idempleado, foto, fecha, empresa_id,estado,0], (tx, results) => {
                                 console.log(results.rowsAffected);
                                 if (results.rowsAffected > 0) {
                                     console.log("insertó");
@@ -191,7 +187,6 @@ export default class modoTablet extends Component {
                                                 console.log("Empleado: : ", results.rows.item(i).empleado_id);
                                                 console.log("Empresa: : ", results.rows.item(i).empresa_id);
                                                 console.log("Inicio : ", results.rows.item(i).inicio);
-                                                console.log("Fin : ", results.rows.item(i).fin);
                                             }
                                         });
                                     });
@@ -225,7 +220,6 @@ export default class modoTablet extends Component {
                 })
                 .then(async data => {
                     const retorno = data;
-                    console.log(this.state.fin);
                     if (retorno.retorno == true) {
 
                         alert(retorno.mensaje);
@@ -263,7 +257,7 @@ export default class modoTablet extends Component {
                                 <View style={{ position: 'relative', top: 300 }}>
                                     <TouchableOpacity onPress={() => Alert.alert(
                                         "Opciones",
-                                        "Usted esta ingresando o saliendo del establecimiento",
+                                        "¿Usted esta ingresando o saliendo del establecimiento?",
                                         [
                                             { text: "Entrando", onPress: () => this.Alta_asistencia(camera,1)},
                                             {

@@ -81,7 +81,8 @@ export default class lista_empresas extends Component {
     redireccionar_alta = async (id, nombre) => {
         var myArray = [id, nombre];
         AsyncStorage.setItem('empresa', JSON.stringify(myArray));
-        this.props.navigation.navigate('lista_tareas');
+        console.log(myArray);
+        this.props.navigation.navigate('menu_listas');
     }
 
 

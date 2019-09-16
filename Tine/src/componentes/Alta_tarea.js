@@ -1,10 +1,5 @@
-
-
-
-
-
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Platform, AsyncStorage, ToastAndroid, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, AsyncStorage, ToastAndroid, Keyboard } from 'react-native';
 const { server } = require('../config/keys');
 import { Button, Input, Icon } from 'react-native-elements';
 import { TouchableHighlight } from 'react-native';
@@ -15,9 +10,7 @@ import NetInfo from "@react-native-community/netinfo";
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
-import BackgroundTimer from 'react-native-background-timer';
-var mytimer;
-
+var tiempo;
 export default class Alta_tarea extends Component {
     componentDidMount() {
         NetInfo.isConnected.fetch().done((isConnected) => {
@@ -46,7 +39,7 @@ export default class Alta_tarea extends Component {
                 name='face'
                 type='material'
                 color='#1E8AF1'
-                onPress={() => console.log('perfil')} />
+                onPress={ async ()=>navigation.navigate('perfil',{session:await AsyncStorage.getItem('usuario')})} />
         ),
 
     };
@@ -66,12 +59,13 @@ export default class Alta_tarea extends Component {
             lat_ini: null,
             lat_fin: null,
             long_fin: null,
-            cargando: false,
+            cargando: false
         };
         this.toggleStopwatch = this.toggleStopwatch.bind(this);
         this.resetStopwatch = this.resetStopwatch.bind(this);
 
     }
+    
 
     toggleStopwatch = async () => {
         this.setState({ stopwatchStart: !this.state.stopwatchStart, stopwatchReset: false });
@@ -112,6 +106,7 @@ export default class Alta_tarea extends Component {
 
     getFormattedTime(time) {
         this.currentTime = time;
+        tiempo = time;
     };
 
     promesa() {
@@ -159,7 +154,7 @@ export default class Alta_tarea extends Component {
             alert("Ingrese le nombre de la tarea");
         }
         else {
-            console.log("estao: ",this.state.connection_Status);
+            console.log("estao: ", this.state.connection_Status);
             if (this.state.connection_Status == "Offline") {
                 console.log(fin);
                 console.log(inicio);

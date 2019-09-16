@@ -31,6 +31,8 @@ target 'Tine' do
 
   pod 'react-native-sqlite-storage', :path => '../node_modules/react-native-sqlite-storage'
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   target 'TineTests' do
     inherit! :search_paths
     # Pods for testing
