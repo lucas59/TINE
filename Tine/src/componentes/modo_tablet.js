@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Button, Keyboard,Alert, ToastAndroid, AsyncStorage, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, Button, Keyboard,Alert, ToastAndroid, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { RNCamera } from 'react-native-camera';
 import PinView from 'react-native-pin-view'
@@ -125,6 +126,7 @@ export default class modoTablet extends Component {
 
 
     Alta_asistencia = async (camera,estado) => {
+        console.log(camera);
         Keyboard.dismiss();
         const options = { quality: 0.5, base64: true, captureAudio: false };
         const data = await camera.takePictureAsync(options);
@@ -167,7 +169,8 @@ export default class modoTablet extends Component {
                 fecha: fecha,
                 foto: foto,
                 empleado_id: idempleado,
-                estado: estado
+                estado: estado,
+                empresa_id: empresa_id
             }
             fetch(server.api + 'Alta_asistencia', {
                 method: 'POST',

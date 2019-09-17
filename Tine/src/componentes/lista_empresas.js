@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Text, AsyncStorage, Keyboard, Button } from 'react-native';
+import { ScrollView, StyleSheet, Text, Keyboard } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { ListItem, Icon } from 'react-native-elements';
 export default class lista_empresas extends Component {

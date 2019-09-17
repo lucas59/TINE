@@ -8,6 +8,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.6.1",
     "@react-native-community/geolocation": "^2.0.2",
     "@react-native-community/netinfo": "^4.1.5",
     "expo-location": "^6.0.0",
@@ -18,6 +19,7 @@
     "react-native-background-task": "^0.2.1",
     "react-native-background-timer": "^2.1.1",
     "react-native-camera": "git+https://git@github.com/react-native-community/react-native-camera.git",
+    "react-native-device-info": "^3.1.1",
     "react-native-elements": "^1.1.0",
     "react-native-geolocation-service": "^3.1.0",
     "react-native-gesture-handler": "^1.4.1",

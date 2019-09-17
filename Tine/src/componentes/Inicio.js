@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, AsyncStorage, Keyboard, ToastAndroid } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import BackgroundTimer from 'react-native-background-timer';
 var mytimer;

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView, Keyboard, AsyncStorage, navigation } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, Keyboard, navigation } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo";
 const { server } = require('../config/keys');
 import { ListItem, Icon, Divider } from 'react-native-elements';
@@ -12,7 +13,6 @@ import {
     PulseIndicator
 } from 'react-native-indicators';
 import BackgroundTimer from 'react-native-background-timer';
-var cont = 0;
 export default class lista_tareas extends Component {
     componentDidMount() {
         myTimer = BackgroundTimer.setInterval(() => {
@@ -29,26 +29,15 @@ export default class lista_tareas extends Component {
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
                 this.setState({ connection_Status: "Online" });
-                console.log("online 4");
-
-                if (cont == 0) {
                     this.Listar();
-                    this.setState({ cargando: false });
-                    cont = 1;
-                }
+                
             }
             else {
                 this.setState({ connection_Status: "Offline" });
-                console.log("ofline 4");
-
-                if (cont == 0) {
                     this.promesa().then((lista_SC) => {
                         console.log("lista asistencias: ", lista_SC)
                         this.setState({ listaT: lista_SC });
                     });
-                    this.setState({ cargando: false });
-                    cont = 1;
-                }
             }
         })
 
@@ -82,7 +71,7 @@ export default class lista_tareas extends Component {
             listaT: '',
             usuario: '',
             empresa: '',
-            cargando: false
+            cargando: true
         }
         cont = 0;
 
@@ -128,6 +117,8 @@ export default class lista_tareas extends Component {
         let sesion = JSON.parse(session);
         let session_2 = await AsyncStorage.getItem('empresa');
         let empresa = JSON.parse(session_2);
+        console.log(sesion.id);
+        console.log(empresa[0]);
         return new Promise(function (resolve, reject) {
             setTimeout(() => {
                 db.transaction(async function (txn) {

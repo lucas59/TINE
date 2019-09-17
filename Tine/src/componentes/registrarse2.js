@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableHighlight, TouchableOpacity, View, Image, TextInput, AsyncStorage, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, TouchableHighlight, TouchableOpacity, View, Image, TextInput, KeyboardAvoidingView } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import DateTimePicker from "react-native-modal-datetime-picker";
 const { server } = require('../config/keys');
 
