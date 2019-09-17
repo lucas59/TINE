@@ -33,11 +33,9 @@ export default class modoTablet extends Component {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
                     this.setState({ connection_Status: "Online" });
-                    console.log("online");
                 }
                 else {
                     this.setState({ connection_Status: "Offline" });
-                    console.log("offline");
                 }
             })
         }, 5000);
@@ -124,42 +122,6 @@ export default class modoTablet extends Component {
             }
         });
     }
-
-    /*
-    fetch(server.api + 'login_tablet', {
-        method: 'POST',
-        headers: {
-            'Aceptar': 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loginDetails)
-    })
-        .then(res => {
-            return res.json()
-        })
-        .then(data => {
-            const retorno = data;
-            if (retorno.retorno == true) {
-                this.state.empleado_id = retorno.id;
-                if (retorno.estado_ree == 1) {
-                    ToastAndroid.show('Bienvenido, seleccione aceptar', ToastAndroid.LONG);
-                    this.setState({ fin: null });
-                }
-                else {
-                    ToastAndroid.show('Buen viaje, seleccione aceptar', ToastAndroid.LONG);
-                    var fin = moment(new Date()).format();
-                    this.setState({ fin: fin });
-                }
-            } else {
-                ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
-            }
-        })
-        .catch(function (err) {
-            console.log('error', err);
-        })
-*/
-
-
 
 
     Alta_asistencia = async (camera,estado) => {

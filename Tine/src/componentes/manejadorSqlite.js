@@ -88,6 +88,8 @@ manejador.marcarTarea = (id) => {
 manejador.subirAsistencias = () => {
     db.transaction(function (txn) {
         txn.executeSql("SELECT * FROM asistencia WHERE estado = 0", [], (tx, res) => {
+            console.log("cantAsistencias", res.rows.length);
+            //idempleado, foto, fecha, empresa_id,estado,0
             if (res.rows.length > 0) {
                 for (var i = 0; i < res.rows.length; i++) {
                     var datos = {
@@ -97,7 +99,7 @@ manejador.subirAsistencias = () => {
                         empleado_id: res.rows.item(i).empleado_id,
                     }
                     console.log(datos);
-
+/*
                     fetch(server.api + 'Alta_asistencia', {
                         method: 'POST',
                         headers: {
@@ -120,7 +122,7 @@ manejador.subirAsistencias = () => {
                         .catch(function (err) {
                             console.log('error', err);
                         })
-
+*/
 
                 }
             } else {
