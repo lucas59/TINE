@@ -1,7 +1,7 @@
 import { ToastAndroid } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage';
 const { server } = require('../config/keys');
-
+import AsyncStorage from '@react-native-community/async-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 const manejador = {};
 
@@ -65,10 +65,10 @@ manejador.subirTareas = () => {
 }
 
 manejador.marcarTarea = (id) => {
-    console.log("id ",id)
+    console.log("id ", id)
 
-    db.transaction(function(txn){
-        txn.executeSql("UPDATE tarea SET estado=1 WHERE id = ?",[id], (tx,res)=>{
+    db.transaction(function (txn) {
+        txn.executeSql("UPDATE tarea SET estado=1 WHERE id = ?", [id], (tx, res) => {
             console.log(res.rowsAffected)
             if (res.rowsAffected > 0) {
                 console.log("Se modifico el estado de la tarea ", id);
@@ -185,6 +185,49 @@ manejador.bajarEmpleadosEmpresa = (documento) => { ///baja los empleado al inici
 
 manejador.borrarTareas = () => {
     ToastAndroid.show('pueba', ToastAndroid.LONG);
+}
+
+manejador.listarempresas = (id_usuario) => {
+    db.transaction(function (txnn) {
+        txnn.executeSql("DELETE FROM empresa", [], function (tx, res) {
+            console.log(res.rowsAffected);
+            console.log("vaciando lista");
+        })
+    })
+    let tarea_send = {
+        id: id_usuario
+    }
+    console.log(tarea_send);
+    fetch(server.api + '/Tareas/ListaEmpresas', {
+        method: 'POST',
+        headers: {
+            'Aceptar': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(tarea_send)
+    })
+        .then(res => {
+            return res.json()
+        })
+        .then(data => {
+            var filas = data['mensaje'];
+            console.log(filas);
+            filas.forEach(element => {
+                console.log(element.id);
+                console.log(element.nombre);
+                db.transaction(function (txo) {
+                    txo.executeSql("INSERT INTO `empresa`(`id`, `nombre`) VALUES (?,?)", [element.id, element.nombre], (tx, res) => {
+                        console.log(res.rowsAffected);
+                        if (res.rowsAffected > 0) {
+                            console.log("empresa agregada");
+                        }
+                    });
+                })
+            });
+        })
+        .catch(function (err) {
+            console.log('error', err);
+        })
 }
 
 module.exports = manejador;
