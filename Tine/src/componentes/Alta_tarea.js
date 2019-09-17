@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, AsyncStorage, ToastAndroid, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, ToastAndroid, navigatios } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { Button, Input, Icon } from 'react-native-elements';
 import { TouchableHighlight } from 'react-native';
@@ -10,9 +11,8 @@ import NetInfo from "@react-native-community/netinfo";
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
-var tiempo;
 export default class Alta_tarea extends Component {
-    componentDidMount() {
+    comprobar_conexion(){
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
                 this.setState({ connection_Status: "Online" });
@@ -22,6 +22,9 @@ export default class Alta_tarea extends Component {
                 this.setState({ connection_Status: "Offline" });
             }
         })
+    }
+    componentDidMount() {
+        this.comprobar_conexion();
     }
 
     static navigationOptions = {
@@ -106,7 +109,6 @@ export default class Alta_tarea extends Component {
 
     getFormattedTime(time) {
         this.currentTime = time;
-        tiempo = time;
     };
 
     promesa() {
@@ -122,6 +124,7 @@ export default class Alta_tarea extends Component {
     }
 
     saveData = async () => {
+        this.comprobar_conexion();
         this.setState({ cargando: true });
         let myArray = await AsyncStorage.getItem('empresa');
         let session = await AsyncStorage.getItem('usuario');
@@ -141,20 +144,7 @@ export default class Alta_tarea extends Component {
 
         }
         console.log(tarea_send);
-        if (tarea_send.inicio == '' && tarea_send.fin == '') {
-            this.setState({ cargando: false });
-            alert("Inicie la tarea");
-        }
-        else if (tarea_send.inicio != '' && tarea_send.fin == '') {
-            this.setState({ cargando: false });
-            alert("Finalize la tarea");
-        }
-        else if (tarea_send.titulo == '') {
-            this.setState({ cargando: false });
-            alert("Ingrese le nombre de la tarea");
-        }
-        else {
-            console.log("estao: ", this.state.connection_Status);
+            console.log("estado: ", this.state.connection_Status);
             if (this.state.connection_Status == "Offline") {
                 console.log(fin);
                 console.log(inicio);
@@ -207,8 +197,6 @@ export default class Alta_tarea extends Component {
                     .catch(function (err) {
                         console.log('error', err);
                     })
-
-            }
         }
     }
 
@@ -225,7 +213,7 @@ export default class Alta_tarea extends Component {
                     <Stopwatch laps msecs start={this.state.stopwatchStart}
                         reset={this.state.stopwatchReset}
                         options={options}
-                        getTime={this.getFormattedTime} />
+                        getTime={this.getFormattedTime}/>
                     <TouchableHighlight onPress={this.toggleStopwatch}>
                         <Text style={{ fontSize: 30 }}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
                     </TouchableHighlight>
@@ -262,21 +250,29 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         backgroundColor: '#fff',
-    }
+    },
+    reloj: {
+        backgroundColor: '#000',
+        padding: 5,
+        borderRadius: 5,
+        width: 220,
+      }
 });
+
 
 
 
 const options = {
     container: {
-        backgroundColor: '#000',
-        padding: 5,
-        borderRadius: 5,
-        width: 220,
+      backgroundColor: '#1E8AF1',
+      padding: 5,
+      borderRadius: 10,
+      width: 200,
+      alignItems: 'center',
     },
     text: {
-        fontSize: 30,
-        color: '#FFF',
-        marginLeft: 7,
-    }
-};
+      fontSize: 25,
+      color: '#FFF',
+      marginLeft: 7,
+    },
+  };

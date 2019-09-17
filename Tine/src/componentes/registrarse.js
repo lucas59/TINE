@@ -7,9 +7,9 @@ import {
     TouchableHighlight,
     Image,
     ToastAndroid,
-    AsyncStorage,
     KeyboardAvoidingView
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 

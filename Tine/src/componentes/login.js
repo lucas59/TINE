@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { TouchableWithoutFeedback, Alert, Text, View, TextInput, TouchableOpacity, AsyncStorage, Keyboard, ToastAndroid, Image, ActivityIndicator } from 'react-native';
-import Signup from '../componentes/registrarse';
+import { TouchableWithoutFeedback, Alert, Text, View, TextInput, TouchableOpacity, Keyboard, ToastAndroid, Image, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import styles from '../css/styleLogin';
 import { SafeAreaView } from 'react-navigation';

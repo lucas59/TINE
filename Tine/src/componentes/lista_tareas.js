@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Alert, navigation, ScrollView, Keyboard, AsyncStorage } from 'react-native';
+import { StyleSheet, View, Text, Alert, navigation, ScrollView, Keyboard } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo";
 const { server } = require('../config/keys');
 import { ListItem, Icon, Divider } from 'react-native-elements';
@@ -12,7 +13,6 @@ import {
     PulseIndicator
 } from 'react-native-indicators';
 import BackgroundTimer from 'react-native-background-timer';
-var cont = 0;
 export default class lista_tareas extends Component {
     componentDidMount() {
         myTimer = BackgroundTimer.setInterval(() => {
@@ -29,26 +29,16 @@ export default class lista_tareas extends Component {
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
                 this.setState({ connection_Status: "Online" });
-                console.log("online 4");
-
-                if (cont == 0) {
-                    this.Listar();
-                    this.setState({ cargando: false });
-                    cont = 1;
-                }
+                this.Listar();
             }
             else {
                 this.setState({ connection_Status: "Offline" });
-                console.log("ofline 4");
+                this.promesa().then((lista_SC) => {
+                    console.log("lista tareas: ", lista_SC)
+                    this.setState({ listaT: lista_SC });
+                });
 
-                if (cont == 0) {
-                    this.promesa().then((lista_SC) => {
-                        console.log("lista tareas: ", lista_SC)
-                        this.setState({ listaT: lista_SC });
-                    });
-                    this.setState({ cargando: false });
-                    cont = 1;
-                }
+
             }
         })
 
@@ -74,7 +64,7 @@ export default class lista_tareas extends Component {
                 name='face'
                 type='material'
                 color='#1E8AF1'
-                onPress={ async ()=>navigation.navigate('perfil',{session:await AsyncStorage.getItem('usuario')})} />
+                onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
         ),
 
     };
@@ -85,7 +75,7 @@ export default class lista_tareas extends Component {
             listaT: '',
             usuario: '',
             empresa: '',
-            cargando: false
+            cargando: true
         }
         cont = 0;
     }
@@ -160,7 +150,7 @@ export default class lista_tareas extends Component {
                         {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{moment(data.inicio).format('MMMM Do YYYY')}</Text> : null}
                         <ListItem
                             leftIcon={{ name: 'assignment' }}
-                            title={data.titulo}
+                            title={data.titulo != "" ? data.titulo : "Sin nombre"}
                             rightTitle={diffDuration.hours() + "h " + diffDuration.minutes() + "m " + diffDuration.seconds() + "s"}
                             onPress={() => Alert.alert(
                                 "Opciones",
@@ -182,7 +172,7 @@ export default class lista_tareas extends Component {
             });
         }
         else {
-            console.log(this.state.cargando);
+            console.log("cargando 2", this.state.cargando);
             return (
                 <View>
                     {this.state.cargando ? <PulseIndicator color='#1E8AF1' size={60} style={{ marginTop: 30 }} /> : <Text style={{ textAlign: "center" }}> No existen tareas </Text>}

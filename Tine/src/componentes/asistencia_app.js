@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import { View, Button, Keyboard,Alert, ToastAndroid, AsyncStorage, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, Button, Keyboard,Alert, ToastAndroid,  TouchableOpacity, StyleSheet, Text } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { RNCamera } from 'react-native-camera';
 import moment from "moment";
 const { server } = require('../config/keys');
+import NetInfo from "@react-native-community/netinfo";
+import { openDatabase } from 'react-native-sqlite-storage';
+var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 
 
 
@@ -19,6 +23,20 @@ const PendingView = () => (
     </View>
 );
 export default class modoTablet extends Component {
+    comprobar_conexion(){
+        NetInfo.isConnected.fetch().done((isConnected) => {
+            if (isConnected == true) {
+                this.setState({ connection_Status: "Online" });
+                console.log("online");
+            }
+            else {
+                this.setState({ connection_Status: "Offline" });
+            }
+        })
+    }
+    componentDidMount() {
+        this.comprobar_conexion();
+    }
     static navigationOptions = {
         header: null
     };
@@ -38,6 +56,7 @@ export default class modoTablet extends Component {
     
     Alta_asistencia = async (camera,estado) => {
         Keyboard.dismiss();
+        this.comprobar_conexion();
         const options = { quality: 0.5, base64: true, captureAudio: false };
         const data = await camera.takePictureAsync(options);
         this.setState({ foto: data.base64 });
@@ -54,6 +73,11 @@ export default class modoTablet extends Component {
             id_empresa: empresa[0]
         }
         if (this.state.connection_Status == "Offline") {
+            console.log(tarea_send.id);
+            console.log(foto);
+            console.log(fecha);
+            console.log(tarea_send.id_empresa);
+            console.log(estado);
             db.transaction(function (tx) {                    
                         db.transaction(function (txx) {
                             txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo) VALUES (?, ?,?,?,?)', [tarea_send.id, foto, fecha, tarea_send.id_empresa,estado], (tx, results) => {
