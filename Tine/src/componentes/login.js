@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { TouchableWithoutFeedback, StyleSheet, Text, View, TextInput, TouchableOpacity, AsyncStorage, Keyboard, ToastAndroid, Image, ActivityIndicator } from 'react-native';
+import { TouchableWithoutFeedback, Alert, Text, View, TextInput, TouchableOpacity, AsyncStorage, Keyboard, ToastAndroid, Image, ActivityIndicator } from 'react-native';
 import Signup from '../componentes/registrarse';
 const { server } = require('../config/keys');
 import styles from '../css/styleLogin';
 import { SafeAreaView } from 'react-navigation';
 const manejador = require("./manejadorSqlite");
-//import socketIOClient from "socket.io-client";
+import DeviceInfo from 'react-native-device-info';
 
 var timer;
 
@@ -28,12 +28,12 @@ export default class Login extends Component {
         this.checkSession();
     }
 
- /*   componentDidMount() {
-        const { endpoint } = this.state;
-        const socket = socketIOClient(endpoint);
-        socket.on("FromAPI", data => console.log(data));
-    }
-*/
+    /*   componentDidMount() {
+           const { endpoint } = this.state;
+           const socket = socketIOClient(endpoint);
+           socket.on("FromAPI", data => console.log(data));
+       }
+   */
     checkSession = async () => {
         let usuario = await AsyncStorage.getItem('usuario');
         if (usuario != null) {
@@ -77,14 +77,24 @@ export default class Login extends Component {
             .then(data => {
                 const retorno = data;
                 if (retorno.retorno == true) {
-                    ToastAndroid.show('Bienvenido.', ToastAndroid.LONG);
-                    AsyncStorage.setItem('usuario', JSON.stringify(retorno));
-
                     if (retorno.tipo == 1) {
+                        ToastAndroid.show('Bienvenido.', ToastAndroid.LONG);
+                        AsyncStorage.setItem('usuario', JSON.stringify(retorno));
                         this.props.navigation.navigate('Inicio');
                     } else {
-                        this.props.navigation.navigate('modoTablet');
-                        manejador.bajarEmpleadosEmpresa(retorno.id);
+                        DeviceInfo.isTablet().then(isTablet => {
+                            console.log(isTablet);
+                            if (isTablet) {
+                                this.props.navigation.navigate('modoTablet');
+                                manejador.bajarEmpleadosEmpresa(retorno.id);
+                            }else{
+                                Alert.alert(
+                                    "Alerta",
+                                    "La empresa solo puede ingresar desde una tablet",
+                                )
+                            }
+                        });
+
                     }
 
                 } else {
