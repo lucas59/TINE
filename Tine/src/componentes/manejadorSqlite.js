@@ -7,15 +7,10 @@ const manejador = {};
 
 manejador.subirTareas = () => {
     db.transaction(function (txn) {
-        console.log('asd');
         txn.executeSql("SELECT * FROM tarea WHERE estado = 0", [], (tx, res) => {
-            //  console.log(res.rows.length);
-            //  ToastAndroid.show('tareas' + res.rows.length, ToastAndroid.SHORT);
-            console.log('total: ', res.rows.length);
-
+           
             if (res.rows.length > 0) {
                 for (var i = 0; i < res.rows.length; i++) {
-                  //  console.log("123",res.rows.item(i));
                     let tarea = {
                         id: res.rows.item(i).id,
                         titulo: res.rows.item(i).titulo,
@@ -28,7 +23,6 @@ manejador.subirTareas = () => {
                         lat_fin: res.rows.item(i).latitud_fin,
                         long_fin: res.rows.item(i).longitud_fin
                     }
-                    console.log("tarea: ",JSON.stringify(tarea))
 
 
                     fetch(server.api + 'Alta_tarea', {
@@ -86,6 +80,7 @@ manejador.marcarTarea = (id) => {
 
 }
 manejador.subirAsistencias = () => {
+    console.log("subiendo asis");
     db.transaction(function (txn) {
         txn.executeSql("SELECT * FROM asistencia WHERE estado = 0", [], (tx, res) => {
             console.log("cantAsistencias", res.rows.length);

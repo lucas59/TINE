@@ -139,7 +139,7 @@ export default class modoTablet extends Component {
         if (this.state.connection_Status == "Offline") {
             db.transaction(function (tx) {                    
                         db.transaction(function (txx) {
-                            txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo,estado) VALUES (?, ?,?,?,?,?)', [idempleado, foto, fecha, empresa_id,estado,0], (tx, results) => {
+                            txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo,estado) VALUES (?,?,?,?,?,?)', [idempleado, foto, fecha, empresa_id,estado,0], (tx, results) => {
                                 console.log(results.rowsAffected);
                                 if (results.rowsAffected > 0) {
                                     console.log("insertó");
