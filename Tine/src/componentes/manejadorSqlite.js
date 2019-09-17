@@ -77,24 +77,42 @@ manejador.marcarTarea = (id) => {
             }
         })
     })
-
 }
+
+
+
+manejador.marcarAsistencia = (id) => {
+    console.log("id ",id)
+
+    db.transaction(function(txn){
+        txn.executeSql("UPDATE asistencia SET estado=1 WHERE id = ?",[id], (tx,res)=>{
+            console.log(res.rowsAffected)
+            if (res.rowsAffected > 0) {
+                console.log("Se modifico el estado de la asistencia ", id);
+            } else {
+                console.log("error");
+            }
+        })
+    })
+}
+
+
+
 manejador.subirAsistencias = () => {
     console.log("subiendo asis");
     db.transaction(function (txn) {
-        txn.executeSql("SELECT * FROM asistencia WHERE estado = 0", [], (tx, res) => {
-            console.log("cantAsistencias", res.rows.length);
-            //idempleado, foto, fecha, empresa_id,estado,0
+        txn.executeSql(" SELECT * FROM asistencia WHERE estado = 0 ", [], (tx, res) => {
             if (res.rows.length > 0) {
                 for (var i = 0; i < res.rows.length; i++) {
                     var datos = {
-                        inicio: res.rows.item(i).inicio,
-                        fin: res.rows.item(i).fin,
+                        id:res.rows.item(i).id,
+                        fecha: res.rows.item(i).fecha,
                         foto: res.rows.item(i).foto,
                         empleado_id: res.rows.item(i).empleado_id,
+                        estado:res.rows.item(i).estado,
+                        empresa_id:res.rows.item(i).empresa_id
                     }
-                    console.log(datos);
-/*
+
                     fetch(server.api + 'Alta_asistencia', {
                         method: 'POST',
                         headers: {
@@ -107,17 +125,19 @@ manejador.subirAsistencias = () => {
                             return res.json()
                         })
                         .then(async data => {
-                            if (retorno.retorno == true) {
+                            console.log("data", data);
 
-                                alert(retorno.mensaje);
+                            if (data.retorno == true) {
+                                console.log("La marca se dio de alta correctamente");
+                                manejador.marcarAsistencia(datos.id);
                             } else {
-                                alert(retorno.mensaje);
+                                console.log("Error al subir la asistencia");
                             }
                         })
                         .catch(function (err) {
                             console.log('error', err);
                         })
-*/
+
 
                 }
             } else {

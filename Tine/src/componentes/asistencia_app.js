@@ -77,7 +77,6 @@ export default class modoTablet extends Component {
             console.log(foto);
             console.log(fecha);
             console.log(tarea_send.id_empresa);
-            console.log(estado);
             db.transaction(function (tx) {                    
                         db.transaction(function (txx) {
                             txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo,estado) VALUES (?, ?,?,?,?,?)', [tarea_send.id, foto, fecha, tarea_send.id_empresa,tipo,0], (tx, results) => {
@@ -110,7 +109,7 @@ export default class modoTablet extends Component {
                 fecha: fecha,
                 foto: foto,
                 empleado_id: tarea_send.id,
-                estado: estado,
+                estado: tipo,
                 empresa_id: tarea_send.id_empresa
             }
             fetch(server.api + 'Alta_asistencia', {
