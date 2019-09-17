@@ -54,7 +54,7 @@ export default class modoTablet extends Component {
     }
 
     
-    Alta_asistencia = async (camera,estado) => {
+    Alta_asistencia = async (camera,tipo) => {
         Keyboard.dismiss();
         this.comprobar_conexion();
         const options = { quality: 0.5, base64: true, captureAudio: false };
@@ -80,7 +80,7 @@ export default class modoTablet extends Component {
             console.log(estado);
             db.transaction(function (tx) {                    
                         db.transaction(function (txx) {
-                            txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo) VALUES (?, ?,?,?,?)', [tarea_send.id, foto, fecha, tarea_send.id_empresa,estado], (tx, results) => {
+                            txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo,estado) VALUES (?, ?,?,?,?,?)', [tarea_send.id, foto, fecha, tarea_send.id_empresa,tipo,0], (tx, results) => {
                                 console.log(results.rowsAffected);
                                 if (results.rowsAffected > 0) {
                                     console.log("insertó");
