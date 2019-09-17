@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import { ScrollView, StyleSheet, Text, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
+import NetInfo from "@react-native-community/netinfo";
 import { ListItem, Icon } from 'react-native-elements';
+const manejador = require("./manejadorSqlite");
+import { openDatabase } from 'react-native-sqlite-storage';
+var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 export default class lista_empresas extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -14,11 +17,43 @@ export default class lista_empresas extends Component {
             fin: '',
             listaT: '',
         }
-        this.Listar();
-
     }
 
-    static navigationOptions = ({ navigation })  => {
+    componentDidMount() {
+        NetInfo.isConnected.fetch().done(async (isConnected) => {
+            if (isConnected == true) {
+                let session = await AsyncStorage.getItem('usuario');
+                console.log(session);
+                let sesion = JSON.parse(session);
+                manejador.listarempresas(sesion.id);
+                this.Listar();
+                console.log("online");
+            }
+            else {
+                this.promesa().then((lista_SC) => {
+                    console.log("lista tareas: ", lista_SC)
+                    this.setState({ listaT: lista_SC });
+                });
+                console.log("offline");
+            }
+        })
+    }
+
+    promesa = async () => {
+        return new Promise(function (resolve, reject) {
+            console.log("empresa");
+            setTimeout(() => {
+                db.transaction(async function (txn) {
+                    txn.executeSql("SELECT * FROM empresa", [], (tx, res) => {
+                        console.log(res);
+                        resolve(res.rows.raw());
+                    });
+                });
+            }, 1000);
+        });
+    }
+
+    static navigationOptions = ({ navigation }) => {
         return {
             title: 'TINE',
             headerStyle: {
@@ -30,11 +65,11 @@ export default class lista_empresas extends Component {
             },
             headerRight: (
                 <Icon
-                reverse
+                    reverse
                     name='face'
                     type='material'
                     color='#1E8AF1'
-                    onPress={ async ()=>navigation.navigate('perfil',{session:await AsyncStorage.getItem('usuario')})} />
+                    onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
             ),
 
         }
@@ -51,7 +86,7 @@ export default class lista_empresas extends Component {
         let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
         let tarea_send = {
-           id: sesion.id
+            id: sesion.id
         }
         await fetch(server.api + '/Tareas/ListaEmpresas', {
             method: 'POST',
@@ -66,7 +101,7 @@ export default class lista_empresas extends Component {
             })
             .then(data => {
                 const retorno = data;
-                
+
                 if (retorno.retorno == true) {
                     console.log(retorno.mensaje);
                     this.setState({ listaT: retorno.mensaje });

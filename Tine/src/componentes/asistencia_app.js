@@ -110,7 +110,7 @@ export default class modoTablet extends Component {
                 fecha: fecha,
                 foto: foto,
                 empleado_id: tarea_send.id,
-                estado: estado,
+                estado: tipo,
                 empresa_id: tarea_send.id_empresa
             }
             fetch(server.api + 'Alta_asistencia', {
