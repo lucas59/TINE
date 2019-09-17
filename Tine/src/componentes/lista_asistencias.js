@@ -5,7 +5,7 @@ import NetInfo from "@react-native-community/netinfo";
 const { server } = require('../config/keys');
 import { ListItem, Icon, Divider } from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
- import moment from "moment";
+import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 const manejador = require("./manejadorSqlite");
@@ -29,15 +29,14 @@ export default class lista_tareas extends Component {
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
                 this.setState({ connection_Status: "Online" });
-                    this.Listar();
-                
+                this.Listar();
             }
             else {
                 this.setState({ connection_Status: "Offline" });
-                    this.promesa().then((lista_SC) => {
-                        console.log("lista asistencias: ", lista_SC)
-                        this.setState({ listaT: lista_SC });
-                    });
+                this.promesa().then((lista_SC) => {
+                    console.log("lista asistencias: ", lista_SC)
+                    this.setState({ listaT: lista_SC });
+                });
             }
         })
 
