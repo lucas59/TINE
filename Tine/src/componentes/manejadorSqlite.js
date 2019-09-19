@@ -101,7 +101,7 @@ manejador.marcarAsistencia = (id) => {
 manejador.subirAsistencias = () => {
     console.log("subiendo asis");
     db.transaction(function (txn) {
-        txn.executeSql(" SELECT * FROM asistencia WHERE estado = 0 ", [], (tx, res) => {
+        txn.executeSql("SELECT * FROM asistencia WHERE estado = 0 ", [], (tx, res) => {
             if (res.rows.length > 0) {
                 for (var i = 0; i < res.rows.length; i++) {
                     var datos = {
@@ -109,7 +109,7 @@ manejador.subirAsistencias = () => {
                         fecha: res.rows.item(i).fecha,
                         foto: res.rows.item(i).foto,
                         empleado_id: res.rows.item(i).empleado_id,
-                        estado:res.rows.item(i).estado,
+                        tipo:res.rows.item(i).tipo,
                         empresa_id:res.rows.item(i).empresa_id
                     }
 

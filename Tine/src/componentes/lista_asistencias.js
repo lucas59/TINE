@@ -33,14 +33,14 @@ export default class lista_tareas extends Component {
         myTimer = BackgroundTimer.setInterval(() => {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
-                    manejador.subirTareas();
+                    manejador.subirAsistencias();
                     console.log("online");
                 }
                 else {
                     console.log("offline");
                 }
             })
-        }, 5000);
+        }, 20000);
        this.llenar_lista();
 
     }
