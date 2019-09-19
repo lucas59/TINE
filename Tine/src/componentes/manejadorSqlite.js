@@ -7,15 +7,9 @@ const manejador = {};
 
 manejador.subirTareas = () => {
     db.transaction(function (txn) {
-        console.log('asd');
         txn.executeSql("SELECT * FROM tarea WHERE estado = 0", [], (tx, res) => {
-            //  console.log(res.rows.length);
-            //  ToastAndroid.show('tareas' + res.rows.length, ToastAndroid.SHORT);
-            console.log('total: ', res.rows.length);
-
             if (res.rows.length > 0) {
                 for (var i = 0; i < res.rows.length; i++) {
-                    //  console.log("123",res.rows.item(i));
                     let tarea = {
                         id: res.rows.item(i).id,
                         titulo: res.rows.item(i).titulo,

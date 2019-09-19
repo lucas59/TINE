@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Button, Keyboard,Alert, ToastAndroid, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, Keyboard,Alert, ToastAndroid, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { RNCamera } from 'react-native-camera';

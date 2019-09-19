@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableHighlight, TouchableOpacity, View, Image, TextInput, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, TouchableHighlight, View, TextInput, KeyboardAvoidingView } from 'react-native';
+import {Button} from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import DateTimePicker from "react-native-modal-datetime-picker";
 const { server } = require('../config/keys');
@@ -183,7 +184,7 @@ export default class Signup2 extends React.Component {
                     }
 
                     AsyncStorage.setItem('usuario', JSON.stringify(nuevaSession));
-                    this.props.navigation.navigate('modoTablet');
+                    this.props.navigation.navigate('login');
                 } else {
                     alert(retorno.mensaje);
                 }
@@ -260,11 +261,7 @@ export default class Signup2 extends React.Component {
     }
 }
 
-const Button = ({ onPress, children }) => (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
-        <Text style={styles.text}>{children}</Text>
-    </TouchableOpacity>
-);
+
 
 const styles = StyleSheet.create({
     text: {

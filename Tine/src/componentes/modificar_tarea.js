@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, ToastAndroid, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { Button, Icon, Divider, Input } from 'react-native-elements';
@@ -119,7 +119,7 @@ export default class Alta_tarea extends Component {
                     const retorno = data;
                     console.log(retorno.mensaje);
                     if (retorno.retorno == true) {
-                        alert("Exito");
+                        ToastAndroid.show('La tarea se modificó correctamente', ToastAndroid.LONG);
                         this.props.navigation.navigate('lista_tareas');
                     } else {
                         alert(retorno.mensaje);
