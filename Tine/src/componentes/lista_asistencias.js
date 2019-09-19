@@ -14,18 +14,7 @@ import {
 } from 'react-native-indicators';
 import BackgroundTimer from 'react-native-background-timer';
 export default class lista_tareas extends Component {
-    componentDidMount() {
-        myTimer = BackgroundTimer.setInterval(() => {
-            NetInfo.isConnected.fetch().done((isConnected) => {
-                if (isConnected == true) {
-                    manejador.subirTareas();
-                    console.log("online");
-                }
-                else {
-                    console.log("offline");
-                }
-            })
-        }, 5000);
+    llenar_lista(){
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
                 this.setState({ connection_Status: "Online" });
@@ -39,28 +28,43 @@ export default class lista_tareas extends Component {
                 });
             }
         })
+    }
+    componentDidMount() {
+        myTimer = BackgroundTimer.setInterval(() => {
+            NetInfo.isConnected.fetch().done((isConnected) => {
+                if (isConnected == true) {
+                    manejador.subirTareas();
+                    console.log("online");
+                }
+                else {
+                    console.log("offline");
+                }
+            })
+        }, 5000);
+       this.llenar_lista();
 
     }
 
-    static navigationOptions = {
-        title: 'Listas de asistencias',
-        headerStyle: {
-            backgroundColor: '#1E8AF1',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            fontWeight: 'bold',
-        },
-        headerRight: (
-            <Icon
-                reverse
-                name='face'
-                type='material'
-                color='#1E8AF1'
-                onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: 'Listas de asistencias',
+            headerStyle: {
+                backgroundColor: '#1E8AF1',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+            headerRight: (
+                <Icon
+                    reverse
+                    name='face'
+                    type='material'
+                    color='#1E8AF1'
+                    onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
 
-        ),
-
+            ),
+        }
 
     };
 
@@ -73,7 +77,12 @@ export default class lista_tareas extends Component {
             cargando: true
         }
         cont = 0;
-
+        this.props.navigation.addListener(
+            'didFocus',
+            payload => {
+                this.llenar_lista();
+            }
+        );
     }
 
     Listar = async () => {
@@ -141,10 +150,12 @@ export default class lista_tareas extends Component {
                 //fecha es igual a la fecha de la tarea actual
                 fecha = moment(data.fecha).format('MMMM Do YYYY');
                 var icono = data.tipo ? 'assignment-returned' : 'assignment-return';
-                console.log(icono);
+                if(fecha == moment(new Date()).format('MMMM Do YYYY')){
+                    fecha = "Hoy";
+                }
                 return (
                     <View key={i}>
-                        {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{moment_fecha.format('MMMM Do YYYY')}</Text> : null}
+                        {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{fecha}</Text> : null}
                         <ListItem
                             leftIcon={{ name: icono }}
                             title={data.tipo ? 'Entrada' : 'Salida'}

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Alert, navigation, ScrollView, Keyboard } from 'react-native';
+import { StyleSheet, View, Text, Alert, ToastAndroid, ScrollView, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo";
 const { server } = require('../config/keys');
-import { ListItem, Icon, Divider } from 'react-native-elements';
+import { ListItem, Icon } from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
@@ -14,6 +14,22 @@ import {
 } from 'react-native-indicators';
 import BackgroundTimer from 'react-native-background-timer';
 export default class lista_tareas extends Component {
+    llenar_lista() {
+        NetInfo.isConnected.fetch().done((isConnected) => {
+            if (isConnected == true) {
+                console.log("online");
+                this.setState({ connection_Status: "Online" });
+                this.Listar();
+            }
+            else {
+                this.setState({ connection_Status: "Offline" });
+                this.promesa().then((lista_SC) => {
+                    console.log("lista tareas: ", lista_SC)
+                    this.setState({ listaT: lista_SC });
+                });
+            }
+        })
+    }
     componentDidMount() {
         myTimer = BackgroundTimer.setInterval(() => {
             NetInfo.isConnected.fetch().done((isConnected) => {
@@ -27,47 +43,36 @@ export default class lista_tareas extends Component {
                 }
             })
         }, 5000);
-        NetInfo.isConnected.fetch().done((isConnected) => {
-            if (isConnected == true) {
-                this.setState({ connection_Status: "Online" });
-                this.Listar();
-            }
-            else {
-                this.setState({ connection_Status: "Offline" });
-                this.promesa().then((lista_SC) => {
-                    console.log("lista tareas: ", lista_SC)
-                    this.setState({ listaT: lista_SC });
-                });
+        this.llenar_lista();
 
-
-            }
-        })
 
     }
 
 
     componentWillUnmount() {
         BackgroundTimer.clearInterval(myTimer);
+
     }
 
-    static navigationOptions = {
-        title: 'Listas de tareas',
-        headerStyle: {
-            backgroundColor: '#1E8AF1',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            fontWeight: 'bold',
-        },
-        headerRight: (
-            <Icon
-                reverse
-                name='face'
-                type='material'
-                color='#1E8AF1'
-                onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
-        ),
-
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: 'Listas de tareas',
+            headerStyle: {
+                backgroundColor: '#1E8AF1',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+            headerRight: (
+                <Icon
+                    reverse
+                    name='face'
+                    type='material'
+                    color='#1E8AF1'
+                    onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
+            ),
+        }
     };
 
     constructor(props) {
@@ -79,6 +84,12 @@ export default class lista_tareas extends Component {
             cargando: true
         }
         cont = 0;
+        this.props.navigation.addListener(
+            'didFocus',
+            payload => {
+                this.llenar_lista();
+            }
+        );
     }
 
     Listar = async () => {
@@ -146,9 +157,12 @@ export default class lista_tareas extends Component {
                 var comp = fecha;
                 //fecha es igual a la fecha de la tarea actual
                 fecha = moment(data.inicio).format('MMMM Do YYYY');
+                if (fecha == moment(new Date()).format('MMMM Do YYYY')) {
+                    fecha = "Hoy";
+                }
                 return (
                     <View key={i}>
-                        {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{moment(data.inicio).format('MMMM Do YYYY')}</Text> : null}
+                        {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{fecha}</Text> : null}
                         <ListItem
                             leftIcon={{ name: 'assignment' }}
                             title={data.titulo != "" ? data.titulo : "Sin nombre"}
@@ -217,10 +231,9 @@ export default class lista_tareas extends Component {
                     const retorno = data;
                     console.log(retorno.retorno);
                     if (retorno.retorno == true) {
-                        console.log("prueba");
-                        alert("La tarea se eliminó correctamente");
+                        ToastAndroid.show('La tarea se eliminó correctamente', ToastAndroid.LONG);
                     } else {
-                        alert(retorno.mensaje);
+                        ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
                     }
                 })
                 .catch(function (err) {
@@ -228,6 +241,7 @@ export default class lista_tareas extends Component {
                     alert("Hubo un problema con la conexión");
                 })
         }
+        this.llenar_lista();
     }
 
     redireccionar_modificar = async (id, inicio, fin, titulo) => {
@@ -240,17 +254,6 @@ export default class lista_tareas extends Component {
 
 
     render() {
-
-        const actions = [
-            {
-                text: "Alta tarea",
-                icon: require("../imagenes/agregar_tarea.png"),
-                name: "bt_tarea",
-                position: 1
-            }
-        ];
-
-
         return (
             <>
                 <ScrollView>

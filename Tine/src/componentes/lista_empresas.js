@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, Text, Keyboard } from 'react-native';
+import { ScrollView, StyleSheet, Text, Keyboard, View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import NetInfo from "@react-native-community/netinfo";
@@ -7,6 +7,9 @@ import { ListItem, Icon } from 'react-native-elements';
 const manejador = require("./manejadorSqlite");
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
+import {
+    PulseIndicator
+} from 'react-native-indicators';
 export default class lista_empresas extends Component {
     constructor(props) {
         super(props);
@@ -16,6 +19,7 @@ export default class lista_empresas extends Component {
             inicio: '',
             fin: '',
             listaT: '',
+            cargando: true
         }
     }
 
@@ -55,7 +59,7 @@ export default class lista_empresas extends Component {
 
     static navigationOptions = ({ navigation }) => {
         return {
-            title: 'TINE',
+            title: 'Lista de empresas',
             headerStyle: {
                 backgroundColor: '#1E8AF1',
             },
@@ -107,6 +111,7 @@ export default class lista_empresas extends Component {
                     this.setState({ listaT: retorno.mensaje });
                 } else {
                     alert(retorno.mensaje);
+                    this.setState({cargando: false});
                 }
             })
             .catch(function (err) {
@@ -137,13 +142,20 @@ export default class lista_empresas extends Component {
                 )
             })
         }
+        else {
+            return (
+                <View>
+                    {this.state.cargando ? <PulseIndicator color='#1E8AF1' size={60} style={{ marginTop: 30 }} /> : <Text style={{ textAlign: "center" }}> No existen empresas </Text>}
+                </View>
+            )
+
+        }
     }
     render() {
         return (
 
             <>
                 <ScrollView>
-                    <Text style={styles.titulo} >Lista de Empresas</Text>
                     {this.parseData()}
                 </ScrollView>
 

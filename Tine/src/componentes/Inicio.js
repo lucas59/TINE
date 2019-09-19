@@ -41,7 +41,7 @@ export default class Inicio extends Component {
             this.props.navigation.navigate('Login');
         } else {
             if (sessionParce.tipo == 0) {
-                this.props.navigation.navigate('modoTablet');
+                this.props.navigation.navigate('login');
             }
             else {
                 this.props.navigation.navigate('lista_empresas');

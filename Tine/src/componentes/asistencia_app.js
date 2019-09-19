@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Button, Keyboard,Alert, ToastAndroid,  TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, Keyboard,Alert, ToastAndroid,  TouchableOpacity, StyleSheet, Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { RNCamera } from 'react-native-camera';
 import moment from "moment";
@@ -22,7 +22,7 @@ const PendingView = () => (
         <Text>Cargando</Text>
     </View>
 );
-export default class modoTablet extends Component {
+export default class asistencia_app extends Component {
     comprobar_conexion(){
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
@@ -83,17 +83,8 @@ export default class modoTablet extends Component {
                                 console.log(results.rowsAffected);
                                 if (results.rowsAffected > 0) {
                                     console.log("insertó");
-                                    ToastAndroid.show('La asistencia se insertó correctamente', ToastAndroid.LONG);
-                                    db.transaction(function (txr) {
-                                        txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
-                                            console.log(results.rows.length);
-                                            for (var i = 0; i < results.rows.length; i++) {
-                                                console.log("Empleado: : ", results.rows.item(i).empleado_id);
-                                                console.log("Empresa: : ", results.rows.item(i).empresa_id);
-                                                console.log("Inicio : ", results.rows.item(i).inicio);
-                                            }
-                                        });
-                                    });
+                                    ToastAndroid.show('La asistencia se ingresó correctamente', ToastAndroid.LONG);
+                                    this.props.navigation.navigate('lista_asistencias');
                                 } else {
                                     console.log("error");
                                 }
@@ -126,17 +117,20 @@ export default class modoTablet extends Component {
                 .then(async data => {
                     const retorno = data;
                     if (retorno.retorno == true) {
-
-                        alert(retorno.mensaje);
+                        ToastAndroid.show('La asistencia se ingresó correctamente', ToastAndroid.LONG);
+                        this.props.navigation.navigate('lista_asistencias');
                     } else {
-                        alert(retorno.mensaje);
+                        ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
                     }
                 })
                 .catch(function (err) {
                     console.log('error', err);
                 })
         }
+        
     }
+
+
     render() {
         return (
             <>
