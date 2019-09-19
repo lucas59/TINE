@@ -85,9 +85,10 @@ export default class Login extends Component {
                         DeviceInfo.isTablet().then(isTablet => {
                             console.log(isTablet);
                             if (isTablet) {
+                                AsyncStorage.setItem('usuario', JSON.stringify(retorno));
                                 this.props.navigation.navigate('modoTablet');
                                 manejador.bajarEmpleadosEmpresa(retorno.id);
-                            }else{
+                            } else {
                                 Alert.alert(
                                     "Alerta",
                                     "La empresa solo puede ingresar desde una tablet",

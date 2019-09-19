@@ -84,7 +84,6 @@ export default class asistencia_app extends Component {
                         if (results.rowsAffected > 0) {
                             console.log("insertó");
                             ToastAndroid.show('La asistencia se ingresó correctamente', ToastAndroid.LONG);
-                            this.props.navigation.navigate('lista_asistencias');
                         } else {
                             console.log("error");
                         }
@@ -93,6 +92,7 @@ export default class asistencia_app extends Component {
                 });
 
             });
+            this.props.navigation.navigate('lista_asistencias');
         }
         else {
             const { foto } = this.state;

@@ -12,25 +12,27 @@ import BackgroundTimer from 'react-native-background-timer';
 
 
 export default class Alta_tarea extends Component {
-    static navigationOptions = {
-        title: 'TINE',
-        headerStyle: {
-            backgroundColor: '#1E8AF1',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            fontWeight: 'bold',
-        },
-        headerRight: (
-            <Icon
-                reverse
-                name='face'
-                type='material'
-                color='#1E8AF1'
-                onPress={() => console.log('perfil')} />
-        ),
-
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: 'TINE',
+            headerStyle: {
+                backgroundColor: '#1E8AF1',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+            headerRight: (
+                <Icon
+                    reverse
+                    name='face'
+                    type='material'
+                    color='#1E8AF1'
+                    onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
+            ),
+        }
     };
+
 
     componentDidMount() {
         myTimer = BackgroundTimer.setInterval(() => {
@@ -49,7 +51,7 @@ export default class Alta_tarea extends Component {
 
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         BackgroundTimer.clearInterval(myTimer);
     }
 
@@ -87,19 +89,19 @@ export default class Alta_tarea extends Component {
             id: tarea_id
         }
         console.log(modificar_tarea);
-        if (this.state.connection_Status == "offline") {
+        if (this.state.connection_Status == "Offline") {
             db.transaction(function (txx) {
                 txx.executeSql('UPDATE tarea SET estado = ? ,fin = ?, inicio = ?, titulo = ? WHERE id = ?', [1, modificar_tarea.fin, modificar_tarea.inicio, modificar_tarea.titulo, modificar_tarea.id], (tx, results) => {
                     console.log(results);
                     if (results.rowsAffected > 0) {
                         console.log("Modificó");
-                        this.props.navigation.navigate('lista_tareas');
                     } else {
                         console.log("error");
                     }
                 }
                 );
             });
+            this.props.navigation.navigate('lista_tareas');
         }
         else {
 
@@ -130,7 +132,7 @@ export default class Alta_tarea extends Component {
                 })
 
         }
-        
+
     }
 
     showDateTimePicker_inicio = () => {
@@ -188,17 +190,15 @@ export default class Alta_tarea extends Component {
 
     render() {
         return (
-            <View>
+            <View style={styles.container}>
                 <Input
                     onChangeText={(tarea_titulo) => this.setState({ tarea_titulo })}
                     value={this.state.tarea_titulo}
-                    leftIcon={
-                        { type: 'font-awesome', name: 'align-left' }
-                    }
+
                 />
                 <Divider style={{ backgroundColor: 'blue' }} />
                 <Button
-                    title={moment(this.state.tarea_inicio).format('MMMM Do YYYY, HH:mm').toString()}
+                    title={"Fecha de inicio: " + moment(this.state.tarea_inicio).format('MMMM Do YYYY, HH:mm').toString()}
                     onPress={this.showDateTimePicker_inicio}
                     type="clear"
                 />
@@ -211,7 +211,7 @@ export default class Alta_tarea extends Component {
                 />
                 <Divider style={{ backgroundColor: 'blue' }} />
                 <Button
-                    title={moment(this.state.tarea_fin).format('MMMM Do YYYY, HH:mm').toString()}
+                    title={"Fecha de fin: " + moment(this.state.tarea_fin).format('MMMM Do YYYY, HH:mm').toString()}
                     onPress={this.showDateTimePicker_fin}
                     type="clear"
                 />
@@ -233,6 +233,7 @@ export default class Alta_tarea extends Component {
 
 const styles = StyleSheet.create({
     container: {
+        alignItems: 'center',
         justifyContent: 'center',
     },
     inputBox: {

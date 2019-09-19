@@ -4,7 +4,7 @@ const { server } = require('../config/keys');
 import BackgroundTimer from 'react-native-background-timer';
 var mytimer;
 export default class Inicio extends Component {
-    
+
     componentDidMount() {
         myTimer = BackgroundTimer.setInterval(() => {
             //console.log('timer');

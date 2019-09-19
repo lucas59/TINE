@@ -136,7 +136,7 @@ export default class lista_empresas extends Component {
                 return (
                     <ListItem
                         key={i}
-                        leftAvatar={{ source: { uri: data.fotoPerfil } }}
+                        leftAvatar={{ source: { uri: server.img + data.fotoPerfil } }}
                         title={data.nombre}
                         onPress={() => this.redireccionar_alta(data.id, data.nombre)}
                     />

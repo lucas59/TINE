@@ -42,7 +42,7 @@ export default class lista_tareas extends Component {
                 }
             })
         }, 20000);
-       this.llenar_lista();
+        this.llenar_lista();
 
     }
 
@@ -131,7 +131,7 @@ export default class lista_tareas extends Component {
         return new Promise(function (resolve, reject) {
             setTimeout(() => {
                 db.transaction(async function (txn) {
-                    txn.executeSql("SELECT * FROM asistencia WHERE empleado_id = ? AND empresa_id = ?", [sesion.id, empresa[0]], (tx, res) => {
+                    txn.executeSql("SELECT * FROM asistencia WHERE empleado_id = ? AND empresa_id = ? GROUP BY fecha ORDER BY fecha DESC;", [sesion.id, empresa[0]], (tx, res) => {
                         resolve(res.rows.raw());
                     });
                 });
