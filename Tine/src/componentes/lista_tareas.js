@@ -137,7 +137,7 @@ export default class lista_tareas extends Component {
         return new Promise(function (resolve, reject) {
             setTimeout(() => {
                 db.transaction(async function (txn) {
-                    txn.executeSql("SELECT * FROM tarea WHERE empleado_id = ? AND empresa_id = ?", [sesion.id, empresa[0]], (tx, res) => {
+                    txn.executeSql("SELECT * FROM tarea WHERE empleado_id = ? AND empresa_id = ? GROUP BY inicio ORDER BY inicio DESC;", [sesion.id, empresa[0]], (tx, res) => {
                         resolve(res.rows.raw());
                     });
                 });

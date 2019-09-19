@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableHighlight, Image } from 'react-native';
-import { DrawerNavigator } from 'react-navigation';
 import Inicio from './Inicio';
 import Alta_tarea from './Alta_tarea';
 

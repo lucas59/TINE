@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Keyboard,Alert, ToastAndroid, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, Keyboard, Alert, ToastAndroid, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { RNCamera } from 'react-native-camera';
@@ -125,7 +125,7 @@ export default class modoTablet extends Component {
     }
 
 
-    Alta_asistencia = async (camera,estado) => {
+    Alta_asistencia = async (camera, estado) => {
         console.log(camera);
         Keyboard.dismiss();
         const options = { quality: 0.5, base64: true, captureAudio: false };
@@ -137,29 +137,29 @@ export default class modoTablet extends Component {
         var empresa_id = this.state.empresa_id;
         console.log(idempleado);
         if (this.state.connection_Status == "Offline") {
-            db.transaction(function (tx) {                    
-                        db.transaction(function (txx) {
-                            txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo,estado) VALUES (?,?,?,?,?,?)', [idempleado, foto, fecha, empresa_id,estado,0], (tx, results) => {
-                                console.log(results.rowsAffected);
-                                if (results.rowsAffected > 0) {
-                                    console.log("insertó");
-                                    ToastAndroid.show('La asistencia se insertó correctamente', ToastAndroid.LONG);
-                                    db.transaction(function (txr) {
-                                        txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
-                                            console.log(results.rows.length);
-                                            for (var i = 0; i < results.rows.length; i++) {
-                                                console.log("Empleado: : ", results.rows.item(i).empleado_id);
-                                                console.log("Empresa: : ", results.rows.item(i).empresa_id);
-                                                console.log("Inicio : ", results.rows.item(i).inicio);
-                                            }
-                                        });
-                                    });
-                                } else {
-                                    console.log("error");
-                                }
-                            }
-                            );
-                        });
+            db.transaction(function (tx) {
+                db.transaction(function (txx) {
+                    txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo,estado) VALUES (?,?,?,?,?,?)', [idempleado, foto, fecha, empresa_id, estado, 0], (tx, results) => {
+                        console.log(results.rowsAffected);
+                        if (results.rowsAffected > 0) {
+                            console.log("insertó");
+                            ToastAndroid.show('La asistencia se insertó correctamente', ToastAndroid.LONG);
+                            db.transaction(function (txr) {
+                                txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
+                                    console.log(results.rows.length);
+                                    for (var i = 0; i < results.rows.length; i++) {
+                                        console.log("Empleado: : ", results.rows.item(i).empleado_id);
+                                        console.log("Empresa: : ", results.rows.item(i).empresa_id);
+                                        console.log("Inicio : ", results.rows.item(i).inicio);
+                                    }
+                                });
+                            });
+                        } else {
+                            console.log("error");
+                        }
+                    }
+                    );
+                });
 
             });
         }
@@ -187,7 +187,10 @@ export default class modoTablet extends Component {
                     const retorno = data;
                     if (retorno.retorno == true) {
 
-                        alert(retorno.mensaje);
+                        Alert.alert(
+                            "Alerta",
+                            retorno.mensaje,
+                        )
                     } else {
                         alert(retorno.mensaje);
                     }
@@ -224,10 +227,10 @@ export default class modoTablet extends Component {
                                         "Opciones",
                                         "¿Usted esta ingresando o saliendo del establecimiento?",
                                         [
-                                            { text: "Entrando", onPress: () => this.Alta_asistencia(camera,1)},
+                                            { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
                                             {
                                                 text: "Saliendo",
-                                                onPress: () => this.Alta_asistencia(camera,0),
+                                                onPress: () => this.Alta_asistencia(camera, 0),
                                             },
                                         ],
                                         { cancelable: true }
