@@ -14,7 +14,7 @@ import {
 } from 'react-native-indicators';
 import BackgroundTimer from 'react-native-background-timer';
 export default class lista_tareas extends Component {
-    llenar_lista(){
+    llenar_lista() {
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
                 this.setState({ connection_Status: "Online" });
@@ -25,6 +25,7 @@ export default class lista_tareas extends Component {
                 this.promesa().then((lista_SC) => {
                     console.log("lista asistencias: ", lista_SC)
                     this.setState({ listaT: lista_SC });
+                    this.setState({ cargando: false });
                 });
             }
         })
@@ -41,7 +42,7 @@ export default class lista_tareas extends Component {
                 }
             })
         }, 5000);
-       this.llenar_lista();
+        this.llenar_lista();
 
     }
 
@@ -150,7 +151,7 @@ export default class lista_tareas extends Component {
                 //fecha es igual a la fecha de la tarea actual
                 fecha = moment(data.fecha).format('MMMM Do YYYY');
                 var icono = data.tipo ? 'assignment-returned' : 'assignment-return';
-                if(fecha == moment(new Date()).format('MMMM Do YYYY')){
+                if (fecha == moment(new Date()).format('MMMM Do YYYY')) {
                     fecha = "Hoy";
                 }
                 return (
@@ -167,7 +168,6 @@ export default class lista_tareas extends Component {
             });
         }
         else {
-            console.log(this.state.cargando);
             return (
                 <View>
                     {this.state.cargando ? <PulseIndicator color='#1E8AF1' size={60} style={{ marginTop: 30 }} /> : <Text style={{ textAlign: "center" }}> No existen tareas </Text>}

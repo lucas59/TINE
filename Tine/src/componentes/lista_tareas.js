@@ -26,6 +26,7 @@ export default class lista_tareas extends Component {
                 this.promesa().then((lista_SC) => {
                     console.log("lista tareas: ", lista_SC)
                     this.setState({ listaT: lista_SC });
+                    this.setState({ cargando: false });
                 });
             }
         })
@@ -119,6 +120,7 @@ export default class lista_tareas extends Component {
                 if (retorno.retorno == true) {
                     this.setState({ listaT: retorno.mensaje });
                 }
+                this.setState({ cargando: false });
             })
             .catch(function (err) {
                 console.log('error', err);
@@ -187,7 +189,6 @@ export default class lista_tareas extends Component {
             });
         }
         else {
-            console.log("cargando 2", this.state.cargando);
             return (
                 <View>
                     {this.state.cargando ? <PulseIndicator color='#1E8AF1' size={60} style={{ marginTop: 30 }} /> : <Text style={{ textAlign: "center" }}> No existen tareas </Text>}
