@@ -77,7 +77,6 @@ export default class asistencia_app extends Component {
             console.log(foto);
             console.log(fecha);
             console.log(tarea_send.id_empresa);
-            console.log(estado);
             db.transaction(function (tx) {                    
                         db.transaction(function (txx) {
                             txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo,estado) VALUES (?, ?,?,?,?,?)', [tarea_send.id, foto, fecha, tarea_send.id_empresa,tipo,0], (tx, results) => {
