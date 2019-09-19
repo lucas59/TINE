@@ -55,4 +55,5 @@ module.exports = StyleSheet.create({
         borderRadius: 30,
         backgroundColor: "#00BFFF",
     },
+
 });

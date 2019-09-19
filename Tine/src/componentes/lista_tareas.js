@@ -36,7 +36,7 @@ export default class lista_tareas extends Component {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
                     manejador.subirTareas();
-                    manejador.subirAsistencias();
+                    //manejador.subirAsistencias();
                     console.log("online");
                 }
                 else {

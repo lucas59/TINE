@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableHighlight, View, TextInput, KeyboardAvoidingView } from 'react-native';
-import {Button} from 'react-native-elements';
+import { Button } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import DateTimePicker from "react-native-modal-datetime-picker";
 const { server } = require('../config/keys');
@@ -20,22 +20,22 @@ export default class Signup2 extends React.Component {
         celular: null,
         nacimiento: null,
     };
-   /* selectPicture = async () => {
-        await Permissions.askAsync(Permissions.CAMERA_ROLL);
-        const { cancelled, uri } = await ImagePicker.launchImageLibraryAsync({
-            aspect: 1,
-            allowsEditing: true,
-        });
-        if (!cancelled) this.setState({ image: uri });
-    };
-
-    takePicture = async () => {
-        await Permissions.askAsync(Permissions.CAMERA);
-        const { cancelled, uri } = await ImagePicker.launchCameraAsync({
-            allowsEditing: false,
-        });
-        this.setState({ image: uri });
-    };*/
+    /* selectPicture = async () => {
+         await Permissions.askAsync(Permissions.CAMERA_ROLL);
+         const { cancelled, uri } = await ImagePicker.launchImageLibraryAsync({
+             aspect: 1,
+             allowsEditing: true,
+         });
+         if (!cancelled) this.setState({ image: uri });
+     };
+ 
+     takePicture = async () => {
+         await Permissions.askAsync(Permissions.CAMERA);
+         const { cancelled, uri } = await ImagePicker.launchCameraAsync({
+             allowsEditing: false,
+         });
+         this.setState({ image: uri });
+     };*/
 
     showDateTimePicker_inicio = () => {
         this.setState({ isDateTimePickerVisible_inicio: true });
@@ -110,8 +110,8 @@ export default class Signup2 extends React.Component {
                 if (retorno.retorno == true) {
 
                     var nuevaSession = {
-                        id:datosFinales.documento,
-                        tipo:datosFinales.email
+                        id: datosFinales.documento,
+                        tipo: datosFinales.email
                     }
 
                     AsyncStorage.setItem('usuario', JSON.stringify(nuevaSession));
@@ -177,14 +177,18 @@ export default class Signup2 extends React.Component {
                 const retorno = data;
                 console.log('retorno', retorno);
                 if (retorno.retorno == true) {
-                    
-                    var nuevaSession = {
-                        id:datosFinales.documento,
-                        tipo:datosFinales.tipo
-                    }
 
-                    AsyncStorage.setItem('usuario', JSON.stringify(nuevaSession));
-                    this.props.navigation.navigate('login');
+                    var nuevaSession = {
+                        id: datosFinales.documento,
+                        tipo: datosFinales.tipo
+                    }
+                    if (datosFinales.tipo == 1) {
+                        AsyncStorage.setItem('usuario', JSON.stringify(nuevaSession));
+                        this.props.navigation.navigate('lista_empresas');
+                    } else {
+                        this.props.navigation.navigate('login');
+                        alert("Usuario registrado correctamente");
+                    }
                 } else {
                     alert(retorno.mensaje);
                 }
