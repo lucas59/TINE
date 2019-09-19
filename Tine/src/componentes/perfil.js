@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import styles from '../css/stylesPerfil';
 import { Icon } from 'react-native-elements';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 const { server } = require('../config/keys');
 import ActionButton, { renderIcon } from 'react-native-action-button';
 
@@ -229,7 +229,7 @@ export default class Profile extends Component {
           onRequestClose={() => {
             Alert.alert('Modal has been closed.');
           }}>
-          <View style={{ marginTop: 22 }}>
+          <View>
             <ScrollView>
               <View style={styles.container}>
                 <View style={styles.header}></View>
@@ -238,10 +238,10 @@ export default class Profile extends Component {
 
                 <View style={styles.body}>
                   <View style={styles.bodyContent}>
-                    <Text style={styles.name}>{this.state.datos.nombre} {this.state.datos.apellido} </Text>
-                    <Text style={styles.info}>{this.state.datos.email} </Text>
-                    <Text style={styles.info}>{this.state.datos.celular}   </Text>
-
+                    <TextInput style={styles.modificarTextInput}>{this.state.datos.nombre} {this.state.datos.apellido} </TextInput>
+                    <TextInput style={styles.info}>{this.state.datos.email} </TextInput>
+                    <TextInput style={styles.info}>{this.state.datos.celular}   </TextInput>
+                    
                     <TouchableOpacity onPress={ () => this.setModalVisible(false)}  style={styles.buttonContainer}>
                       <Text onPress={ () => this.setModalVisible(false)}>Volver</Text>
                     </TouchableOpacity>
