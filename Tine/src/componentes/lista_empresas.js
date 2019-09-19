@@ -37,6 +37,7 @@ export default class lista_empresas extends Component {
                 this.promesa().then((lista_SC) => {
                     console.log("lista tareas: ", lista_SC)
                     this.setState({ listaT: lista_SC });
+                    this.setState({ cargando: false });
                 });
                 console.log("offline");
             }
@@ -111,8 +112,8 @@ export default class lista_empresas extends Component {
                     this.setState({ listaT: retorno.mensaje });
                 } else {
                     alert(retorno.mensaje);
-                    this.setState({cargando: false});
                 }
+                this.setState({ cargando: false });
             })
             .catch(function (err) {
                 console.log('error', err);

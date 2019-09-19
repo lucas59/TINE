@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Keyboard,Alert, ToastAndroid,  TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, Keyboard, Alert, ToastAndroid, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { RNCamera } from 'react-native-camera';
 import moment from "moment";
@@ -23,7 +23,7 @@ const PendingView = () => (
     </View>
 );
 export default class asistencia_app extends Component {
-    comprobar_conexion(){
+    comprobar_conexion() {
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
                 this.setState({ connection_Status: "Online" });
@@ -53,8 +53,8 @@ export default class asistencia_app extends Component {
         }
     }
 
-    
-    Alta_asistencia = async (camera,tipo) => {
+
+    Alta_asistencia = async (camera, tipo) => {
         Keyboard.dismiss();
         this.comprobar_conexion();
         const options = { quality: 0.5, base64: true, captureAudio: false };
@@ -77,20 +77,20 @@ export default class asistencia_app extends Component {
             console.log(foto);
             console.log(fecha);
             console.log(tarea_send.id_empresa);
-            db.transaction(function (tx) {                    
-                        db.transaction(function (txx) {
-                            txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo,estado) VALUES (?, ?,?,?,?,?)', [tarea_send.id, foto, fecha, tarea_send.id_empresa,tipo,0], (tx, results) => {
-                                console.log(results.rowsAffected);
-                                if (results.rowsAffected > 0) {
-                                    console.log("insertó");
-                                    ToastAndroid.show('La asistencia se ingresó correctamente', ToastAndroid.LONG);
-                                    this.props.navigation.navigate('lista_asistencias');
-                                } else {
-                                    console.log("error");
-                                }
-                            }
-                            );
-                        });
+            db.transaction(function (tx) {
+                db.transaction(function (txx) {
+                    txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo,estado) VALUES (?, ?,?,?,?,?)', [tarea_send.id, foto, fecha, tarea_send.id_empresa, tipo, 0], (tx, results) => {
+                        console.log(results.rowsAffected);
+                        if (results.rowsAffected > 0) {
+                            console.log("insertó");
+                            ToastAndroid.show('La asistencia se ingresó correctamente', ToastAndroid.LONG);
+                            this.props.navigation.navigate('lista_asistencias');
+                        } else {
+                            console.log("error");
+                        }
+                    }
+                    );
+                });
 
             });
         }
@@ -127,7 +127,7 @@ export default class asistencia_app extends Component {
                     console.log('error', err);
                 })
         }
-        
+
     }
 
 
@@ -148,10 +148,10 @@ export default class asistencia_app extends Component {
                                         "Opciones",
                                         "¿Usted esta ingresando o saliendo del establecimiento?",
                                         [
-                                            { text: "Entrando", onPress: () => this.Alta_asistencia(camera,1)},
+                                            { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
                                             {
                                                 text: "Saliendo",
-                                                onPress: () => this.Alta_asistencia(camera,0),
+                                                onPress: () => this.Alta_asistencia(camera, 0),
                                             },
                                         ],
                                         { cancelable: true }
