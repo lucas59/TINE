@@ -8,7 +8,7 @@ const manejador = {};
 manejador.subirTareas = () => {
     db.transaction(function (txn) {
         txn.executeSql("SELECT * FROM tarea WHERE estado = 0", [], (tx, res) => {
-           
+
             if (res.rows.length > 0) {
                 for (var i = 0; i < res.rows.length; i++) {
                     let tarea = {
@@ -23,6 +23,7 @@ manejador.subirTareas = () => {
                         lat_fin: res.rows.item(i).latitud_fin,
                         long_fin: res.rows.item(i).longitud_fin
                     }
+
 
 
                     fetch(server.api + 'Alta_tarea', {
@@ -64,6 +65,54 @@ manejador.subirTareas = () => {
 
 }
 
+
+
+promesasubirAsistencia = async (datos) => {
+    return new Promise(function (resolve, reject) {
+        fetch(server.api + 'Alta_asistencia', {
+            method: 'POST',
+            headers: {
+                'Aceptar': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(datos)
+        })
+            .then(res => {
+                return res.json()
+            })
+            .then(async data => {
+
+                if (data.retorno == true) {
+                    console.log("La marca se dio de alta correctamente");
+                    marcarAsistencia(datos.id).then((retorno) => {
+                        console.log("retorno de marca: ", retorno);
+                        resolve(true);
+                    });
+                } else {
+                    console.log("Error al subir la asistencia");
+                }
+            })
+            .catch(function (err) {
+                console.log('error', err);
+            })
+    });
+}
+
+marcarAsistencia = async (id) => {
+    return new Promise(function (resolve, reject) {
+        db.transaction(function (txn) {
+            txn.executeSql("UPDATE asistencia SET estado=1 WHERE id = ?", [id], (tx, res) => {
+                console.log(res.rowsAffected)
+                if (res.rowsAffected > 0) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            })
+        })
+    });
+}
+
 manejador.marcarTarea = (id) => {
     console.log("id ", id)
 
@@ -80,24 +129,6 @@ manejador.marcarTarea = (id) => {
 }
 
 
-
-manejador.marcarAsistencia = (id) => {
-    console.log("id ",id)
-
-    db.transaction(function(txn){
-        txn.executeSql("UPDATE asistencia SET estado=1 WHERE id = ?",[id], (tx,res)=>{
-            console.log(res.rowsAffected)
-            if (res.rowsAffected > 0) {
-                console.log("Se modifico el estado de la asistencia ", id);
-            } else {
-                console.log("error");
-            }
-        })
-    })
-}
-
-
-
 manejador.subirAsistencias = () => {
     console.log("subiendo asis");
     db.transaction(function (txn) {
@@ -105,15 +136,22 @@ manejador.subirAsistencias = () => {
             if (res.rows.length > 0) {
                 for (var i = 0; i < res.rows.length; i++) {
                     var datos = {
-                        id:res.rows.item(i).id,
+                        id: res.rows.item(i).id,
                         fecha: res.rows.item(i).fecha,
                         foto: res.rows.item(i).foto,
                         empleado_id: res.rows.item(i).empleado_id,
-                        tipo:res.rows.item(i).tipo,
-                        empresa_id:res.rows.item(i).empresa_id
+                        tipo: res.rows.item(i).tipo,
+                        empresa_id: res.rows.item(i).empresa_id,
+                        estado: res.rows.item(i).estado
                     }
 
-                    fetch(server.api + 'Alta_asistencia', {
+                    console.log("datos: ", datos);
+
+                    promesasubirAsistencia(datos).then((retorno) => {
+                        console.log("retornoFinal: ", retorno);
+                    });
+
+                  /*  fetch(server.api + 'Alta_asistencia', {
                         method: 'POST',
                         headers: {
                             'Aceptar': 'application/json',
@@ -137,7 +175,7 @@ manejador.subirAsistencias = () => {
                         .catch(function (err) {
                             console.log('error', err);
                         })
-
+*/
 
                 }
             } else {
