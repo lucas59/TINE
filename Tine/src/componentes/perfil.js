@@ -6,9 +6,9 @@ import {
   View,
   Image,
   TouchableOpacity,
-  Modal,
-  TouchableHighlight
+  Modal
 } from 'react-native';
+import { Button } from 'react-native-paper';
 import styles from '../css/stylesPerfil';
 import { Icon } from 'react-native-elements';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
@@ -20,7 +20,7 @@ export default class Profile extends Component {
   static navigationOptions = {
     title: 'TINE',
     headerStyle: {
-      backgroundColor: '#1E8AF1',
+      backgroundColor: '#008FAD',
     },
     headerTintColor: '#fff',
     headerTitleStyle: {
@@ -198,13 +198,12 @@ export default class Profile extends Component {
                 <Text style={styles.name}>{this.state.datos.nombre} {this.state.datos.apellido} </Text>
                 <Text style={styles.info}>{this.state.datos.email} </Text>
                 <Text style={styles.info}>{this.state.datos.celular}   </Text>
-
-                <TouchableOpacity onPress={this.desactivarCuenta} style={styles.buttonContainer}>
-                  <Text onPress={this.desactivarCuenta}>Desactivar cuenta</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this.confirmCerrarSession} style={styles.buttonContainer}>
-                  <Text onPress={this.confirmCerrarSession} >Cerrar sesion</Text>
-                </TouchableOpacity>
+                <Button style={styles.buttonContainer} color="#008FAD" mode="contained" onPress={this.desactivarCuenta}>
+                  Desactivar cuenta
+  </Button>
+                <Button style={styles.buttonContainer} color="#008FAD" mode="contained" onPress={this.confirmCerrarSession}>
+                  Cerrar sesión
+  </Button>
               </View>
             </View>
           </View>
@@ -214,7 +213,7 @@ export default class Profile extends Component {
           renderIcon={active => (
             <Icon name="edit" color='white' />
           )}
-          buttonColor="#1E8AF1"
+          buttonColor="#008FAD"
           //onPress={() => { this.props.navigation.navigate('modificarPerfil'); }}
           onPress={() => {
             this.setModalVisible(true);
@@ -241,9 +240,9 @@ export default class Profile extends Component {
                     <TextInput style={styles.modificarTextInput}>{this.state.datos.nombre} {this.state.datos.apellido} </TextInput>
                     <TextInput style={styles.info}>{this.state.datos.email} </TextInput>
                     <TextInput style={styles.info}>{this.state.datos.celular}   </TextInput>
-                    
-                    <TouchableOpacity onPress={ () => this.setModalVisible(false)}  style={styles.buttonContainer}>
-                      <Text onPress={ () => this.setModalVisible(false)}>Volver</Text>
+
+                    <TouchableOpacity onPress={() => this.setModalVisible(false)} style={styles.buttonContainer}>
+                      <Text onPress={() => this.setModalVisible(false)}>Volver</Text>
                     </TouchableOpacity>
                   </View>
                 </View>

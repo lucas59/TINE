@@ -22,8 +22,41 @@ export default class lista_empresas extends Component {
             cargando: true
         }
     }
-
+    configuraciones = async () => {
+        Keyboard.dismiss();
+        let session = await AsyncStorage.getItem('empresa');
+        let sesion = JSON.parse(session);
+        let tarea_send = {
+            id_empresa: sesion[0]
+        }
+        console.log("empresa conectada", tarea_send);
+        await fetch(server.api + 'configuraciones_empresa', {
+            method: 'POST',
+            headers: {
+                'Aceptar': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(tarea_send)
+        })
+            .then(res => {
+                return res.json()
+            })
+            .then(data => {
+                const retorno = data;
+                if (retorno.retorno == true) {
+                    console.log("ret ", retorno.mensaje[0].asistencias.data[0]);
+                    this.setState({ listaT: retorno.mensaje });
+                } else {
+                    alert(retorno.mensaje);
+                }
+                this.setState({ cargando: false });
+            })
+            .catch(function (err) {
+                console.log('error', err);
+            })
+    }
     componentDidMount() {
+        this.configuraciones();
         NetInfo.isConnected.fetch().done(async (isConnected) => {
             if (isConnected == true) {
                 let session = await AsyncStorage.getItem('usuario');
@@ -62,7 +95,7 @@ export default class lista_empresas extends Component {
         return {
             title: 'Lista de empresas',
             headerStyle: {
-                backgroundColor: '#1E8AF1',
+                backgroundColor: '#008FAD',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -73,7 +106,7 @@ export default class lista_empresas extends Component {
                     reverse
                     name='face'
                     type='material'
-                    color='#1E8AF1'
+                    color='#008FAD'
                     onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
             ),
 
@@ -133,6 +166,7 @@ export default class lista_empresas extends Component {
     parseData() {
         if (this.state.listaT) {
             return this.state.listaT.map((data, i) => {
+                console.log(data.fotoPerfil);
                 return (
                     <ListItem
                         key={i}
