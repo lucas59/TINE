@@ -25,12 +25,35 @@ export default class Menu_listas extends Component {
             ),
         }
     };
+    constructor(props) {
+        super(props);
+        this.state = {
+            tarea: 1,
+            asistencias: 1
+        }
+    }
+
+    async componentDidMount() {
+        try {
+            const value = await AsyncStorage.getItem('configuraciones');
+            if (value !== null) {
+                this.setState({ 'tarea': JSON.parse(value).tareas.data[0] });
+                this.setState({ 'asistencias': JSON.parse(value).asistencias.data[0] });
+            }
+        } catch (e) {
+            console.log("error", e);
+        }
+    }
+
+
+
+
 
     render() {
         return (
             <View style={styles.container}>
                 <View style={styles.buttonContainer}>
-                    <Button
+                    {this.state.tarea ? <Button
                         mode="contained"
                         onPress={() => {
                             this.props.navigation.navigate('lista_tareas');
@@ -38,10 +61,10 @@ export default class Menu_listas extends Component {
                         color="#008FAD"
                     >
                         Listas de tareas
-                        </Button>
+                        </Button> : null}
                 </View>
                 <View style={styles.buttonContainer}>
-                    <Button
+                    {this.state.asistencias ? <Button
                         onPress={() => {
                             this.props.navigation.navigate('lista_asistencias');
                         }}
@@ -49,7 +72,8 @@ export default class Menu_listas extends Component {
                         color="#008FAD"
                     >
                         Lista de asistencias
-                        </Button>
+                        </Button> : null}
+
                 </View>
             </View>
         )

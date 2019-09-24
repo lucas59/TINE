@@ -24,6 +24,7 @@ export default class lista_empresas extends Component {
     }
     configuraciones = async () => {
         Keyboard.dismiss();
+        var obj;
         let session = await AsyncStorage.getItem('empresa');
         let sesion = JSON.parse(session);
         let tarea_send = {
@@ -41,11 +42,16 @@ export default class lista_empresas extends Component {
             .then(res => {
                 return res.json()
             })
-            .then(data => {
+            .then(async data => {
                 const retorno = data;
+                console.log(retorno.retorno);
                 if (retorno.retorno == true) {
-                    console.log("ret ", retorno.mensaje[0].asistencias.data[0]);
-                    this.setState({ listaT: retorno.mensaje });
+                    try {
+                        await AsyncStorage.setItem('configuraciones', JSON.stringify(retorno.mensaje[0]));
+                    } catch (e) {
+                        console.log("error", e);
+                        // saving error
+                    }
                 } else {
                     alert(retorno.mensaje);
                 }
@@ -54,6 +60,7 @@ export default class lista_empresas extends Component {
             .catch(function (err) {
                 console.log('error', err);
             })
+
     }
     componentDidMount() {
         this.configuraciones();
@@ -139,7 +146,6 @@ export default class lista_empresas extends Component {
             })
             .then(data => {
                 const retorno = data;
-
                 if (retorno.retorno == true) {
                     console.log(retorno.mensaje);
                     this.setState({ listaT: retorno.mensaje });
@@ -180,7 +186,7 @@ export default class lista_empresas extends Component {
         else {
             return (
                 <View>
-                    {this.state.cargando ? <PulseIndicator color='#1E8AF1' size={60} style={{ marginTop: 30 }} /> : <Text style={{ textAlign: "center" }}> No existen empresas </Text>}
+                    {this.state.cargando ? <PulseIndicator color='#008FAD' size={60} style={{ marginTop: 30 }} /> : <Text style={{ textAlign: "center" }}> No existen empresas </Text>}
                 </View>
             )
 
@@ -199,31 +205,3 @@ export default class lista_empresas extends Component {
         )
     }
 }
-const styles = StyleSheet.create({
-    container: {
-        justifyContent: 'center'
-    },
-    titulo: {
-        fontSize: 20,
-        textAlign: 'center',
-        fontWeight: 'bold'
-    },
-    button: {
-        width: 300,
-        backgroundColor: '#4f83cc',
-        borderRadius: 25,
-        marginVertical: 10,
-        paddingVertical: 12
-    },
-    lista: {
-        marginTop: 5,
-        marginBottom: 5
-    },
-    screen: {
-        backgroundColor: '#3D3D3D',
-        flex: 1,
-        paddingTop: 50,
-        alignItems: 'center',
-        //padding: 10
-    },
-});

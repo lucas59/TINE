@@ -34,7 +34,7 @@ export default class Alta_tarea extends Component {
         return {
             title: 'TINE',
             headerStyle: {
-                backgroundColor: '#5BACA2',
+                backgroundColor: '#008FAD',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -45,7 +45,7 @@ export default class Alta_tarea extends Component {
                     reverse
                     name='face'
                     type='material'
-                    color='#5BACA2'
+                    color='#008FAD'
                     onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
             ),
         }
@@ -228,12 +228,12 @@ export default class Alta_tarea extends Component {
                     style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 30 }}
                     onChangeText={(titulo) => this.setState({ titulo })}
                     placeholder="¿En qué estás trabajando?"
-                    selectionColor="#5BACA2"
-                    underlineColor="#5BACA2"
+                    selectionColor="#008FAD"
+                    underlineColor="#008FAD"
                     autoFocus={true}
                     theme={{
                         colors: {
-                            primary: '#5BACA2',
+                            primary: '#008FAD',
                             underlineColor: 'transparent',
                         }
 
@@ -255,7 +255,7 @@ const options = {
         padding: 5,
         borderRadius: 200,
         borderWidth: 6,
-        borderColor: '#5BACA2',
+        borderColor: '#008FAD',
         width: 260,
         height: 260,
         justifyContent: 'center',

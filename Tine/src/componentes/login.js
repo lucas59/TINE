@@ -10,7 +10,9 @@ import DeviceInfo from 'react-native-device-info';
 var timer;
 
 export default class Login extends Component {
-
+    componentDidMount() {
+        this.configuraciones();
+    }
 
 
     static navigationOptions = {
@@ -22,7 +24,8 @@ export default class Login extends Component {
         this.state = {
             email: '',
             password: '',
-            endpoint: "http://localhost:4005"
+            endpoint: "http://localhost:4005",
+            modoTablet: 1
 
         }
         this.checkSession();
@@ -82,12 +85,27 @@ export default class Login extends Component {
                         AsyncStorage.setItem('usuario', JSON.stringify(retorno));
                         this.props.navigation.navigate('Inicio');
                     } else {
-                        DeviceInfo.isTablet().then(isTablet => {
+                        DeviceInfo.isTablet().then(async isTablet => {
                             console.log(isTablet);
                             if (isTablet) {
-                                AsyncStorage.setItem('usuario', JSON.stringify(retorno));
-                                this.props.navigation.navigate('modoTablet');
-                                manejador.bajarEmpleadosEmpresa(retorno.id);
+                                try {
+                                    const value = await AsyncStorage.getItem('configuraciones');
+                                    if (value !== null) {
+                                        this.setState({ 'modoTablet': JSON.parse(value).modoTablet.data[0] });
+                                    }
+                                } catch (e) {
+                                    console.log("error", e);
+                                }
+                                if (this.state.modoTablet) {
+                                    AsyncStorage.setItem('usuario', JSON.stringify(retorno));
+                                    this.props.navigation.navigate('modoTablet');
+                                    manejador.bajarEmpleadosEmpresa(retorno.id);
+                                } else {
+                                    Alert.alert(
+                                        "Alerta",
+                                        "Usted no tiene permitido el ingreso en una tablet",
+                                    )
+                                }
                             } else {
                                 Alert.alert(
                                     "Alerta",
@@ -109,6 +127,46 @@ export default class Login extends Component {
 
     }
 
+    configuraciones = async () => {
+        Keyboard.dismiss();
+        var obj;
+        let session = await AsyncStorage.getItem('empresa');
+        let sesion = JSON.parse(session);
+        let tarea_send = {
+            id_empresa: sesion[0]
+        }
+        console.log("empresa conectada", tarea_send);
+        await fetch(server.api + 'configuraciones_empresa', {
+            method: 'POST',
+            headers: {
+                'Aceptar': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(tarea_send)
+        })
+            .then(res => {
+                return res.json()
+            })
+            .then(async data => {
+                const retorno = data;
+                console.log(retorno.retorno);
+                if (retorno.retorno == true) {
+                    try {
+                        await AsyncStorage.setItem('configuraciones', JSON.stringify(retorno.mensaje[0]));
+                    } catch (e) {
+                        console.log("error", e);
+                        // saving error
+                    }
+                } else {
+                    alert(retorno.mensaje);
+                }
+                this.setState({ cargando: false });
+            })
+            .catch(function (err) {
+                console.log('error', err);
+            })
+
+    }
     showData = async () => {
         let loginDetails = await AsyncStorage.getItem('usuario');
         let ld = JSON.parse(loginDetails);
