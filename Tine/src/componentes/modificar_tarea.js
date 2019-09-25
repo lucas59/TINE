@@ -16,7 +16,7 @@ export default class Alta_tarea extends Component {
         return {
             title: 'TINE',
             headerStyle: {
-                backgroundColor: '#1E8AF1',
+                backgroundColor: '#008FAD',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -27,7 +27,7 @@ export default class Alta_tarea extends Component {
                     reverse
                     name='face'
                     type='material'
-                    color='#1E8AF1'
+                    color='#008FAD'
                     onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
             ),
         }
@@ -196,7 +196,7 @@ export default class Alta_tarea extends Component {
                     value={this.state.tarea_titulo}
 
                 />
-                <Divider style={{ backgroundColor: 'blue' }} />
+                <Divider style={{ backgroundColor: '#008FAD' }} />
                 <Button
                     title={"Fecha de inicio: " + moment(this.state.tarea_inicio).format('MMMM Do YYYY, HH:mm').toString()}
                     onPress={this.showDateTimePicker_inicio}
@@ -209,7 +209,7 @@ export default class Alta_tarea extends Component {
                     mode={'datetime'}
                     date={moment(this.state.tarea_inicio).toDate()}
                 />
-                <Divider style={{ backgroundColor: 'blue' }} />
+                <Divider style={{ backgroundColor: '#008FAD' }} />
                 <Button
                     title={"Fecha de fin: " + moment(this.state.tarea_fin).format('MMMM Do YYYY, HH:mm').toString()}
                     onPress={this.showDateTimePicker_fin}
@@ -222,7 +222,7 @@ export default class Alta_tarea extends Component {
                     mode={'datetime'}
                     date={moment(this.state.tarea_fin).toDate()}
                 />
-                <Divider style={{ backgroundColor: 'blue' }} />
+                <Divider style={{ backgroundColor: '#008FAD' }} />
                 <TouchableOpacity style={styles.button}>
                     <Text style={styles.buttonText} onPress={this.saveData}>Aceptar</Text>
                 </TouchableOpacity>
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: 300,
-        backgroundColor: '#4f83cc',
+        backgroundColor: '#008FAD',
         borderRadius: 25,
         marginVertical: 10,
         paddingVertical: 12

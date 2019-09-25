@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ToastAndroid, PermissionsAndroid } from 'react-native';
+import { Text, View, ToastAndroid, PermissionsAndroid } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
-import { Button, Input, Icon } from 'react-native-elements';
+import { Input, Icon } from 'react-native-elements';
 import { TouchableHighlight } from 'react-native';
 import { Stopwatch } from 'react-native-stopwatch-timer';
 //import Geolocation from '@react-native-community/geolocation';
@@ -12,6 +13,7 @@ import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 import styles from '../css/styleAlta_tarea';
+import { Button } from 'react-native-paper';
 export default class Alta_tarea extends Component {
     comprobar_conexion() {
         NetInfo.isConnected.fetch().done((isConnected) => {
@@ -32,7 +34,7 @@ export default class Alta_tarea extends Component {
         return {
             title: 'TINE',
             headerStyle: {
-                backgroundColor: '#1E8AF1',
+                backgroundColor: '#008FAD',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -43,7 +45,7 @@ export default class Alta_tarea extends Component {
                     reverse
                     name='face'
                     type='material'
-                    color='#1E8AF1'
+                    color='#008FAD'
                     onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
             ),
         }
@@ -214,37 +216,54 @@ export default class Alta_tarea extends Component {
     render() {
         return (
 
-            <>
-                <View style={styles.container}>
-                    <Input
-                        onChangeText={(titulo) => this.setState({ titulo })}
-                        placeholder="Titulo de la tarea"
-                    />
-                    <Stopwatch laps msecs start={this.state.stopwatchStart}
-                        reset={this.state.stopwatchReset}
-                        options={options}
-                        getTime={this.getFormattedTime} />
-                    <TouchableHighlight onPress={this.toggleStopwatch}>
-                        <Text style={{ fontSize: 30 }}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
-                    </TouchableHighlight>
 
-                </View>
-            </>
+            <View style={styles.container}>
+                <Stopwatch laps msecs start={this.state.stopwatchStart}
+                    reset={this.state.stopwatchReset}
+                    options={options}
+                    msecs={false}
+                    getTime={this.getFormattedTime} />
+                <TextInput
+                    label="Titulo de la tarea"
+                    style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 30 }}
+                    onChangeText={(titulo) => this.setState({ titulo })}
+                    placeholder="¿En qué estás trabajando?"
+                    selectionColor="#008FAD"
+                    underlineColor="#008FAD"
+                    autoFocus={true}
+                    theme={{
+                        colors: {
+                            primary: '#008FAD',
+                            underlineColor: 'transparent',
+                        }
+
+                    }}
+                />
+                <Button style={{ width: 160, height: 50 }} color="#008FAD" mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}>
+                    <Text style={{ fontSize: 23 }}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
+                </Button>
+
+            </View>
+
         )
     }
 }
 
 const options = {
     container: {
-        backgroundColor: '#1E8AF1',
+        backgroundColor: '#E8E8E8',
         padding: 5,
-        borderRadius: 10,
-        width: 200,
+        borderRadius: 200,
+        borderWidth: 6,
+        borderColor: '#008FAD',
+        width: 260,
+        height: 260,
+        justifyContent: 'center',
         alignItems: 'center',
     },
     text: {
-        fontSize: 25,
-        color: '#FFF',
-        marginLeft: 7,
+        fontSize: 50,
+        color: 'black',
     },
 };
+

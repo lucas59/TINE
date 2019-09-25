@@ -50,7 +50,7 @@ export default class lista_tareas extends Component {
         return {
             title: 'Listas de asistencias',
             headerStyle: {
-                backgroundColor: '#1E8AF1',
+                backgroundColor: '#008FAD',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -61,7 +61,7 @@ export default class lista_tareas extends Component {
                     reverse
                     name='face'
                     type='material'
-                    color='#1E8AF1'
+                    color='#008FAD'
                     onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
 
             ),
@@ -170,7 +170,7 @@ export default class lista_tareas extends Component {
         else {
             return (
                 <View>
-                    {this.state.cargando ? <PulseIndicator color='#1E8AF1' size={60} style={{ marginTop: 30 }} /> : <Text style={{ textAlign: "center" }}> No existen tareas </Text>}
+                    {this.state.cargando ? <PulseIndicator color='#008FAD' size={60} style={{ marginTop: 30 }} /> : <Text style={{ textAlign: "center" }}> No existen tareas </Text>}
                 </View>
             )
 
@@ -195,7 +195,7 @@ export default class lista_tareas extends Component {
                     {this.parseData()}
                 </ScrollView>
                 <ActionButton
-                    buttonColor="#1E8AF1"
+                    buttonColor="#008FAD"
                     onPress={() => { this.props.navigation.navigate('asistencia_app'); }}
                 />
             </>
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     },
     button: {
         width: 300,
-        backgroundColor: '#4f83cc',
+        backgroundColor: '#008FAD',
         borderRadius: 25,
         marginVertical: 10,
         paddingVertical: 12

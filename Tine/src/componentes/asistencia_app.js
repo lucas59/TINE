@@ -14,7 +14,7 @@ const PendingView = () => (
     <View
         style={{
             flex: 1,
-            backgroundColor: 'lightgreen',
+            backgroundColor: '#008FAD',
             justifyContent: 'center',
             alignItems: 'center',
         }}
@@ -23,6 +23,32 @@ const PendingView = () => (
     </View>
 );
 export default class asistencia_app extends Component {
+    comprobar_ultima_asistencia_online = async () => {
+        let session = await AsyncStorage.getItem('usuario');
+        let sesion = JSON.parse(session);
+        let session_2 = await AsyncStorage.getItem('empresa');
+        let empresa = JSON.parse(session_2);
+        var empresa_id = empresa[0];
+        return new Promise(function (resolve, reject) {
+            setTimeout(() => {
+                db.transaction(function (tx) {
+                    console.log("entra", sesion.id);
+                    console.log("entra", empresa_id);
+                    tx.executeSql('SELECT * FROM asistencia WHERE id=(SELECT MAX(id) from asistencia) AND empleado_id = ? AND empresa_id = ? AND tipo = 1', [sesion.id, empresa_id], (tx, results) => {
+                        if (results.rows.length > 0) {
+                            resolve(1);
+                        }
+                        else {
+                            resolve(2);
+                        }
+                    });
+                });
+            }, 1000);
+        });
+
+    }
+
+
     comprobar_conexion() {
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
@@ -34,8 +60,60 @@ export default class asistencia_app extends Component {
             }
         })
     }
-    componentDidMount() {
+
+    componentDidMount = async () => {
         this.comprobar_conexion();
+
+        if (this.state.connection_Status == "Offline") {
+            this.comprobar_ultima_asistencia_online().then((data) => {
+                console.log("data", data);
+                if (data == 1) {
+                    this.setState({ mensaje_alert: "Su ultima asistencia fue una entrada,¿Usted esta ingresando o saliendo del establecimiento?" });
+                }
+                else if (data == 2) {
+                    this.setState({ mensaje_alert: "¿Usted esta ingresando o saliendo del establecimiento?" });
+                }
+            });
+        }
+        else {
+            let session = await AsyncStorage.getItem('usuario');
+            let sesion = JSON.parse(session);
+            let session_2 = await AsyncStorage.getItem('empresa');
+            let empresa = JSON.parse(session_2);
+            let loginDetails = {
+                id_usuario: sesion.id,
+                id_empresa: empresa[0]
+            }
+            fetch(server.api + 'login_tablet', {
+                method: 'POST',
+                headers: {
+                    'Aceptar': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginDetails)
+            })
+                .then(res => {
+                    return res.json()
+                })
+                .then(data => {
+                    const retorno = data;
+                    console.log(retorno);
+                    if (retorno.retorno == true) {
+                        this.state.empleado_id = retorno.id;
+                        if (retorno.estado_ree == 1) {
+                            this.setState({ mensaje_alert: retorno.mensaje });
+                        }
+                        else {
+                            this.setState({ mensaje_alert: retorno.mensaje });
+                        }
+                    } else {
+                        ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
+                    }
+                })
+                .catch(function (err) {
+                    console.log('error', err);
+                })
+        }
     }
     static navigationOptions = {
         header: null
@@ -146,7 +224,7 @@ export default class asistencia_app extends Component {
                                 <View style={{ position: 'relative', bottom: 0, left: 0, right: 0 }}>
                                     <TouchableOpacity onPress={() => Alert.alert(
                                         "Opciones",
-                                        "¿Usted esta ingresando o saliendo del establecimiento?",
+                                        this.state.mensaje_alert,
                                         [
                                             { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
                                             {
@@ -178,7 +256,7 @@ const styles = StyleSheet.create({
     },
     capture: {
         flex: 0,
-        backgroundColor: '#1E8AF1',
+        backgroundColor: '#008FAD',
         borderRadius: 5,
         padding: 15,
         alignSelf: 'center',

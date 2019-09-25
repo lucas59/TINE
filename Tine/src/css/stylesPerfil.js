@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 module.exports = StyleSheet.create({
     header: {
-        backgroundColor: "#00BFFF",
+        backgroundColor: "#008FAD",
         height: 200,
     },
     avatar: {
@@ -53,7 +53,6 @@ module.exports = StyleSheet.create({
         marginBottom: 20,
         width: 250,
         borderRadius: 30,
-        backgroundColor: "#00BFFF",
     },
 
 });

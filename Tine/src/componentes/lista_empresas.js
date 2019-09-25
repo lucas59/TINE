@@ -22,8 +22,48 @@ export default class lista_empresas extends Component {
             cargando: true
         }
     }
+    configuraciones = async () => {
+        Keyboard.dismiss();
+        var obj;
+        let session = await AsyncStorage.getItem('empresa');
+        let sesion = JSON.parse(session);
+        let tarea_send = {
+            id_empresa: sesion[0]
+        }
+        console.log("empresa conectada", tarea_send);
+        await fetch(server.api + 'configuraciones_empresa', {
+            method: 'POST',
+            headers: {
+                'Aceptar': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(tarea_send)
+        })
+            .then(res => {
+                return res.json()
+            })
+            .then(async data => {
+                const retorno = data;
+                console.log(retorno.retorno);
+                if (retorno.retorno == true) {
+                    try {
+                        await AsyncStorage.setItem('configuraciones', JSON.stringify(retorno.mensaje[0]));
+                    } catch (e) {
+                        console.log("error", e);
+                        // saving error
+                    }
+                } else {
+                    alert(retorno.mensaje);
+                }
+                this.setState({ cargando: false });
+            })
+            .catch(function (err) {
+                console.log('error', err);
+            })
 
+    }
     componentDidMount() {
+        this.configuraciones();
         NetInfo.isConnected.fetch().done(async (isConnected) => {
             if (isConnected == true) {
                 let session = await AsyncStorage.getItem('usuario');
@@ -62,7 +102,7 @@ export default class lista_empresas extends Component {
         return {
             title: 'Lista de empresas',
             headerStyle: {
-                backgroundColor: '#1E8AF1',
+                backgroundColor: '#008FAD',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -73,7 +113,7 @@ export default class lista_empresas extends Component {
                     reverse
                     name='face'
                     type='material'
-                    color='#1E8AF1'
+                    color='#008FAD'
                     onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
             ),
 
@@ -106,7 +146,6 @@ export default class lista_empresas extends Component {
             })
             .then(data => {
                 const retorno = data;
-
                 if (retorno.retorno == true) {
                     console.log(retorno.mensaje);
                     this.setState({ listaT: retorno.mensaje });
@@ -133,6 +172,7 @@ export default class lista_empresas extends Component {
     parseData() {
         if (this.state.listaT) {
             return this.state.listaT.map((data, i) => {
+                console.log(data.fotoPerfil);
                 return (
                     <ListItem
                         key={i}
@@ -146,7 +186,7 @@ export default class lista_empresas extends Component {
         else {
             return (
                 <View>
-                    {this.state.cargando ? <PulseIndicator color='#1E8AF1' size={60} style={{ marginTop: 30 }} /> : <Text style={{ textAlign: "center" }}> No existen empresas </Text>}
+                    {this.state.cargando ? <PulseIndicator color='#008FAD' size={60} style={{ marginTop: 30 }} /> : <Text style={{ textAlign: "center" }}> No existen empresas </Text>}
                 </View>
             )
 
@@ -165,31 +205,3 @@ export default class lista_empresas extends Component {
         )
     }
 }
-const styles = StyleSheet.create({
-    container: {
-        justifyContent: 'center'
-    },
-    titulo: {
-        fontSize: 20,
-        textAlign: 'center',
-        fontWeight: 'bold'
-    },
-    button: {
-        width: 300,
-        backgroundColor: '#4f83cc',
-        borderRadius: 25,
-        marginVertical: 10,
-        paddingVertical: 12
-    },
-    lista: {
-        marginTop: 5,
-        marginBottom: 5
-    },
-    screen: {
-        backgroundColor: '#3D3D3D',
-        flex: 1,
-        paddingTop: 50,
-        alignItems: 'center',
-        //padding: 10
-    },
-});
