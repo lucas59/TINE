@@ -87,19 +87,17 @@ export default class lista_empresas extends Component {
         console.log('offline');
       }
     });
-    
     MqttService.connectClient(this.mqttSuccessHandler,this.mqttConnectionLostHandler,);
   }
 
   onWORLD = mensaje => {
-    console.log(mensaje);
-    this.setState({mensaje});
+    //this.setState({mensaje});
     ToastAndroid.show(mensaje,ToastAndroid.LONG);
 
     PushNotification.localNotification({
       //... You can use all the options from localNotifications
       message: mensaje, // (required)
-      date: new Date(Date.now() + 60 * 1000) // in 60 secs
+      date: new Date(Date.now() + 60 * 1000) // in 6  0 secs
     });
   };
 
@@ -111,7 +109,7 @@ export default class lista_empresas extends Component {
     console.log("documento",sesion.id);
 
     console.info('connected to mqtt');
-    MqttService.subscribe('WORLD', this.onWORLD);
+  //  MqttService.subscribe('WORLD', this.onWORLD);
     MqttService.subscribe("tip"+sesion.id, this.onWORLD);
     
     //MqttService.subscribe(sesion.id, this.onWORLD);
