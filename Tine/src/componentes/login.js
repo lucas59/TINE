@@ -10,10 +10,6 @@ import DeviceInfo from 'react-native-device-info';
 var timer;
 
 export default class Login extends Component {
-    componentDidMount() {
-        this.configuraciones();
-    }
-
 
     static navigationOptions = {
         title: 'Ingresar',
@@ -64,7 +60,6 @@ export default class Login extends Component {
             email: email,
             password: password
         }
-
         fetch(server.api + 'login', {
             method: 'POST',
             headers: {
@@ -87,6 +82,8 @@ export default class Login extends Component {
                     } else {
                         DeviceInfo.isTablet().then(async isTablet => {
                             console.log(isTablet);
+                            AsyncStorage.setItem('usuario', JSON.stringify(retorno));
+                            this.configuraciones();
                             if (isTablet) {
                                 try {
                                     const value = await AsyncStorage.getItem('configuraciones');
@@ -96,8 +93,8 @@ export default class Login extends Component {
                                 } catch (e) {
                                     console.log("error", e);
                                 }
+                                console.log("Modo tablet: ", modoTablet);
                                 if (this.state.modoTablet) {
-                                    AsyncStorage.setItem('usuario', JSON.stringify(retorno));
                                     this.props.navigation.navigate('modoTablet');
                                     manejador.bajarEmpleadosEmpresa(retorno.id);
                                 } else {
@@ -122,14 +119,13 @@ export default class Login extends Component {
             })
             .catch(function (err) {
                 console.log(err);
-                ToastAndroid.show("Compruebe su conexión", ToastAndroid.LONG);
+                ToastAndroid.show("Compruebe su conexión" + err, ToastAndroid.LONG);
             })
 
     }
 
     configuraciones = async () => {
         Keyboard.dismiss();
-        var obj;
         let session = await AsyncStorage.getItem('empresa');
         let sesion = JSON.parse(session);
         let tarea_send = {
