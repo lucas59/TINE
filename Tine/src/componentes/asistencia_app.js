@@ -23,7 +23,7 @@ const PendingView = () => (
     </View>
 );
 export default class asistencia_app extends Component {
-    comprobar_ultima_asistencia_online = async () => {
+    comprobar_ultima_asistencia_offline = async () => {
         let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
         let session_2 = await AsyncStorage.getItem('empresa');
@@ -49,71 +49,68 @@ export default class asistencia_app extends Component {
     }
 
 
-    comprobar_conexion() {
-        NetInfo.isConnected.fetch().done((isConnected) => {
+    comprobar_conexion = async () => {
+        NetInfo.isConnected.fetch().done(async (isConnected) => {
             if (isConnected == true) {
                 this.setState({ connection_Status: "Online" });
+                let session = await AsyncStorage.getItem('usuario');
+                let sesion = JSON.parse(session);
+                let session_2 = await AsyncStorage.getItem('empresa');
+                let empresa = JSON.parse(session_2);
+                let loginDetails = {
+                    id_usuario: sesion.id,
+                    id_empresa: empresa[0]
+                }
+                fetch(server.api + 'login_tablet', {
+                    method: 'POST',
+                    headers: {
+                        'Aceptar': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(loginDetails)
+                })
+                    .then(res => {
+                        return res.json()
+                    })
+                    .then(data => {
+                        const retorno = data;
+                        console.log(retorno);
+                        if (retorno.retorno == true) {
+                            this.state.empleado_id = retorno.id;
+                            if (retorno.estado_ree == 1) {
+                                this.setState({ mensaje_alert: retorno.mensaje });
+                            }
+                            else {
+                                this.setState({ mensaje_alert: retorno.mensaje });
+                            }
+                        } else {
+                            ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
+                        }
+                    })
+                    .catch(function (err) {
+                        console.log('error', err);
+                    })
+
                 console.log("online");
             }
             else {
                 this.setState({ connection_Status: "Offline" });
+                this.comprobar_ultima_asistencia_offline().then((data) => {
+                    console.log("data", data);
+                    if (data == 1) {
+                        this.setState({ mensaje_alert: "Su ultima asistencia fue una entrada,¿Usted esta ingresando o saliendo del establecimiento?" });
+                    }
+                    else if (data == 2) {
+                        this.setState({ mensaje_alert: "¿Usted esta ingresando o saliendo del establecimiento?" });
+                    }
+                });
+
             }
         })
     }
 
     componentDidMount = async () => {
         this.comprobar_conexion();
-
-        if (this.state.connection_Status == "Offline") {
-            this.comprobar_ultima_asistencia_online().then((data) => {
-                console.log("data", data);
-                if (data == 1) {
-                    this.setState({ mensaje_alert: "Su ultima asistencia fue una entrada,¿Usted esta ingresando o saliendo del establecimiento?" });
-                }
-                else if (data == 2) {
-                    this.setState({ mensaje_alert: "¿Usted esta ingresando o saliendo del establecimiento?" });
-                }
-            });
-        }
-        else {
-            let session = await AsyncStorage.getItem('usuario');
-            let sesion = JSON.parse(session);
-            let session_2 = await AsyncStorage.getItem('empresa');
-            let empresa = JSON.parse(session_2);
-            let loginDetails = {
-                id_usuario: sesion.id,
-                id_empresa: empresa[0]
-            }
-            fetch(server.api + 'login_tablet', {
-                method: 'POST',
-                headers: {
-                    'Aceptar': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(loginDetails)
-            })
-                .then(res => {
-                    return res.json()
-                })
-                .then(data => {
-                    const retorno = data;
-                    console.log(retorno);
-                    if (retorno.retorno == true) {
-                        this.state.empleado_id = retorno.id;
-                        if (retorno.estado_ree == 1) {
-                            this.setState({ mensaje_alert: retorno.mensaje });
-                        }
-                        else {
-                            this.setState({ mensaje_alert: retorno.mensaje });
-                        }
-                    } else {
-                        ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
-                    }
-                })
-                .catch(function (err) {
-                    console.log('error', err);
-                })
-        }
     }
     static navigationOptions = {
         header: null
@@ -133,6 +130,7 @@ export default class asistencia_app extends Component {
 
 
     Alta_asistencia = async (camera, tipo) => {
+        console.log("el tipo: ", tipo);
         Keyboard.dismiss();
         this.comprobar_conexion();
         const options = { quality: 0.5, base64: true, captureAudio: false };
@@ -178,7 +176,7 @@ export default class asistencia_app extends Component {
                 fecha: fecha,
                 foto: foto,
                 empleado_id: tarea_send.id,
-                estado: tipo,
+                tipo: tipo,
                 empresa_id: tarea_send.id_empresa
             }
             fetch(server.api + 'Alta_asistencia', {
