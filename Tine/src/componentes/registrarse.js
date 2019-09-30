@@ -99,8 +99,7 @@ export default class Signup extends React.Component {
             { label: 'Colaborador', value: 1 }
         ];
         return (
-            <KeyboardAvoidingView style={{flex:1}}
-            behavior="padding">
+            <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
                 <View style={styles.container}>
                     <View style={styles.inputContainer}>
                         <Image style={styles.inputIcon} source={{ uri: 'https://img.icons8.com/ultraviolet/50/000000/identification-documents.png' }} />

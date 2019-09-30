@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Alert, ToastAndroid, ScrollView, Keyboard } from 'react-native';
+import {  View, Text, Alert, ToastAndroid, ScrollView, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo";
 const { server } = require('../config/keys');
@@ -31,6 +31,7 @@ export default class lista_tareas extends Component {
             }
         })
     }
+    
     componentDidMount() {
         myTimer = BackgroundTimer.setInterval(() => {
             NetInfo.isConnected.fetch().done((isConnected) => {

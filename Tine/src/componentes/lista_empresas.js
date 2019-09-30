@@ -26,50 +26,8 @@ export default class lista_empresas extends Component {
       mensaje: '',
     };
   }
-  configuraciones = async () => {
-    Keyboard.dismiss();
-    var obj;
-    let session = await AsyncStorage.getItem('empresa');
-    let sesion = JSON.parse(session);
-    let tarea_send = {
-      id_empresa: sesion[0],
-    };
-    console.log('empresa conectada', tarea_send);
-    await fetch(server.api + 'configuraciones_empresa', {
-      method: 'POST',
-      headers: {
-        Aceptar: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(tarea_send),
-    })
-      .then(res => {
-        return res.json();
-      })
-      .then(async data => {
-        const retorno = data;
-        console.log(retorno.retorno);
-        if (retorno.retorno == true) {
-          try {
-            await AsyncStorage.setItem(
-              'configuraciones',
-              JSON.stringify(retorno.mensaje[0]),
-            );
-          } catch (e) {
-            console.log('error', e);
-            // saving error
-          }
-        } else {
-          alert(retorno.mensaje);
-        }
-        this.setState({cargando: false});
-      })
-      .catch(function(err) {
-        console.log('error', err);
-      });
-  };
+  
   componentDidMount() {
-    this.configuraciones();
     NetInfo.isConnected.fetch().done(async isConnected => {
       if (isConnected == true) {
         let session = await AsyncStorage.getItem('usuario');

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Icon } from 'react-native-elements';
-import { Button } from 'react-native-paper';
+import { Button, Card } from 'react-native-paper';
 import { View, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-
+const { server } = require('../config/keys');
 export default class Menu_listas extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
@@ -26,14 +26,57 @@ export default class Menu_listas extends Component {
         }
     };
     constructor(props) {
+        
         super(props);
         this.state = {
             tarea: 1,
             asistencias: 1
         }
+        this.inicio();
     }
+    configuraciones = async () => {
+        let session = await AsyncStorage.getItem('empresa');
+        let sesion = JSON.parse(session);
+        let tarea_send = {
+          id_empresa: sesion[0],
+        };
+        console.log('empresa conectada', tarea_send);
+        await fetch(server.api + 'configuraciones_empresa', {
+          method: 'POST',
+          headers: {
+            Aceptar: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(tarea_send),
+        })
+          .then(res => {
+            return res.json();
+          })
+          .then(async data => {
+            const retorno = data;
+            console.log(retorno.retorno);
+            if (retorno.retorno == true) {
+              try {
+                await AsyncStorage.setItem(
+                  'configuraciones',
+                  JSON.stringify(retorno.mensaje[0]),
+                );
+              } catch (e) {
+                console.log('error', e);
+                // saving error
+              }
+            } else {
+              alert(retorno.mensaje);
+            }
+            this.setState({cargando: false});
+          })
+          .catch(function(err) {
+            console.log('error', err);
+          });
+      };
 
-    async componentDidMount() {
+    async inicio() {
+        this.configuraciones();
         try {
             const value = await AsyncStorage.getItem('configuraciones');
             if (value !== null) {
@@ -52,6 +95,9 @@ export default class Menu_listas extends Component {
     render() {
         return (
             <View style={styles.container}>
+                <Card>
+                    <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+                </Card>
                 <View style={styles.buttonContainer}>
                     {this.state.tarea ? <Button
                         mode="contained"
@@ -82,8 +128,6 @@ export default class Menu_listas extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
     },
     buttonContainer: {
         margin: 15
