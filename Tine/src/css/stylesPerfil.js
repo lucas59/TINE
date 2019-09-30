@@ -55,4 +55,7 @@ module.exports = StyleSheet.create({
         borderRadius: 30,
     },
 
+
+    
+
 });
