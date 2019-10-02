@@ -1,15 +1,17 @@
 import React from 'react';
 import {
     StyleSheet,
+    Text,
     View,
-    TextInput,
+    TouchableHighlight,
     Image,
     ToastAndroid,
     KeyboardAvoidingView
 } from 'react-native';
-import { Button } from 'react-native-paper';
+import { TextInput, Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
-import RadioForm from 'react-native-simple-radio-button';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 
 const { server } = require('../config/keys');
 
@@ -28,18 +30,19 @@ export default class Signup extends React.Component {
 
     constructor(props) {
         super(props);
-        state = {
+        this.state = {
             fullName: '',
             email: '',
             password: '',
             tipo: 0,
             documento: '',
         };
-        console.log('tipo', state.tipo)
+        console.log('tipo', this.state.tipo)
     }
 
 
     saveData = async () => { /////////////////////////envio de datos a la api
+        //Keyboard.dismiss();
         const { email, password, fullName, tipo, documento } = this.state;
         if (email == "" || password == "" || fullName == "") {
             ToastAndroid.show('Ingresa datos validos.', ToastAndroid.SHORT);
@@ -81,7 +84,7 @@ export default class Signup extends React.Component {
                 const retorno = data;
                 console.log(retorno.retorno);
                 if (retorno.retorno == true) {
-                    ToastAndroid.show('Bienvenido', ToastAndroid.SHORT);
+                    //  ToastAndroid.show('Bienvenido', ToastAndroid.SHORT);
                     AsyncStorage.setItem('usuario', JSON.stringify(datos));
                     this.props.navigation.navigate('Signup2', {
                         datos: JSON.stringify(datos)
@@ -105,45 +108,74 @@ export default class Signup extends React.Component {
         return (
             <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
                 <View style={styles.container}>
-                    <View style={styles.inputContainer}>
-                        <Image style={styles.inputIcon} source={{ uri: 'https://img.icons8.com/ultraviolet/50/000000/identification-documents.png' }} />
-                        <TextInput style={styles.inputs}
-                            placeholder="Documento"
-                            underlineColorAndroid='transparent'
-                            placeholderTextColor="#002f6c"
-                            selectionColor="#fff"
+                    <View >
+                    <TextInput
+                            label="Documento"
+                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                             onChangeText={(documento) => this.setState({ documento })}
+                            selectionColor="#008FAD"
+                            underlineColor="#008FAD"
+                            theme={{
+                                colors: {
+                                    primary: '#008FAD',
+                                    underlineColor: 'transparent'
+                                }
+
+                            }}
+                            value={this.state.documento}
+                        />
+                      
+                    </View>
+                    <View >
+                    <TextInput
+                            label="Nombre"
+                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                            onChangeText={(fullName) => this.setState({ fullName })}
+                            selectionColor="#008FAD"
+                            underlineColor="#008FAD"
+                            theme={{
+                                colors: {
+                                    primary: '#008FAD',
+                                    underlineColor: 'transparent'
+                                }
+
+                            }}
+                            value={this.state.fullName}
                         />
                     </View>
-                    <View style={styles.inputContainer}>
-                        <Image style={styles.inputIcon} source={{ uri: 'https://png.icons8.com/male-user/ultraviolet/50/3498db' }} />
-                        <TextInput style={styles.inputs}
-                            placeholder="Nombre de usuario"
-                            keyboardType="email-address"
-                            underlineColorAndroid='transparent'
-                            placeholderTextColor="#002f6c"
-                            selectionColor="#fff"
-                            onChangeText={(fullName) => this.setState({ fullName })} />
+                    <View >
+                    <TextInput
+                            label="Correo"
+                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                            onChangeText={(email) => this.setState({ email })}
+                            selectionColor="#008FAD"
+                            underlineColor="#008FAD"
+                            theme={{
+                                colors: {
+                                    primary: '#008FAD',
+                                    underlineColor: 'transparent'
+                                }
+
+                            }}
+                            value={this.state.email}
+                        />
                     </View>
-                    <View style={styles.inputContainer}>
-                        <Image style={styles.inputIcon} source={{ uri: 'https://img.icons8.com/ultraviolet/40/000000/email.png' }} />
-                        <TextInput style={styles.inputs}
-                            placeholder="Correo"
-                            keyboardType="email-address"
-                            underlineColorAndroid='transparent'
-                            placeholderTextColor="#002f6c"
-                            selectionColor="#fff"
-                            onChangeText={(email) => this.setState({ email })} />
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <Image style={styles.inputIcon} source={{ uri: 'https://png.icons8.com/key-2/ultraviolet/50/3498db' }} />
-                        <TextInput style={styles.inputs}
-                            placeholder="Contraseña"
-                            secureTextEntry={true}
-                            underlineColorAndroid='transparent'
-                            placeholderTextColor="#002f6c"
-                            selectionColor="#fff"
-                            onChangeText={(password) => this.setState({ password })} />
+                    <View >
+                    <TextInput
+                            label="Contraseña"
+                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                            onChangeText={(password) => this.setState({ password })}
+                            selectionColor="#008FAD"
+                            underlineColor="#008FAD"
+                            theme={{
+                                colors: {
+                                    primary: '#008FAD',
+                                    underlineColor: 'transparent'
+                                }
+
+                            }}
+                            value={this.state.password}
+                        />
                     </View>
                     <View>
                         <RadioForm
@@ -153,7 +185,7 @@ export default class Signup extends React.Component {
                         />
                     </View>
                     <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
-                    Iniciar
+                        Registrarse
   </Button>
                 </View>
             </KeyboardAvoidingView>
@@ -165,19 +197,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#ffff',
-    },
-    inputContainer: {
-        borderBottomColor: '#8594A6',
-        backgroundColor: '#FFFF',
-        borderRadius: 30,
-        borderBottomWidth: 1,
-        width: 250,
-        height: 45,
-        marginBottom: 20,
-        flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',   
     },
     inputs: {
         height: 45,

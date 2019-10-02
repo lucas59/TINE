@@ -1,25 +1,34 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableHighlight, View, TextInput, KeyboardAvoidingView } from 'react-native';
-import { Button } from 'react-native-elements';
+import { StyleSheet, Text, TouchableHighlight, View, KeyboardAvoidingView, ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import DateTimePicker from "react-native-modal-datetime-picker";
 const { server } = require('../config/keys');
+import { TextInput, Button } from 'react-native-paper';
 
 
 export default class Signup2 extends React.Component {
-
+    static navigationOptions = {
+        title: 'Crea una cuenta',
+        headerStyle: {
+            backgroundColor: '#008FAD',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+        },
+    };
     constructor(props) {
         super(props);
-
+        this.state = {
+            image: null,
+            documento: null,
+            nombre: null,
+            apellido: null,
+            celular: null,
+            nacimiento: null,
+        };
     }
-    state = {
-        image: null,
-        documento: null,
-        nombre: null,
-        apellido: null,
-        celular: null,
-        nacimiento: null,
-    };
+
     /* selectPicture = async () => {
          await Permissions.askAsync(Permissions.CAMERA_ROLL);
          const { cancelled, uri } = await ImagePicker.launchImageLibraryAsync({
@@ -186,11 +195,15 @@ export default class Signup2 extends React.Component {
                         AsyncStorage.setItem('usuario', JSON.stringify(nuevaSession));
                         this.props.navigation.navigate('lista_empresas');
                     } else {
+                        alert(
+                            "Usuario registrado correctamente",
+                        )
                         this.props.navigation.navigate('login');
-                        alert("Usuario registrado correctamente");
                     }
                 } else {
-                    alert(retorno.mensaje);
+                    alert(
+                        retorno.mensaje,
+                    )
                 }
             })
             .catch(function (err) {
@@ -208,27 +221,61 @@ export default class Signup2 extends React.Component {
                 <KeyboardAvoidingView style={{ flex: 1 }}
                     behavior="padding">
                     <View style={styles.container}>
-                        <Text>Bienvenido</Text>
+                        <Text style={{fontSize: 30}}>Bienvenido</Text>
 
                         <View style={styles.inputContainer}>
-                            <TextInput style={styles.inputs}
-                                placeholder="Nombre"
-                                underlineColorAndroid='transparent'
-                                onChangeText={(nombre) => this.setState({ nombre })} />
+                          
+                               <TextInput
+                                label="Nombre"
+                                style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                                onChangeText={(nombre) => this.setState({ nombre })}
+                                selectionColor="#008FAD"
+                                underlineColor="#008FAD"
+                                theme={{
+                                    colors: {
+                                        primary: '#008FAD',
+                                        underlineColor: 'transparent'
+                                    }
+
+                                }}
+                                value={this.state.nombre}
+                            />
                         </View>
                         <View style={styles.inputContainer}>
-                            <TextInput style={styles.inputs}
-                                placeholder="Apellido"
-                                underlineColorAndroid='transparent'
-                                onChangeText={(apellido) => this.setState({ apellido })} />
+                            <TextInput
+                                label="Apellido"
+                                style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                                onChangeText={(apellido) => this.setState({ apellido })}
+                                selectionColor="#008FAD"
+                                underlineColor="#008FAD"
+                                theme={{
+                                    colors: {
+                                        primary: '#008FAD',
+                                        underlineColor: 'transparent'
+                                    }
+
+                                }}
+                                value={this.state.apellido}
+                            />
                         </View>
                         <View style={styles.inputContainer}>
-                            <TextInput style={styles.inputs}
-                                placeholder="Celular"
-                                underlineColorAndroid='transparent'
-                                onChangeText={(celular) => this.setState({ celular })} />
+                                  <TextInput
+                                label="Celular"
+                                style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                                onChangeText={(celular) => this.setState({ celular })} 
+                                selectionColor="#008FAD"
+                                underlineColor="#008FAD"
+                                theme={{
+                                    colors: {
+                                        primary: '#008FAD',
+                                        underlineColor: 'transparent'
+                                    }
+
+                                }}
+                                value={this.state.celular}
+                            />
                         </View>
-                        <Button title="Fecha de nacimiento" onPress={this.showDateTimePicker_inicio}>Fecha de nacimiento</Button>
+                        <Button style={{ width: 220, marginBottom: 20 }} color="#008FAD" mode="outlined" title="Fecha de nacimiento" onPress={this.showDateTimePicker_inicio}>Fecha de nacimiento</Button>
 
                         <DateTimePicker
                             isVisible={this.state.isDateTimePickerVisible_inicio}
@@ -236,9 +283,9 @@ export default class Signup2 extends React.Component {
                             onCancel={this.hideDateTimePicker_inicio}
                             mode={'date'}
                         />
-                        <TouchableHighlight style={[styles.buttonContainer, styles.signupButton]} onPress={this.enviarDatosEmpleado}>
-                            <Text onPress={this.enviarDatosEmpleado} style={styles.signUpText}>Listo</Text>
-                        </TouchableHighlight>
+                        <Button style={{ width: 220 }} color="#008FAD" mode="contained" onPress={this.enviarDatosEmpleado}>
+                            Registrarse
+  </Button>
                     </View>
                 </KeyboardAvoidingView>
             );
@@ -248,15 +295,26 @@ export default class Signup2 extends React.Component {
                 <KeyboardAvoidingView style={{ flex: 1 }}
                     behavior="padding">
                     <View style={styles.container}>
-                        <View style={styles.inputContainer}>
-                            <TextInput style={styles.inputs}
-                                placeholder="Nombre"
-                                underlineColorAndroid='transparent'
-                                onChangeText={(nombre) => this.setState({ nombre })} />
+                        <View>
+                            <TextInput
+                                label="Nombre"
+                                style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                                onChangeText={(nombre) => this.setState({ nombre })}
+                                selectionColor="#008FAD"
+                                underlineColor="#008FAD"
+                                theme={{
+                                    colors: {
+                                        primary: '#008FAD',
+                                        underlineColor: 'transparent'
+                                    }
+
+                                }}
+                                value={this.state.nombre}
+                            />
                         </View>
-                        <TouchableHighlight style={[styles.buttonContainer, styles.signupButton]} onPress={this.enviarDatosEmpresa}>
-                            <Text onPress={this.enviarDatosEmpresa} style={styles.signUpText}>Listo</Text>
-                        </TouchableHighlight>
+                        <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.enviarDatosEmpresa}>
+                            Registrarse
+  </Button>
                     </View>
                 </KeyboardAvoidingView>
             );
@@ -283,17 +341,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#ffff',
-    },
-    inputContainer: {
-        borderBottomColor: '#8594A6',
-        backgroundColor: '#FFFF',
-        borderRadius: 30,
-        borderBottomWidth: 1,
-        width: 250,
-        height: 45,
-        marginBottom: 20,
-        flexDirection: 'row',
-        alignItems: 'center'
     },
     inputs: {
         height: 45,

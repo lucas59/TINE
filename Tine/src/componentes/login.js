@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Alert, View, Keyboard, ToastAndroid, Text } from 'react-native';
+import { Alert, View, Keyboard, ToastAndroid, Text, KeyboardAvoidingView } from 'react-native';
+import { Image } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { TextInput } from 'react-native-paper';
 const { server } = require('../config/keys');
@@ -7,7 +8,6 @@ import styles from '../css/styleLogin';
 const manejador = require("./manejadorSqlite");
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-paper';
-import { KeyboardAvoidingView } from 'react-native';
 var timer;
 
 export default class Login extends Component {
@@ -188,50 +188,53 @@ export default class Login extends Component {
     render() {
         return (
             <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-            <View style={styles.container}>
-                <View >
-                    <TextInput
-                        label="Email"
-                        style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                        onChangeText={(email) => this.setState({ email })}
-                        selectionColor="#008FAD"
-                        underlineColor="#008FAD"
-                        autoFocus={true}
-                        theme={{
-                            colors: {
-                                primary: '#008FAD',
-                                underlineColor: 'transparent'
-                            }
+                <View style={styles.container}>
+                    <View >
+                        <Image
+                            source={ require('../imagenes/Tesis-logo.png') }
+                            style={{ width: 300, height: 300 }}
+                        />
+                        <TextInput
+                            label="Email"
+                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                            onChangeText={(email) => this.setState({ email })}
+                            selectionColor="#008FAD"
+                            underlineColor="#008FAD"
+                            theme={{
+                                colors: {
+                                    primary: '#008FAD',
+                                    underlineColor: 'transparent'
+                                }
 
                             }}
                             value={this.state.email}
-                    />
-                </View>
-                <View>
-                    <TextInput
-                        label="Contraseña"
-                        style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 30 }}
-                        onChangeText={(password) => this.setState({ password })}
-                        selectionColor="#008FAD"
-                        underlineColor="#008FAD"
-                        theme={{
-                            colors: {
-                                primary: '#008FAD',
-                                underlineColor: 'transparent',
-                            }
-                            
+                        />
+                    </View>
+                    <View>
+                        <TextInput
+                            label="Contraseña"
+                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 30 }}
+                            onChangeText={(password) => this.setState({ password })}
+                            selectionColor="#008FAD"
+                            underlineColor="#008FAD"
+                            theme={{
+                                colors: {
+                                    primary: '#008FAD',
+                                    underlineColor: 'transparent',
+                                }
+
                             }}
                             value={this.state.password}
-                    />
-                </View>
+                        />
+                    </View>
 
-                <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
-                    Iniciar
+                    <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+                        Iniciar
   </Button>
-                <Text >¿Nuevo aquí?</Text>
-                <Text style={{ color: '#008FAD' }} onPress={this.openSignup}>Registrate</Text>
-            </View>
-</KeyboardAvoidingView >
+                    <Text >¿Nuevo aquí?</Text>
+                    <Text style={{ color: '#008FAD' }} onPress={this.openSignup}>Registrate</Text>
+                </View>
+            </KeyboardAvoidingView >
         )
     }
 
