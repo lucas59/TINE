@@ -1,17 +1,15 @@
 import React from 'react';
 import {
     StyleSheet,
-    Text,
     View,
     TextInput,
-    TouchableHighlight,
     Image,
     ToastAndroid,
     KeyboardAvoidingView
 } from 'react-native';
+import { Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+import RadioForm from 'react-native-simple-radio-button';
 
 const { server } = require('../config/keys');
 
@@ -19,6 +17,13 @@ export default class Signup extends React.Component {
 
     static navigationOptions = {
         title: 'Crea una cuenta',
+        headerStyle: {
+            backgroundColor: '#008FAD',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+        },
     };
 
     constructor(props) {
@@ -35,7 +40,6 @@ export default class Signup extends React.Component {
 
 
     saveData = async () => { /////////////////////////envio de datos a la api
-        //Keyboard.dismiss();
         const { email, password, fullName, tipo, documento } = this.state;
         if (email == "" || password == "" || fullName == "") {
             ToastAndroid.show('Ingresa datos validos.', ToastAndroid.SHORT);
@@ -77,7 +81,7 @@ export default class Signup extends React.Component {
                 const retorno = data;
                 console.log(retorno.retorno);
                 if (retorno.retorno == true) {
-                    //  ToastAndroid.show('Bienvenido', ToastAndroid.SHORT);
+                    ToastAndroid.show('Bienvenido', ToastAndroid.SHORT);
                     AsyncStorage.setItem('usuario', JSON.stringify(datos));
                     this.props.navigation.navigate('Signup2', {
                         datos: JSON.stringify(datos)
@@ -148,9 +152,9 @@ export default class Signup extends React.Component {
                             onPress={(value) => { this.setState({ tipo: value }) }}
                         />
                     </View>
-                    <TouchableHighlight style={[styles.buttonContainer, styles.signupButton]} onPress={this.saveData}>
-                        <Text onPress={this.saveData} style={styles.signUpText}>Sign up</Text>
-                    </TouchableHighlight>
+                    <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+                    Iniciar
+  </Button>
                 </View>
             </KeyboardAvoidingView>
         );
