@@ -111,6 +111,10 @@ export default class asistencia_app extends Component {
 
     componentDidMount = async () => {
         this.comprobar_conexion();
+        const value = await AsyncStorage.getItem('configuraciones');
+        if (value !== null) {
+            this.setState({ 'camara': JSON.parse(value).camara.data[0] });
+        }
     }
     static navigationOptions = {
         header: null
@@ -124,7 +128,8 @@ export default class asistencia_app extends Component {
             empleado_id: '',
             empresa_id: '',
             cameraType: 'front',
-            mirrorMode: false
+            mirrorMode: false,
+            camara: ''
         }
     }
 
@@ -134,8 +139,13 @@ export default class asistencia_app extends Component {
         Keyboard.dismiss();
         this.comprobar_conexion();
         const options = { quality: 0.5, base64: true, captureAudio: false };
-        const data = await camera.takePictureAsync(options);
-        this.setState({ foto: data.base64 });
+        if (camera != null) {
+            const data = await camera.takePictureAsync(options);
+            this.setState({ foto: data.base64 });
+        }
+        else {
+            this.setState({foto: null});
+        }
         var fecha = moment(new Date()).format();
         this.setState({ fecha: fecha });
         const { foto } = this.state;
@@ -211,7 +221,7 @@ export default class asistencia_app extends Component {
         return (
             <>
                 <View style={styles.main}>
-                    <RNCamera
+                    {this.state.camara == 1 ? <RNCamera
                         style={styles.camara}
                         type={RNCamera.Constants.Type.front}
                         captureAudio={false}
@@ -237,8 +247,30 @@ export default class asistencia_app extends Component {
                                     </TouchableOpacity>
                                 </View>
                             );
+
                         }}
-                    </RNCamera>
+                    </RNCamera> :
+                        <View style={{ position: 'relative', bottom: 0, left: 0, right: 0 }}>
+                            <Text>Su empresa no tiene permisos para usar la camara en el telefono</Text>
+                            <TouchableOpacity onPress={() => Alert.alert(
+                                "Opciones",
+                                this.state.mensaje_alert,
+                                [
+                                    { text: "Entrando", onPress: () => this.Alta_asistencia(null, 1) },
+                                    {
+                                        text: "Saliendo",
+                                        onPress: () => this.Alta_asistencia(null, 0),
+                                    },
+                                ],
+                                { cancelable: true }
+                            )
+                            } style={styles.capture}>
+                                <Text style={{ fontSize: 14, color: 'white' }}> Capturar y aceptar </Text>
+                            </TouchableOpacity>
+                        </View>
+                    }
+
+
                 </View>
             </>
         )

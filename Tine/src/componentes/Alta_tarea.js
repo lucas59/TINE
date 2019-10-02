@@ -3,8 +3,7 @@ import { Text, View, ToastAndroid, PermissionsAndroid } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
-import { Input, Icon } from 'react-native-elements';
-import { TouchableHighlight } from 'react-native';
+import { Icon } from 'react-native-elements';
 import { Stopwatch } from 'react-native-stopwatch-timer';
 //import Geolocation from '@react-native-community/geolocation';
 import Geolocation from 'react-native-geolocation-service';
@@ -238,6 +237,7 @@ export default class Alta_tarea extends Component {
                         }
 
                     }}
+                    value={this.state.titulo}
                 />
                 <Button style={{ width: 160, height: 50 }} color="#008FAD" mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}>
                     <Text style={{ fontSize: 23 }}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>

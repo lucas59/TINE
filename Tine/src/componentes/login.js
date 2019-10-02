@@ -203,7 +203,8 @@ export default class Login extends Component {
                                 underlineColor: 'transparent'
                             }
 
-                        }}
+                            }}
+                            value={this.state.email}
                     />
                 </View>
                 <View>
@@ -218,8 +219,9 @@ export default class Login extends Component {
                                 primary: '#008FAD',
                                 underlineColor: 'transparent',
                             }
-
-                        }}
+                            
+                            }}
+                            value={this.state.password}
                     />
                 </View>
 
