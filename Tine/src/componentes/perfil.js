@@ -7,7 +7,6 @@ import {Icon} from 'react-native-elements';
 import {ScrollView, TextInput} from 'react-native-gesture-handler';
 const {server} = require('../config/keys');
 import ActionButton, {renderIcon} from 'react-native-action-button';
-import MaterialFixedLabelTextbox2 from "../components/MaterialFixedLabelTextbox2";
 
 
 export default class Profile extends Component {
@@ -312,7 +311,7 @@ export default class Profile extends Component {
             </ScrollView>
       </>
       </Modal>
-
+</>
     );
   }
 }
