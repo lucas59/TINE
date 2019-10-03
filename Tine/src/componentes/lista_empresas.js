@@ -24,52 +24,11 @@ export default class lista_empresas extends Component {
       cargando: true,
       isConnected: false,
       mensaje: '',
+      nombre_empresa: ''
     };
   }
-  configuraciones = async () => {
-    Keyboard.dismiss();
-    var obj;
-    let session = await AsyncStorage.getItem('empresa');
-    let sesion = JSON.parse(session);
-    let tarea_send = {
-      id_empresa: sesion[0],
-    };
-    console.log('empresa conectada', tarea_send);
-    await fetch(server.api + 'configuraciones_empresa', {
-      method: 'POST',
-      headers: {
-        Aceptar: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(tarea_send),
-    })
-      .then(res => {
-        return res.json();
-      })
-      .then(async data => {
-        const retorno = data;
-        console.log(retorno.retorno);
-        if (retorno.retorno == true) {
-          try {
-            await AsyncStorage.setItem(
-              'configuraciones',
-              JSON.stringify(retorno.mensaje[0]),
-            );
-          } catch (e) {
-            console.log('error', e);
-            // saving error
-          }
-        } else {
-          alert(retorno.mensaje);
-        }
-        this.setState({cargando: false});
-      })
-      .catch(function(err) {
-        console.log('error', err);
-      });
-  };
+  
   componentDidMount() {
-    this.configuraciones();
     NetInfo.isConnected.fetch().done(async isConnected => {
       if (isConnected == true) {
         let session = await AsyncStorage.getItem('usuario');
@@ -91,13 +50,12 @@ export default class lista_empresas extends Component {
   }
 
   onWORLD = mensaje => {
-    //this.setState({mensaje});
-    ToastAndroid.show(mensaje,ToastAndroid.LONG);
-
     PushNotification.localNotification({
-      //... You can use all the options from localNotifications
-      message: mensaje, // (required)
-      date: new Date(Date.now() + 60 * 1000) // in 6  0 secs
+      title:"Mensaje de la empresa",
+      message: mensaje, 
+      playSound: true,
+      soundName: 'default',
+      importance: "high",
     });
   };
 
@@ -203,9 +161,10 @@ export default class lista_empresas extends Component {
       });
   };
 
-  redireccionar_alta = async (id, nombre) => {
-    var myArray = [id, nombre];
+  redireccionar_alta = async (id, nombre,foto) => {
+    var myArray = [id, nombre, foto];
     AsyncStorage.setItem('empresa', JSON.stringify(myArray));
+    this.setState({nombre_empresa: nombre});
     console.log(myArray);
     this.props.navigation.navigate('menu_listas');
   };
@@ -219,7 +178,7 @@ export default class lista_empresas extends Component {
             key={i}
             leftAvatar={{source: {uri: server.img + data.fotoPerfil}}}
             title={data.nombre}
-            onPress={() => this.redireccionar_alta(data.id, data.nombre)}
+            onPress={() => this.redireccionar_alta(data.id, data.nombre,data.fotoPerfil)}
           />
         );
       });

@@ -1,18 +1,26 @@
 import React, { Component } from 'react';
-import { TouchableWithoutFeedback, Alert, Text, View, TextInput, TouchableOpacity, Keyboard, ToastAndroid, Image, ActivityIndicator } from 'react-native';
+import { Alert, View, Keyboard, ToastAndroid, Text, KeyboardAvoidingView } from 'react-native';
+import { Image } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
+import { TextInput } from 'react-native-paper';
 const { server } = require('../config/keys');
 import styles from '../css/styleLogin';
-import { SafeAreaView } from 'react-navigation';
 const manejador = require("./manejadorSqlite");
 import DeviceInfo from 'react-native-device-info';
-
+import { Button } from 'react-native-paper';
 var timer;
 
 export default class Login extends Component {
 
     static navigationOptions = {
         title: 'Ingresar',
+        headerStyle: {
+            backgroundColor: '#008FAD',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+        },
     };
 
     constructor(props) {
@@ -20,7 +28,7 @@ export default class Login extends Component {
         this.state = {
             email: '',
             password: '',
-            endpoint: "http://localhost:4005",
+            // endpoint: "http://localhost:4005",
             modoTablet: 1
         }
         this.checkSession();
@@ -73,6 +81,7 @@ export default class Login extends Component {
             })
             .then(data => {
                 const retorno = data;
+                console.log(retorno);
                 if (retorno.retorno == true) {
                     if (retorno.tipo == 1) {
                         ToastAndroid.show('Bienvenido.', ToastAndroid.LONG);
@@ -114,6 +123,7 @@ export default class Login extends Component {
 
                 } else {
                     ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
+                    console.log(retorno);
                 }
             })
             .catch(function (err) {
@@ -176,43 +186,54 @@ export default class Login extends Component {
 
     render() {
         return (
-            <SafeAreaView style={styles.container}>
-                <TouchableWithoutFeedback>
-                    <View style={styles.container}>
-                        <View style={styles.inputContainer}>
-                            <Image style={styles.inputIcon} source={{ uri: 'https://png.icons8.com/male-user/ultraviolet/50/3498db' }} />
-                            <TextInput style={styles.inputBox}
-                                onChangeText={(email) => this.setState({ email })}
-                                underlineColorAndroid='rgba(0,0,0,0)'
-                                placeholder="Email"
-                                placeholderTextColor="#002f6c"
-                                selectionColor="#fff"
-                                keyboardType="email-address"
-                                onSubmitEditing={() => this.password.focus()} />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            <Image style={styles.inputIcon} source={{ uri: 'https://png.icons8.com/key-2/ultraviolet/50/3498db' }} />
+            <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+                <View style={styles.container}>
+                    <View >
+                        <Image
+                            source={ require('../imagenes/Tesis-logo.png') }
+                            style={{ width: 300, height: 300 }}
+                        />
+                        <TextInput
+                            label="Email"
+                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                            onChangeText={(email) => this.setState({ email })}
+                            selectionColor="#008FAD"
+                            underlineColor="#008FAD"
+                            theme={{
+                                colors: {
+                                    primary: '#008FAD',
+                                    underlineColor: 'transparent'
+                                }
 
-                            <TextInput style={styles.inputBox}
-                                onChangeText={(password) => this.setState({ password })}
-                                underlineColorAndroid='rgba(0,0,0,0)'
-                                placeholder="Password"
-                                secureTextEntry={true}
-                                placeholderTextColor="#002f6c"
-                                ref={(input) => this.password = input}
-                            />
-                        </View>
-                        <TouchableOpacity onPress={this.saveData} style={[styles.buttonContainer, styles.signupButton]}>
-                            <Text style={styles.buttonText} onPress={this.saveData}>Entrar</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity>
-                            <Text onPress={this.openSignup}>Crear mi cuenta</Text>
-                        </TouchableOpacity>
+                            }}
+                            value={this.state.email}
+                        />
                     </View>
-                </TouchableWithoutFeedback>
-            </SafeAreaView>
+                    <View>
+                        <TextInput
+                            label="Contraseña"
+                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 30 }}
+                            onChangeText={(password) => this.setState({ password })}
+                            selectionColor="#008FAD"
+                            underlineColor="#008FAD"
+                            theme={{
+                                colors: {
+                                    primary: '#008FAD',
+                                    underlineColor: 'transparent',
+                                }
 
+                            }}
+                            value={this.state.password}
+                        />
+                    </View>
+
+                    <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+                        Iniciar
+  </Button>
+                    <Text >¿Nuevo aquí?</Text>
+                    <Text style={{ color: '#008FAD' }} onPress={this.openSignup}>Registrate</Text>
+                </View>
+            </KeyboardAvoidingView >
         )
     }
 
