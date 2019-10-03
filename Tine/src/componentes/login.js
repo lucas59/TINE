@@ -22,7 +22,6 @@ export default class Login extends Component {
             password: '',
             endpoint: "http://localhost:4005",
             modoTablet: 1
-
         }
         this.checkSession();
     }
