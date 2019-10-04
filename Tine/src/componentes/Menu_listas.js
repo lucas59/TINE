@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Icon ,Avatar} from 'react-native-elements';
 import { Button } from 'react-native-paper';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 export default class Menu_listas extends Component {
@@ -103,7 +103,6 @@ export default class Menu_listas extends Component {
         console.log(server.img + this.state.imagen_empresa);
         return (
             <View style={styles.container}>
-                <Text style={{ fontSize: 25, marginBottom: 20 }}>{this.state.nombre_empresa}</Text>
                 <Avatar
                     size="xlarge"
                     rounded

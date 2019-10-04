@@ -117,12 +117,10 @@ export default class Signup2 extends React.Component {
                 const retorno = data;
                 console.log('retorno', retorno);
                 if (retorno.retorno == true) {
-
                     var nuevaSession = {
                         id: datosFinales.documento,
                         tipo: datosFinales.email
                     }
-
                     AsyncStorage.setItem('usuario', JSON.stringify(nuevaSession));
                     this.props.navigation.navigate('Inicio');
                 } else {
@@ -186,20 +184,8 @@ export default class Signup2 extends React.Component {
                 const retorno = data;
                 console.log('retorno', retorno);
                 if (retorno.retorno == true) {
-
-                    var nuevaSession = {
-                        id: datosFinales.documento,
-                        tipo: datosFinales.tipo
-                    }
-                    if (datosFinales.tipo == 1) {
-                        AsyncStorage.setItem('usuario', JSON.stringify(nuevaSession));
-                        this.props.navigation.navigate('lista_empresas');
-                    } else {
-                        alert(
-                            "Usuario registrado correctamente",
-                        )
-                        this.props.navigation.navigate('login');
-                    }
+                        this.props.navigation.navigate('Login');
+                    
                 } else {
                     alert(
                         retorno.mensaje,
@@ -291,8 +277,6 @@ export default class Signup2 extends React.Component {
             );
         } else {
             return (
-
-                <KeyboardAvoidingView style={{ flex: 1 }}
                     behavior="padding">
                     <View style={styles.container}>
                         <View>
@@ -316,7 +300,6 @@ export default class Signup2 extends React.Component {
                             Registrarse
   </Button>
                     </View>
-                </KeyboardAvoidingView>
             );
 
         }

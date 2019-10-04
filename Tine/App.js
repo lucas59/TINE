@@ -22,15 +22,13 @@ import modalModificarPerfil from "./src/componentes/modificarPerfil";
 const AppStack = createStackNavigator({ Inicio: Inicio });
 const Tareas = createStackNavigator({lista_empresas: lista_empresas,asistencia_app: asistencia_app, lista_asistencias: lista_asistencias, altaTarea: altaTarea, lista_tareas: lista_tareas, perfil: perfil, modificar_tarea: modificar_tarea,menu_listas: menu_listas, modificarPerfil:modalModificarPerfil });
 const empresa = createStackNavigator({ modoTablet: modoTablet, perfilEmpresa: perfil });
-const AuthStack = createStackNavigator({ Login: Login, Signup: Signup });
-const AuthStack2 = createStackNavigator({ Signup2: Signup2 });
+const AuthStack = createStackNavigator({ Login: Login, Signup: Signup,Signup2: Signup2  });
 
 export default createAppContainer(createSwitchNavigator(
   {
     Home: AppStack,
     Tareas: Tareas,
     Auth: AuthStack,
-    Auth2: AuthStack2,
     empresa: empresa
   }
 ));

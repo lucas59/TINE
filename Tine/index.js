@@ -7,4 +7,4 @@ import App from './App';
 import { name as appName } from './app.json';
 AppRegistry.registerComponent(appName, () => App);
 import { YellowBox } from 'react-native';
-YellowBox.ignoreWarnings(['Warning: componentWillReceiveProps is deprecated', 'Remote debugger']);
+YellowBox.ignoreWarnings(['Warning: componentWillReceiveProps is deprecated', 'Remote debugger', 'Warning: componentWillUpdate is deprecated']);
