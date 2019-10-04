@@ -1,6 +1,6 @@
 module.exports = {
     server: {
-        api: 'https://servidortesis2019.herokuapp.com/api/',
-        img: 'https://servidortesis2019.herokuapp.com/img/perfiles/'
+        api: 'http://192.168.1.48:4005/api/',
+        img: 'http://192.168.1.48:4005/img/perfiles/'
     }
 }

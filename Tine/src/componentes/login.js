@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, Keyboard, ToastAndroid, Text, KeyboardAvoidingView } from 'react-native';
+import { Alert, View, Keyboard, ToastAndroid, Text, ScrollView } from 'react-native';
 import { Image } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { TextInput } from 'react-native-paper';
@@ -186,6 +186,7 @@ export default class Login extends Component {
 
     render() {
         return (
+            <ScrollView>
                 <View style={styles.container}>
                     <View >
                         <Image
@@ -223,6 +224,7 @@ export default class Login extends Component {
 
                             }}
                             value={this.state.password}
+                            secureTextEntry={true}
                         />
                     </View>
 
@@ -232,6 +234,7 @@ export default class Login extends Component {
                     <Text >¿Nuevo aquí?</Text>
                     <Text style={{ color: '#008FAD' }} onPress={this.openSignup}>Registrate</Text>
                 </View>
+                </ScrollView>
         )
     }
 
