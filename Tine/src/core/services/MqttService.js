@@ -18,7 +18,11 @@ class MqttService {
   constructor() {
     const clientId = parseInt(Math.random() * 100, 10);
 
-    this.client = new Paho.MQTT.Client('broker.hivemq.com',8000,"cliendid_"+clientId);
+    this.client = new Paho.MQTT.Client(
+      'broker.hivemq.com',
+      8000,
+      'cliendid_' + clientId,
+    );
 
     this.client.onMessageArrived = this.onMessageArrived;
 
@@ -47,7 +51,7 @@ class MqttService {
 
       onSuccess: () => {
         this.isConnected = true;
-        console.log("anda");
+        console.log('anda');
 
         onSuccessHandler();
       },
@@ -65,10 +69,10 @@ class MqttService {
   };
 
   onFailure = ({errorMessage}) => {
-    console.info("error mqtt",errorMessage);
+    console.info('error mqtt', errorMessage);
 
     this.isConnected = false;
-    console.log("asdasd");
+    console.log('asdasd');
     Alert.alert(
       'Could not connect to MQTT',
       [

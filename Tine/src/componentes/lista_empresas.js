@@ -32,6 +32,7 @@ export default class lista_empresas extends Component {
   
   componentDidMount() {
     NetInfo.isConnected.fetch().done(async isConnected => {
+      console.log("isConnected: ", isConnected);
       if (isConnected == true) {
         let session = await AsyncStorage.getItem('usuario');
         console.log(session);
@@ -48,7 +49,7 @@ export default class lista_empresas extends Component {
         console.log('offline');
       }
     });
-    MqttService.connectClient(this.mqttSuccessHandler,this.mqttConnectionLostHandler,);
+    MqttService.connectClient(this.mqttSuccessHandler,this.mqttConnectionLostHandler);
   }
 
   onWORLD = mensaje => {
