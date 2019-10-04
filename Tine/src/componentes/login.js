@@ -186,7 +186,6 @@ export default class Login extends Component {
 
     render() {
         return (
-            <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
                 <View style={styles.container}>
                     <View >
                         <Image
@@ -233,7 +232,6 @@ export default class Login extends Component {
                     <Text >¿Nuevo aquí?</Text>
                     <Text style={{ color: '#008FAD' }} onPress={this.openSignup}>Registrate</Text>
                 </View>
-            </KeyboardAvoidingView >
         )
     }
 

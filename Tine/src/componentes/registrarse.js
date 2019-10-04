@@ -1,17 +1,13 @@
 import React from 'react';
 import {
     StyleSheet,
-    Text,
     View,
-    TouchableHighlight,
-    Image,
     ToastAndroid,
     KeyboardAvoidingView
 } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+import RadioForm from 'react-native-simple-radio-button';
 
 const { server } = require('../config/keys');
 
@@ -106,7 +102,6 @@ export default class Signup extends React.Component {
             { label: 'Colaborador', value: 1 }
         ];
         return (
-            <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
                 <View style={styles.container}>
                     <View >
                     <TextInput
@@ -188,7 +183,6 @@ export default class Signup extends React.Component {
                         Registrarse
   </Button>
                 </View>
-            </KeyboardAvoidingView>
         );
     }
 }
