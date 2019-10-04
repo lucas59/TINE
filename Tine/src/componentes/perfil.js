@@ -8,7 +8,6 @@ import {ScrollView, TextInput} from 'react-native-gesture-handler';
 const {server} = require('../config/keys');
 import ActionButton, {renderIcon} from 'react-native-action-button';
 
-
 export default class Profile extends Component {
   static navigationOptions = {
     title: 'TINE',
@@ -272,46 +271,42 @@ export default class Profile extends Component {
           onRequestClose={() => {
             this.setModalVisible(false);
           }}>
-          <>
-   
-            <ScrollView>
-              <View style={styles.container}>
-                <View style={styles.header}></View>
-                <Image style={styles.avatar} source={{uri: imagen}} />
-                <View style={styles.body}>
-                  <View style={styles.bodyContent}>
-                    <TextInput
-                      placeholder="Correo"
-                      onChangeText={email => this.setState({email})}>
-                      {this.state.email}
-                    </TextInput>
-                    <TextInput
-                      placeholder="Nombre"
-                      onChangeText={nombre => this.setState({nombre})}>
-                      {this.state.nombre}
-                    </TextInput>
-                    <TextInput
-                      placeholder="Apellido"
-                      onChangeText={apellido => this.setState({apellido})}>
-                      {this.state.apellido}
-                    </TextInput>
-                    <TextInput
-                      placeholder="Celular"
-                      onChangeText={celular => this.setState({celular})}>
-                      {this.state.celular
-                      }
-                    </TextInput>
+          <ScrollView>
+            <View style={styles.container}>
+              <View style={styles.header}></View>
+              <Image style={styles.avatar} source={{uri: imagen}} />
+              <View style={styles.body}>
+                <View style={styles.bodyContent}>
+                  <TextInput
+                    placeholder="Correo"
+                    onChangeText={email => this.setState({email})}>
+                    {this.state.email}
+                  </TextInput>
+                  <TextInput
+                    placeholder="Nombre"
+                    onChangeText={nombre => this.setState({nombre})}>
+                    {this.state.nombre}
+                  </TextInput>
+                  <TextInput
+                    placeholder="Apellido"
+                    onChangeText={apellido => this.setState({apellido})}>
+                    {this.state.apellido}
+                  </TextInput>
+                  <TextInput
+                    placeholder="Celular"
+                    onChangeText={celular => this.setState({celular})}>
+                    {this.state.celular}
+                  </TextInput>
 
-                    <TouchableOpacity onPress={this.guardarDatos}>
-                      <Text onPress={this.guardarDatos}>Terminar</Text>
-                    </TouchableOpacity>
-                  </View>
+                  <TouchableOpacity onPress={this.guardarDatos}>
+                    <Text onPress={this.guardarDatos}>Terminar</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
-            </ScrollView>
+            </View>
+          </ScrollView>
+        </Modal>
       </>
-      </Modal>
-</>
     );
   }
 }

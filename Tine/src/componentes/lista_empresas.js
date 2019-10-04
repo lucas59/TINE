@@ -9,6 +9,8 @@ import {openDatabase} from 'react-native-sqlite-storage';
 var db = openDatabase({name: 'sqlliteTesis.db', createFromLocation: 1});
 import MqttService from '../core/services/MqttService';
 import OfflineNotification from '../componentes/OfflineNotification';
+import OnlineNotification from '../componentes/OnlineNotification';
+
 var PushNotification = require("react-native-push-notification");
 
 import {PulseIndicator} from 'react-native-indicators';
@@ -199,6 +201,8 @@ export default class lista_empresas extends Component {
     return (
       <>
         {!isConnected && <OfflineNotification />}
+        {isConnected && <OnlineNotification />}
+        
         <ScrollView>{this.parseData()}</ScrollView>
       </>
     );
