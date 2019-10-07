@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {ScrollView, StyleSheet, Text, Keyboard, View,ToastAndroid} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  Keyboard,
+  View,
+  ToastAndroid,
+} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const {server} = require('../config/keys');
 import NetInfo from '@react-native-community/netinfo';
@@ -11,13 +18,14 @@ import MqttService from '../core/services/MqttService';
 import OfflineNotification from '../componentes/OfflineNotification';
 import OnlineNotification from '../componentes/OnlineNotification';
 
-var PushNotification = require("react-native-push-notification");
+var PushNotification = require('react-native-push-notification');
 
 import {PulseIndicator} from 'react-native-indicators';
 export default class lista_empresas extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      session: AsyncStorage.getItem('usuario'),
       titulo: '',
       estado: '',
       inicio: '',
@@ -26,13 +34,13 @@ export default class lista_empresas extends Component {
       cargando: true,
       isConnected: false,
       mensaje: '',
-      nombre_empresa: ''
+      nombre_empresa: '',
     };
   }
-  
+
   componentDidMount() {
     NetInfo.isConnected.fetch().done(async isConnected => {
-      console.log("isConnected: ", isConnected);
+      console.log('isConnected: ', isConnected);
       if (isConnected == true) {
         let session = await AsyncStorage.getItem('usuario');
         console.log(session);
@@ -48,36 +56,33 @@ export default class lista_empresas extends Component {
         });
         console.log('offline');
       }
+        MqttService.connectClient(
+      this.mqttSuccessHandler,
+      this.mqttConnectionLostHandler,
+    );
     });
-    MqttService.connectClient(this.mqttSuccessHandler,this.mqttConnectionLostHandler);
+  
   }
 
   onWORLD = mensaje => {
     PushNotification.localNotification({
-      title:"Mensaje de la empresa",
-      message: mensaje, 
+      title: 'Mensaje de la empresa',
+      message: mensaje,
       playSound: true,
       soundName: 'default',
-      importance: "high",
+      importance: 'high',
     });
   };
 
-  mqttSuccessHandler = async ()  => {
-
-    let session = await AsyncStorage.getItem('usuario');
-    console.log(session);
+  mqttSuccessHandler = () => {
+    let {session} = this.state; // await AsyncStorage.getItem('usuario');
     let sesion = JSON.parse(session);
-    console.log("documento",sesion.id);
 
-    console.info('connected to mqtt');
-  //  MqttService.subscribe('WORLD', this.onWORLD);
-    MqttService.subscribe("tip"+sesion.id, this.onWORLD);
-    
-    //MqttService.subscribe(sesion.id, this.onWORLD);
-    
     this.setState({
       isConnected: true,
     });
+     MqttService.subscribe('WORLD', this.onWORLD);
+    // MqttService.subscribe('tip' + sesion.id, this.onWORLD);
   };
 
   mqttConnectionLostHandler = () => {
@@ -164,7 +169,7 @@ export default class lista_empresas extends Component {
       });
   };
 
-  redireccionar_alta = async (id, nombre,foto) => {
+  redireccionar_alta = async (id, nombre, foto) => {
     var myArray = [id, nombre, foto];
     AsyncStorage.setItem('empresa', JSON.stringify(myArray));
     this.setState({nombre_empresa: nombre});
@@ -181,7 +186,9 @@ export default class lista_empresas extends Component {
             key={i}
             leftAvatar={{source: {uri: server.img + data.fotoPerfil}}}
             title={data.nombre}
-            onPress={() => this.redireccionar_alta(data.id, data.nombre,data.fotoPerfil)}
+            onPress={() =>
+              this.redireccionar_alta(data.id, data.nombre, data.fotoPerfil)
+            }
           />
         );
       });
@@ -203,7 +210,7 @@ export default class lista_empresas extends Component {
       <>
         {!isConnected && <OfflineNotification />}
         {isConnected && <OnlineNotification />}
-        
+
         <ScrollView>{this.parseData()}</ScrollView>
       </>
     );
