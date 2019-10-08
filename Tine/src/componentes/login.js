@@ -28,7 +28,7 @@ export default class Login extends Component {
         this.state = {
             email: '',
             password: '',
-            // endpoint: "http://localhost:4005",
+            // endpoint: "https://servidortesis2019.herokuapp.com/",
             modoTablet: 1
         }
         this.checkSession();
@@ -79,19 +79,18 @@ export default class Login extends Component {
             .then(res => {
                 return res.json()
             })
-            .then(data => {
+            .then(async data  => {
                 const retorno = data;
                 console.log(retorno);
                 if (retorno.retorno == true) {
                     if (retorno.tipo == 1) {
                         ToastAndroid.show('Bienvenido.', ToastAndroid.LONG);
-                        AsyncStorage.setItem('usuario', JSON.stringify(retorno));
+                        await AsyncStorage.setItem('usuario', JSON.stringify(retorno));
                         this.props.navigation.navigate('Inicio');
                     } else {
+                        await AsyncStorage.setItem('usuario', JSON.stringify(retorno));
+                        this.configuraciones();
                         DeviceInfo.isTablet().then(async isTablet => {
-                            console.log(isTablet);
-                            AsyncStorage.setItem('usuario', JSON.stringify(retorno));
-                            this.configuraciones();
                             if (isTablet) {
                                 try {
                                     const value = await AsyncStorage.getItem('configuraciones');
@@ -101,11 +100,13 @@ export default class Login extends Component {
                                 } catch (e) {
                                     console.log("error", e);
                                 }
-                                console.log("Modo tablet: ", modoTablet);
+                                console.log("Modo tablet: ", this.state.modoTablet);
                                 if (this.state.modoTablet) {
-                                    this.props.navigation.navigate('modoTablet');
+                                    console.log("usu", await AsyncStorage.getItem('usuario'));
+                                    this.props.navigation.navigate('Inicio');
                                     manejador.bajarEmpleadosEmpresa(retorno.id);
                                 } else {
+                                    await AsyncStorage.setItem('usuario', null);
                                     Alert.alert(
                                         "Alerta",
                                         "Usted no tiene permitido el ingreso en una tablet",
@@ -135,7 +136,7 @@ export default class Login extends Component {
 
     configuraciones = async () => {
         Keyboard.dismiss();
-        let session = await AsyncStorage.getItem('empresa');
+        let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
         let tarea_send = {
             id_empresa: sesion[0]
