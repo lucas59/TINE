@@ -260,7 +260,15 @@ export default class modoTablet extends Component {
 
 const styles = StyleSheet.create({
     pin: {
-        position: 'absolute', top: 0, left: 100, bottom: 0, justifyContent: 'center'
+        position: 'absolute', top: 100, left: 100, bottom: 100, justifyContent: 'center',alignContent: 'center',
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: '#ddd',
+        borderBottomWidth: 0,
+        shadowColor: '#000',
+        elevation: 3,
+        marginLeft: 5,
+        marginRight: 5
     },
     container: {
         flex: 1,
@@ -280,5 +288,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         paddingHorizontal: 20,
         margin: 20,
+        
     },
 });
