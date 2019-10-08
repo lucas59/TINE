@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
 function MiniOfflineSign() {
   return (
     <View style={styles.offlineContainer}>
-      <Text style={styles.offlineText}>Sin acceso de a la red</Text>
+      <Text style={styles.offlineText}>Esperando conexión</Text>
     </View>
   );
 }

@@ -18,7 +18,11 @@ class MqttService {
   constructor() {
     const clientId = parseInt(Math.random() * 100, 10);
 
-    this.client = new Paho.MQTT.Client('broker.hivemq.com',8000,"cliendid_"+clientId);
+    this.client = new Paho.MQTT.Client(
+      'broker.hivemq.com',
+      8000,
+      'cliendid_' + clientId,
+    );
 
     this.client.onMessageArrived = this.onMessageArrived;
 
@@ -32,43 +36,49 @@ class MqttService {
   }
 
   connectClient = (onSuccessHandler, onConnectionLostHandler) => {
+    console.log("--a");
     this.onSuccessHandler = onSuccessHandler;
 
     this.onConnectionLostHandler = onConnectionLostHandler;
 
     this.client.onConnectionLost = () => {
+      console.log("--b");
       this.isConnected = false;
-
       onConnectionLostHandler();
     };
 
-    this.client.connect({
-      timeout: 10,
-
-      onSuccess: () => {
-        this.isConnected = true;
-        console.log("anda");
-
-        onSuccessHandler();
-      },
-
-      useSSL: false,
-
-      onFailure: this.onFailure,
-
-      reconnect: true,
-
-      keepAliveInterval: 20,
-
-      cleanSession: true,
-    });
+    if (!this.client.isConnected())
+    {
+      this.client.connect({
+      
+        timeout: 20,
+  
+        onSuccess: () => {
+          this.isConnected = true;
+          console.log('anda');
+  
+          onSuccessHandler();
+        },
+  
+        useSSL: false,
+  
+        onFailure: onConnectionLostHandler,
+  
+        reconnect: true,
+  
+        keepAliveInterval: 20,
+  
+        cleanSession: true,
+      });
+    } 
   };
 
   onFailure = ({errorMessage}) => {
-    console.info("error mqtt",errorMessage);
+    console.log("--c");
+    console.log('errmqtt', errorMessage);
 
     this.isConnected = false;
-    console.log("asdasd");
+    console.log('asdasd');
     Alert.alert(
       'Could not connect to MQTT',
       [
@@ -130,3 +140,4 @@ class MqttService {
 }
 
 export default MqttService.getInstance();
+
