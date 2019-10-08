@@ -9,6 +9,7 @@ import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 const manejador = require("./manejadorSqlite");
+import PTRView from 'react-native-pull-to-refresh';
 import {
     PulseIndicator
 } from 'react-native-indicators';
@@ -209,13 +210,16 @@ export default class lista_tareas extends Component {
 
         return (
             <>
+                 <PTRView onRefresh={() => this.llenar_lista()} >
                 <ScrollView>
                     {this.parseData()}
-                </ScrollView>
+                    </ScrollView>
+                    </PTRView>
                 <ActionButton
                     buttonColor="#008FAD"
                     onPress={() => { this.props.navigation.navigate('asistencia_app'); }}
-                />
+                    />
+                  
             </>
         )
     }

@@ -40,7 +40,7 @@ export default class lista_empresas extends Component {
         let sesion = JSON.parse(session);
         manejador.listarempresas(sesion.id);
         this.Listar();
-        console.log('online');
+        console.log('online');  
       } else {
         this.promesa().then(lista_SC => {
           console.log('lista tareas: ', lista_SC);
