@@ -26,7 +26,7 @@ export default class Signup2 extends React.Component {
             apellido: null,
             celular: null,
             nacimiento: null,
-            cargando = false
+            cargando : false
         };
     }
 
@@ -206,9 +206,7 @@ export default class Signup2 extends React.Component {
         const datos = JSON.parse(navigation.getParam('datos'));
         if (datos.tipo == 1) {
             return (
-
-                <KeyboardAvoidingView style={{ flex: 1 }}
-                    behavior="padding">
+<>
                     <View style={styles.container}>
                         <Text style={{ fontSize: 30 }}>Bienvenido</Text>
 
@@ -272,13 +270,13 @@ export default class Signup2 extends React.Component {
                             onCancel={this.hideDateTimePicker_inicio}
                             mode={'date'}
                         />
-                        {this.state.cargando ? <Button disabled={true} style={{ width: 160, height: 50 }} color="#008FAD" loading={true} mode="contained" ></Button> :
+                        {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#008FAD" loading={true} mode="contained" ></Button> :
                             <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.enviarDatosEmpleado}>
                                 Registrarse
                     </Button>
                         }
-                    </View>
-                </KeyboardAvoidingView>
+                </View>
+                </>
             );
         } else {
             return (
@@ -301,7 +299,7 @@ export default class Signup2 extends React.Component {
                             value={this.state.nombre}
                         />
                     </View>
-                    {this.state.cargando ? <Button disabled={true} style={{ width: 160, height: 50 }} color="#008FAD" loading={true} mode="contained" ></Button> :
+                    {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#008FAD" loading={true} mode="contained" ></Button> :
                         <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.enviarDatosEmpresa}>
                             Registrarse
                     </Button>

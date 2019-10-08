@@ -32,6 +32,7 @@ export default class Signup extends React.Component {
             password: '',
             tipo: 0,
             documento: '',
+            cargando: false
         };
         console.log('tipo', this.state.tipo)
     }
@@ -39,6 +40,7 @@ export default class Signup extends React.Component {
 
     saveData = async () => { /////////////////////////envio de datos a la api
         //Keyboard.dismiss();
+        this.setState({ cargando: true });
         const { email, password, fullName, tipo, documento } = this.state;
         if (email == "" || password == "" || fullName == "") {
             ToastAndroid.show('Ingresa datos validos.', ToastAndroid.SHORT);
@@ -88,6 +90,7 @@ export default class Signup extends React.Component {
                 } else {
                     alert(retorno.mensaje);
                 }
+                this.setState({ cargando: false });
             })
             .catch(function (err) {
                 ToastAndroid.show("Compruebe su conexión", ToastAndroid.LONG);
@@ -102,88 +105,90 @@ export default class Signup extends React.Component {
             { label: 'Colaborador', value: 1 }
         ];
         return (
-                <View style={styles.container}>
-                    <View >
+            <View style={styles.container}>
+                <View >
                     <TextInput
-                            label="Documento"
-                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                            onChangeText={(documento) => this.setState({ documento })}
-                            selectionColor="#008FAD"
-                            underlineColor="#008FAD"
-                            theme={{
-                                colors: {
-                                    primary: '#008FAD',
-                                    underlineColor: 'transparent'
-                                }
+                        label="Documento"
+                        style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                        onChangeText={(documento) => this.setState({ documento })}
+                        selectionColor="#008FAD"
+                        underlineColor="#008FAD"
+                        theme={{
+                            colors: {
+                                primary: '#008FAD',
+                                underlineColor: 'transparent'
+                            }
 
-                            }}
-                            value={this.state.documento}
-                        />
-                      
-                    </View>
-                    <View >
+                        }}
+                        value={this.state.documento}
+                    />
+
+                </View>
+                <View >
                     <TextInput
-                            label="Nombre"
-                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                            onChangeText={(fullName) => this.setState({ fullName })}
-                            selectionColor="#008FAD"
-                            underlineColor="#008FAD"
-                            theme={{
-                                colors: {
-                                    primary: '#008FAD',
-                                    underlineColor: 'transparent'
-                                }
+                        label="Nombre"
+                        style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                        onChangeText={(fullName) => this.setState({ fullName })}
+                        selectionColor="#008FAD"
+                        underlineColor="#008FAD"
+                        theme={{
+                            colors: {
+                                primary: '#008FAD',
+                                underlineColor: 'transparent'
+                            }
 
-                            }}
-                            value={this.state.fullName}
-                        />
-                    </View>
-                    <View >
+                        }}
+                        value={this.state.fullName}
+                    />
+                </View>
+                <View >
                     <TextInput
-                            label="Correo"
-                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                            onChangeText={(email) => this.setState({ email })}
-                            selectionColor="#008FAD"
-                            underlineColor="#008FAD"
-                            theme={{
-                                colors: {
-                                    primary: '#008FAD',
-                                    underlineColor: 'transparent'
-                                }
+                        label="Correo"
+                        style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                        onChangeText={(email) => this.setState({ email })}
+                        selectionColor="#008FAD"
+                        underlineColor="#008FAD"
+                        theme={{
+                            colors: {
+                                primary: '#008FAD',
+                                underlineColor: 'transparent'
+                            }
 
-                            }}
-                            value={this.state.email}
-                        />
-                    </View>
-                    <View >
+                        }}
+                        value={this.state.email}
+                    />
+                </View>
+                <View >
                     <TextInput
-                            label="Contraseña"
-                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                            onChangeText={(password) => this.setState({ password })}
-                            selectionColor="#008FAD"
-                            underlineColor="#008FAD"
-                            theme={{
-                                colors: {
-                                    primary: '#008FAD',
-                                    underlineColor: 'transparent'
-                                }
+                        label="Contraseña"
+                        style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                        onChangeText={(password) => this.setState({ password })}
+                        selectionColor="#008FAD"
+                        underlineColor="#008FAD"
+                        theme={{
+                            colors: {
+                                primary: '#008FAD',
+                                underlineColor: 'transparent'
+                            }
 
-                            }}
+                        }}
                         value={this.state.password}
                         secureTextEntry={true}
-                        />
-                    </View>
-                    <View>
-                        <RadioForm
-                            radio_props={radio_props}
-                            initial={0}
-                            onPress={(value) => { this.setState({ tipo: value }) }}
-                        />
-                    </View>
+                    />
+                </View>
+                <View>
+                    <RadioForm
+                        radio_props={radio_props}
+                        initial={0}
+                        onPress={(value) => { this.setState({ tipo: value }) }}
+                    />
+                </View>
+                {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+  </Button> :
                     <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
                         Siguiente
-  </Button>
-                </View>
+  </Button>}
+            </View>
         );
     }
 }
@@ -192,7 +197,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',   
+        alignItems: 'center',
     },
     inputs: {
         height: 45,
