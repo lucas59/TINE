@@ -61,6 +61,7 @@ export default class Login extends Component {
 
         if (email == "" || password == "") {
             ToastAndroid.show('Ingresa datos validos.', ToastAndroid.SHORT);
+            this.setState({ cargando: false });
             return;
         }
 
