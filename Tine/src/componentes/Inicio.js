@@ -49,7 +49,7 @@ export default class Inicio extends Component {
         } else {
             if (sessionParce.tipo == 0) {
                 console.log("entra");
-                this.props.navigation.navigate('login');
+                this.props.navigation.navigate('modoTablet');
             }
             else {
                 this.props.navigation.navigate('lista_empresas');

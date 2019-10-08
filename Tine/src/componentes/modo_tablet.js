@@ -47,13 +47,20 @@ export default class modoTablet extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
             title: 'ModoTablet',
+            headerStyle: {
+                backgroundColor: '#008FAD',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
             headerRight: (
                 <Icon
+                    reverse
                     name='face'
                     type='material'
-                    color='black'
+                    color='#008FAD'
                     onPress={async () => navigation.navigate('perfilEmpresa', { session: await AsyncStorage.getItem('usuario') })} />
-
             ),
         }
     };

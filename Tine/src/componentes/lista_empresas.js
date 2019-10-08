@@ -13,7 +13,7 @@ import OnlineNotification from '../componentes/OnlineNotification';
 import PTRView from 'react-native-pull-to-refresh';
 
 var PushNotification = require("react-native-push-notification");
-
+_isMounted = false;
 import { PulseIndicator } from 'react-native-indicators';
 export default class lista_empresas extends Component {
   constructor(props) {
@@ -54,8 +54,12 @@ export default class lista_empresas extends Component {
    
   }
   componentDidMount() {
+    this._isMounted = true;
     this.listar_empresa();
     
+  }
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   onWORLD = mensaje => {
