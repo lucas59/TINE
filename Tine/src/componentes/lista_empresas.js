@@ -8,12 +8,12 @@ import {
   ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-const { server } = require('../config/keys');
+const {server} = require('../config/keys');
 import NetInfo from '@react-native-community/netinfo';
-import { ListItem, Icon, Image } from 'react-native-elements';
+import {ListItem, Icon, Image} from 'react-native-elements';
 const manejador = require('./manejadorSqlite');
-import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
+import {openDatabase} from 'react-native-sqlite-storage';
+var db = openDatabase({name: 'sqlliteTesis.db', createFromLocation: 1});
 import MqttService from '../core/services/MqttService';
 import OfflineNotification from '../componentes/OfflineNotification';
 import OnlineNotification from '../componentes/OnlineNotification';
@@ -21,7 +21,7 @@ import PTRView from 'react-native-pull-to-refresh';
 
 var PushNotification = require('react-native-push-notification');
 
-import { PulseIndicator } from 'react-native-indicators';
+import {PulseIndicator} from 'react-native-indicators';
 export default class lista_empresas extends Component {
   constructor(props) {
     super(props);
@@ -39,8 +39,8 @@ export default class lista_empresas extends Component {
     };
   }
 
-  listar_empresa()  {
-    console.log("rfd");
+  listar_empresa() {
+    console.log('rfd');
     NetInfo.isConnected.fetch().done(async isConnected => {
       console.log('isConnected: ', isConnected);
       if (isConnected == true) {
@@ -49,30 +49,28 @@ export default class lista_empresas extends Component {
         let sesion = JSON.parse(session);
         manejador.listarempresas(sesion.id);
         this.Listar();
-        console.log('online');  
+        console.log('online');
       } else {
         this.promesa().then(lista_SC => {
           console.log('lista tareas: ', lista_SC);
-          this.setState({ listaT: lista_SC });
-          this.setState({ cargando: false });
+          this.setState({listaT: lista_SC});
+          this.setState({cargando: false});
         });
         console.log('offline');
       }
-        MqttService.connectClient(
-      this.mqttSuccessHandler,
-      this.mqttConnectionLostHandler,
-    );
     });
-   
   }
   componentDidMount() {
     this.listar_empresa();
-    //MqttService.connectClient(this.mqttSuccessHandler, this.mqttConnectionLostHandler);
+    MqttService.connectClient(
+      this.mqttSuccessHandler,
+      this.mqttConnectionLostHandler,
+    );
   }
 
   onWORLD = mensaje => {
     PushNotification.localNotification({
-      title: "Mensaje de la empresa",
+      title: 'Mensaje de la empresa',
       message: mensaje,
       playSound: true,
       soundName: 'default',
@@ -81,22 +79,21 @@ export default class lista_empresas extends Component {
   };
 
   mqttSuccessHandler = async () => {
-
     let session = await AsyncStorage.getItem('usuario');
     console.log(session);
     let sesion = JSON.parse(session);
-    console.log("documento", sesion.id);
+    console.log('documento', sesion.id);
 
     console.info('connected to mqtt');
     //  MqttService.subscribe('WORLD', this.onWORLD);
-    MqttService.subscribe("tip" + sesion.id, this.onWORLD);
+    MqttService.subscribe('tip' + sesion.id, this.onWORLD);
 
     //MqttService.subscribe(sesion.id, this.onWORLD);
 
     this.setState({
       isConnected: true,
     });
-     MqttService.subscribe('WORLD', this.onWORLD);
+    MqttService.subscribe('WORLD', this.onWORLD);
     // MqttService.subscribe('tip' + sesion.id, this.onWORLD);
   };
 
@@ -108,10 +105,10 @@ export default class lista_empresas extends Component {
   };
 
   promesa = async () => {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       console.log('empresa');
       setTimeout(() => {
-        db.transaction(async function (txn) {
+        db.transaction(async function(txn) {
           txn.executeSql('SELECT * FROM empresa', [], (tx, res) => {
             console.log(res);
             resolve(res.rows.raw());
@@ -121,7 +118,7 @@ export default class lista_empresas extends Component {
     });
   };
 
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({navigation}) => {
     return {
       title: 'Lista de empresas',
       headerStyle: {
@@ -152,7 +149,7 @@ export default class lista_empresas extends Component {
   }
 
   Listar = async () => {
-    console.log("wfd");
+    console.log('wfd');
     Keyboard.dismiss();
     let session = await AsyncStorage.getItem('usuario');
     let sesion = JSON.parse(session);
@@ -174,15 +171,14 @@ export default class lista_empresas extends Component {
         const retorno = data;
         if (retorno.retorno == true) {
           console.log(retorno.mensaje);
-          this.setState({ listaT: retorno.mensaje });
-        }
-        else {
-          this.setState({ listaT: null });
+          this.setState({listaT: retorno.mensaje});
+        } else {
+          this.setState({listaT: null});
         }
         console.log(retorno);
-        this.setState({ cargando: false });
+        this.setState({cargando: false});
       })
-      .catch(function (err) {
+      .catch(function(err) {
         console.log('error', err);
       });
   };
@@ -190,7 +186,7 @@ export default class lista_empresas extends Component {
   redireccionar_alta = async (id, nombre, foto) => {
     var myArray = [id, nombre, foto];
     AsyncStorage.setItem('empresa', JSON.stringify(myArray));
-    this.setState({ nombre_empresa: nombre });
+    this.setState({nombre_empresa: nombre});
     console.log(myArray);
     this.props.navigation.navigate('menu_listas');
   };
@@ -202,18 +198,22 @@ export default class lista_empresas extends Component {
         return (
           <ListItem
             key={i}
-            leftAvatar={{ source: { uri: server.img + data.fotoPerfil } }}
+            leftAvatar={{source: {uri: server.img + data.fotoPerfil}}}
             title={data.nombre}
-            onPress={() => this.redireccionar_alta(data.id, data.nombre, data.fotoPerfil)}
+            onPress={() =>
+              this.redireccionar_alta(data.id, data.nombre, data.fotoPerfil)
+            }
           />
         );
       });
     } else {
       return (
         <View>
-          {
-            this.state.cargando ? <PulseIndicator color='#008FAD' size={60} style={{ marginTop: 30 }} /> :
-              <View style={{
+          {this.state.cargando ? (
+            <PulseIndicator color="#008FAD" size={60} style={{marginTop: 30}} />
+          ) : (
+            <View
+              style={{
                 top: 15,
                 left: 0,
                 right: 0,
@@ -221,34 +221,36 @@ export default class lista_empresas extends Component {
                 flex: 1,
                 alignItems: 'center',
                 justifyContent: 'center',
-                height: 600
+                height: 600,
               }}>
-                <Image
-                  source={require('../imagenes/empresa.png')}
-                  style={{ width: 300, height: 250 }}
-                />
-                <Text style={{ fontSize: 19 }}>La lista de empresas esta vacia</Text>
-              </View>
-          }
+              <Image
+                source={require('../imagenes/empresa.png')}
+                style={{width: 300, height: 250}}
+              />
+              <Text style={{fontSize: 19}}>
+                La lista de empresas esta vacia
+              </Text>
+            </View>
+          )}
         </View>
       );
     }
   }
   someMethod() {
     // Force a render with a simulated state change
-    this.setState({ state: this.state });
-}
+    this.setState({state: this.state});
+  }
   render() {
-    const { isConnected } = this.state;
+    const {isConnected} = this.state;
     return (
-     <>
+      <>
         {!isConnected && <OfflineNotification />}
-        { isConnected && <OnlineNotification /> }
-        
-        <PTRView onRefresh={() => this.listar_empresa()} >
-        <ScrollView>{this.parseData()}</ScrollView>
+        {isConnected && <OnlineNotification />}
+
+        <PTRView onRefresh={() => this.listar_empresa()}>
+          <ScrollView>{this.parseData()}</ScrollView>
         </PTRView>
-        </>
+      </>
     );
   }
 }
