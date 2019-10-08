@@ -210,7 +210,8 @@ export default class lista_tareas extends Component {
 
         return (
             <>
-                 <PTRView onRefresh={() => this.llenar_lista()} >
+                <PTRView onRefresh={() => this.llenar_lista()}
+                    delay= {900} >
                 <ScrollView>
                     {this.parseData()}
                     </ScrollView>
