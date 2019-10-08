@@ -26,6 +26,7 @@ export default class Signup2 extends React.Component {
             apellido: null,
             celular: null,
             nacimiento: null,
+            cargando : false
         };
     }
 
@@ -61,7 +62,7 @@ export default class Signup2 extends React.Component {
     };
 
     enviarDatosEmpleado = async () => {
-
+        this.setState({ cargando: true });
         const { navigation } = this.props;
         const datos = JSON.parse(navigation.getParam('datos'));
 
@@ -122,6 +123,7 @@ export default class Signup2 extends React.Component {
                         tipo: datosFinales.email
                     }
                     AsyncStorage.setItem('usuario', JSON.stringify(nuevaSession));
+                    this.setState({ cargando: true });
                     this.props.navigation.navigate('Inicio');
                 } else {
                     alert(retorno.mensaje);
@@ -135,7 +137,7 @@ export default class Signup2 extends React.Component {
 
 
     enviarDatosEmpresa = async () => {
-
+        this.setState({ cargando: true });
         const { navigation } = this.props;
         const datos = JSON.parse(navigation.getParam('datos'));
 
@@ -184,13 +186,14 @@ export default class Signup2 extends React.Component {
                 const retorno = data;
                 console.log('retorno', retorno);
                 if (retorno.retorno == true) {
-                        this.props.navigation.navigate('Login');
-                    
+                    this.props.navigation.navigate('Login');
+
                 } else {
                     alert(
                         retorno.mensaje,
                     )
                 }
+                this.setState({ cargando: false });
             })
             .catch(function (err) {
                 ToastAndroid.show("Compruebe su conexión", ToastAndroid.LONG);
@@ -203,15 +206,13 @@ export default class Signup2 extends React.Component {
         const datos = JSON.parse(navigation.getParam('datos'));
         if (datos.tipo == 1) {
             return (
-
-                <KeyboardAvoidingView style={{ flex: 1 }}
-                    behavior="padding">
+<>
                     <View style={styles.container}>
-                        <Text style={{fontSize: 30}}>Bienvenido</Text>
+                        <Text style={{ fontSize: 30 }}>Bienvenido</Text>
 
                         <View style={styles.inputContainer}>
-                          
-                               <TextInput
+
+                            <TextInput
                                 label="Nombre"
                                 style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                                 onChangeText={(nombre) => this.setState({ nombre })}
@@ -245,10 +246,10 @@ export default class Signup2 extends React.Component {
                             />
                         </View>
                         <View style={styles.inputContainer}>
-                                  <TextInput
+                            <TextInput
                                 label="Celular"
                                 style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                                onChangeText={(celular) => this.setState({ celular })} 
+                                onChangeText={(celular) => this.setState({ celular })}
                                 selectionColor="#008FAD"
                                 underlineColor="#008FAD"
                                 theme={{
@@ -269,37 +270,42 @@ export default class Signup2 extends React.Component {
                             onCancel={this.hideDateTimePicker_inicio}
                             mode={'date'}
                         />
-                        <Button style={{ width: 220 }} color="#008FAD" mode="contained" onPress={this.enviarDatosEmpleado}>
-                            Registrarse
-  </Button>
-                    </View>
-                </KeyboardAvoidingView>
+                        {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#008FAD" loading={true} mode="contained" ></Button> :
+                            <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.enviarDatosEmpleado}>
+                                Registrarse
+                    </Button>
+                        }
+                </View>
+                </>
             );
         } else {
             return (
-                    behavior="padding">
-                    <View style={styles.container}>
-                        <View>
-                            <TextInput
-                                label="Nombre"
-                                style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                                onChangeText={(nombre) => this.setState({ nombre })}
-                                selectionColor="#008FAD"
-                                underlineColor="#008FAD"
-                                theme={{
-                                    colors: {
-                                        primary: '#008FAD',
-                                        underlineColor: 'transparent'
-                                    }
+                behavior = "padding" >
+                <View style={styles.container}>
+                    <View>
+                        <TextInput
+                            label="Nombre"
+                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                            onChangeText={(nombre) => this.setState({ nombre })}
+                            selectionColor="#008FAD"
+                            underlineColor="#008FAD"
+                            theme={{
+                                colors: {
+                                    primary: '#008FAD',
+                                    underlineColor: 'transparent'
+                                }
 
-                                }}
-                                value={this.state.nombre}
-                            />
-                        </View>
+                            }}
+                            value={this.state.nombre}
+                        />
+                    </View>
+                    {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#008FAD" loading={true} mode="contained" ></Button> :
                         <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.enviarDatosEmpresa}>
                             Registrarse
-  </Button>
-                    </View>
+                    </Button>
+                    }
+                </View>
+
             );
 
         }

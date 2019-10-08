@@ -43,11 +43,13 @@ export default class Inicio extends Component {
         // await AsyncStorage.removeItem('usuario');
         let session = await AsyncStorage.getItem('usuario');
         let sessionParce = JSON.parse(session);
+        console.log("sesion",sessionParce);
         if (session === null) {
             this.props.navigation.navigate('Login');
         } else {
             if (sessionParce.tipo == 0) {
-                this.props.navigation.navigate('login');
+                console.log("entra");
+                this.props.navigation.navigate('modoTablet');
             }
             else {
                 this.props.navigation.navigate('lista_empresas');

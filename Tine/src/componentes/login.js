@@ -29,7 +29,8 @@ export default class Login extends Component {
             email: '',
             password: '',
             // endpoint: "https://servidortesis2019.herokuapp.com/",
-            modoTablet: 1
+            modoTablet: 1,
+            cargando: false
         }
         this.checkSession();
     }
@@ -55,7 +56,7 @@ export default class Login extends Component {
 
     saveData = async () => {
         Keyboard.dismiss();
-
+        this.setState({cargando: true});
         const { email, password } = this.state;
 
         if (email == "" || password == "") {
@@ -88,8 +89,7 @@ export default class Login extends Component {
                         await AsyncStorage.setItem('usuario', JSON.stringify(retorno));
                         this.props.navigation.navigate('Inicio');
                     } else {
-                        await AsyncStorage.setItem('usuario', JSON.stringify(retorno));
-                        this.configuraciones();
+                        this.configuraciones(retorno.id);
                         DeviceInfo.isTablet().then(async isTablet => {
                             if (isTablet) {
                                 try {
@@ -102,11 +102,10 @@ export default class Login extends Component {
                                 }
                                 console.log("Modo tablet: ", this.state.modoTablet);
                                 if (this.state.modoTablet) {
-                                    console.log("usu", await AsyncStorage.getItem('usuario'));
+                                    await AsyncStorage.setItem('usuario', JSON.stringify(retorno));
                                     this.props.navigation.navigate('Inicio');
                                     manejador.bajarEmpleadosEmpresa(retorno.id);
                                 } else {
-                                    await AsyncStorage.setItem('usuario', null);
                                     Alert.alert(
                                         "Alerta",
                                         "Usted no tiene permitido el ingreso en una tablet",
@@ -126,6 +125,8 @@ export default class Login extends Component {
                     ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
                     console.log(retorno);
                 }
+                this.setState({ cargando: false });
+                console.log(this.state.cargando);
             })
             .catch(function (err) {
                 console.log(err);
@@ -134,12 +135,10 @@ export default class Login extends Component {
 
     }
 
-    configuraciones = async () => {
+    configuraciones = async (id) => {
         Keyboard.dismiss();
-        let session = await AsyncStorage.getItem('usuario');
-        let sesion = JSON.parse(session);
         let tarea_send = {
-            id_empresa: sesion[0]
+            id_empresa: id
         }
         console.log("empresa conectada", tarea_send);
         await fetch(server.api + 'configuraciones_empresa', {
@@ -229,9 +228,9 @@ export default class Login extends Component {
                         />
                     </View>
 
-                    <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+                    {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}></Button>: <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
                         Iniciar
-  </Button>
+  </Button>} 
                     <Text >¿Nuevo aquí?</Text>
                     <Text style={{ color: '#008FAD' }} onPress={this.openSignup}>Registrate</Text>
                 </View>

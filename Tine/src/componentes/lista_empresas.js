@@ -19,9 +19,9 @@ import OfflineNotification from '../componentes/OfflineNotification';
 import OnlineNotification from '../componentes/OnlineNotification';
 import PTRView from 'react-native-pull-to-refresh';
 
-var PushNotification = require('react-native-push-notification');
-
-import {PulseIndicator} from 'react-native-indicators';
+var PushNotification = require("react-native-push-notification");
+_isMounted = false;
+import { PulseIndicator } from 'react-native-indicators';
 export default class lista_empresas extends Component {
   constructor(props) {
     super(props);
@@ -61,6 +61,7 @@ export default class lista_empresas extends Component {
     });
   }
   componentDidMount() {
+    this._isMounted = false;
     this.listar_empresa();
     MqttService.connectClient(
       this.mqttSuccessHandler,

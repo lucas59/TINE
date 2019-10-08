@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  View, Text, Alert, ToastAndroid, ScrollView, Keyboard } from 'react-native';
+import { View, Text, Alert, ToastAndroid, ScrollView, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo";
 const { server } = require('../config/keys');
@@ -16,6 +16,7 @@ import {
 import BackgroundTimer from 'react-native-background-timer';
 export default class lista_tareas extends Component {
     llenar_lista() {
+        console.log("fgb");
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
                 console.log("online");
@@ -25,14 +26,23 @@ export default class lista_tareas extends Component {
             else {
                 this.setState({ connection_Status: "Offline" });
                 this.promesa().then((lista_SC) => {
-                    console.log("lista tareas: ", lista_SC)
-                    this.setState({ listaT: lista_SC });
+                    console.log("lista tareas: ", lista_SC);
+                    if (lista_SC) {
+                        if (lista_SC.length > 0) {
+                            this.setState({ listaT: lista_SC });
+                        }
+                        else {
+                            this.setState({ listaT: null });
+                        }
+                    } 
+                       
                     this.setState({ cargando: false });
+
                 });
             }
         })
     }
-    
+
     componentDidMount() {
         myTimer = BackgroundTimer.setInterval(() => {
             NetInfo.isConnected.fetch().done((isConnected) => {
@@ -122,6 +132,9 @@ export default class lista_tareas extends Component {
                 if (retorno.retorno == true) {
                     this.setState({ listaT: retorno.mensaje });
                 }
+                else {
+                    this.setState({ listaT: null });
+                }
                 this.setState({ cargando: false });
             })
             .catch(function (err) {
@@ -149,7 +162,7 @@ export default class lista_tareas extends Component {
 
     parseData() {
         Keyboard.dismiss();
-        if (this.state.listaT.length > 0) {
+        if (this.state.listaT) {
             var fecha = null;
             return this.state.listaT.map((data, i) => {
                 //fecha pasa de Date a moment
@@ -194,20 +207,21 @@ export default class lista_tareas extends Component {
             return (
                 <View>
                     {this.state.cargando ? <PulseIndicator color='#008FAD' size={60} style={{ marginTop: 30 }} /> : <View style={{
-                            top: 15,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            flex: 1, 
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        height:600}}>
+                        top: 15,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: 600
+                    }}>
                         <Image
                             source={require('../imagenes/reloj-durmiendo.png')}
                             style={{ width: 300, height: 250 }}
                         />
-                            <Text style={{ fontSize: 19 }}>La lista de tareas esta vacia</Text>
-                        </View>}
+                        <Text style={{ fontSize: 19 }}>La lista de tareas esta vacia</Text>
+                    </View>}
                 </View>
             )
 
@@ -273,16 +287,16 @@ export default class lista_tareas extends Component {
     render() {
         return (
             <>
-                <PTRView onRefresh={() => this.llenar_lista()}delay= {900} >
-                <ScrollView>
-                    {this.parseData()}
+                <PTRView onRefresh={() => this.llenar_lista()} delay={900} >
+                    <ScrollView>
+                        {this.parseData()}
                     </ScrollView>
-                    </PTRView>
+                </PTRView>
                 <ActionButton
                     buttonColor="#008FAD"
                     onPress={() => { this.props.navigation.navigate('altaTarea'); }}
                 />
-               
+
             </>
         )
     }

@@ -239,10 +239,11 @@ export default class Alta_tarea extends Component {
                     }}
                     value={this.state.titulo}
                 />
-                <Button style={{ width: 160, height: 50 }} color="#008FAD" mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}>
-                    <Text style={{ fontSize: 23 }}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
-                </Button>
-
+                {this.state.cargando ? <Button disabled={true} style={{ width: 160, height: 50 }} color="#008FAD" loading={true} mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}></Button> :
+                    <Button style={{ width: 160, height: 50 }} color="#008FAD" mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}>
+                        <Text style={{ fontSize: 23 }}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
+                    </Button>
+                }
             </View>
 
         )
