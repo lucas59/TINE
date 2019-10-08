@@ -41,6 +41,7 @@ export default class lista_empresas extends Component {
         manejador.listarempresas(sesion.id);
         this.Listar();
         console.log('online');  
+        MqttService.connectClient(this.mqttSuccessHandler, this.mqttConnectionLostHandler);
       } else {
         this.promesa().then(lista_SC => {
           console.log('lista tareas: ', lista_SC);
@@ -54,7 +55,7 @@ export default class lista_empresas extends Component {
   }
   componentDidMount() {
     this.listar_empresa();
-    MqttService.connectClient(this.mqttSuccessHandler, this.mqttConnectionLostHandler);
+    
   }
 
   onWORLD = mensaje => {
