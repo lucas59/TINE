@@ -87,7 +87,9 @@ export default class lista_empresas extends Component {
     console.info('connected to mqtt');
     //  MqttService.subscribe('WORLD', this.onWORLD);
     MqttService.subscribe('tip' + sesion.id, this.onWORLD);
-
+    this.setState({
+      isConnected: true,
+    });
     //MqttService.subscribe(sesion.id, this.onWORLD);
 
     this.setState({
