@@ -169,7 +169,8 @@ export default class Signup extends React.Component {
                                 }
 
                             }}
-                            value={this.state.password}
+                        value={this.state.password}
+                        secureTextEntry={true}
                         />
                     </View>
                     <View>
@@ -180,7 +181,7 @@ export default class Signup extends React.Component {
                         />
                     </View>
                     <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
-                        Registrarse
+                        Siguiente
   </Button>
                 </View>
         );

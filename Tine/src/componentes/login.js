@@ -228,7 +228,7 @@ export default class Login extends Component {
                         />
                     </View>
 
-                   {this.state.cargando ? <Button loading="true" style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}></Button>: <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+                    {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}></Button>: <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
                         Iniciar
   </Button>} 
                     <Text >¿Nuevo aquí?</Text>
