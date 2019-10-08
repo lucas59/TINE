@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ToastAndroid, PermissionsAndroid } from 'react-native';
+import { Text, View, ToastAndroid, PermissionsAndroid, BackHandler, Alert } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
@@ -27,6 +27,46 @@ export default class Alta_tarea extends Component {
     }
     componentDidMount() {
         this.comprobar_conexion();
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            titulo: '',
+            inicio: '',
+            fin: '',
+            timerStart: false,
+            stopwatchStart: false,
+            totalDuration: 90000,
+            timerReset: false,
+            stopwatchReset: false,
+            long_ini: null,
+            lat_ini: null,
+            lat_fin: null,
+            long_fin: null,
+            cargando: false
+        };
+        this.toggleStopwatch = this.toggleStopwatch.bind(this);
+        this.resetStopwatch = this.resetStopwatch.bind(this);
+        this.handleBackPress = this.handleBackPress.bind(this);
+
+    }
+
+    handleBackPress = () => {
+        Alert.alert(
+            'Salir de la tarea',
+            '¿Está seguro de salir de la tarea?',
+            [
+                { text: 'Yes', onPress: () => this.props.navigation.goBack() },
+                { text: 'No' }
+            ]
+        );
+        return true;
+    };
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -50,27 +90,7 @@ export default class Alta_tarea extends Component {
         }
     };
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            titulo: '',
-            inicio: '',
-            fin: '',
-            timerStart: false,
-            stopwatchStart: false,
-            totalDuration: 90000,
-            timerReset: false,
-            stopwatchReset: false,
-            long_ini: null,
-            lat_ini: null,
-            lat_fin: null,
-            long_fin: null,
-            cargando: false
-        };
-        this.toggleStopwatch = this.toggleStopwatch.bind(this);
-        this.resetStopwatch = this.resetStopwatch.bind(this);
 
-    }
 
 
     toggleStopwatch = async () => {
