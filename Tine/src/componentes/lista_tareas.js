@@ -16,6 +16,7 @@ import {
 import BackgroundTimer from 'react-native-background-timer';
 export default class lista_tareas extends Component {
     llenar_lista() {
+        console.log("fgb");
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
                 console.log("online");
@@ -122,6 +123,9 @@ export default class lista_tareas extends Component {
                 if (retorno.retorno == true) {
                     this.setState({ listaT: retorno.mensaje });
                 }
+                else {
+                    this.setState({ listaT: null });
+                }
                 this.setState({ cargando: false });
             })
             .catch(function (err) {
@@ -149,7 +153,7 @@ export default class lista_tareas extends Component {
 
     parseData() {
         Keyboard.dismiss();
-        if (this.state.listaT.length > 0) {
+        if (this.state.listaT) {
             var fecha = null;
             return this.state.listaT.map((data, i) => {
                 //fecha pasa de Date a moment
