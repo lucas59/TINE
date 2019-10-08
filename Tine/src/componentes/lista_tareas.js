@@ -3,7 +3,7 @@ import {  View, Text, Alert, ToastAndroid, ScrollView, Keyboard } from 'react-na
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo";
 const { server } = require('../config/keys');
-import { ListItem, Icon } from 'react-native-elements';
+import { ListItem, Icon, Image } from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
@@ -192,7 +192,21 @@ export default class lista_tareas extends Component {
         else {
             return (
                 <View>
-                    {this.state.cargando ? <PulseIndicator color='#008FAD' size={60} style={{ marginTop: 30 }} /> : <Text style={{ textAlign: "center" }}> No existen tareas </Text>}
+                    {this.state.cargando ? <PulseIndicator color='#008FAD' size={60} style={{ marginTop: 30 }} /> : <View style={{
+                            top: 15,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            flex: 1, 
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        height:600}}>
+                        <Image
+                            source={require('../imagenes/reloj-durmiendo.png')}
+                            style={{ width: 300, height: 250 }}
+                        />
+                            <Text style={{ fontSize: 19 }}>La lista de tareas esta vacia</Text>
+                        </View>}
                 </View>
             )
 

@@ -10,7 +10,7 @@ import ActionButton, {renderIcon} from 'react-native-action-button';
 
 export default class Profile extends Component {
   static navigationOptions = {
-    title: 'TINE',
+    title: 'Perfil',
     headerStyle: {
       backgroundColor: '#008FAD',
     },

@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, ScrollView, Keyboard, navigation } from 'react-
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo";
 const { server } = require('../config/keys');
-import { ListItem, Icon, Divider } from 'react-native-elements';
+import { ListItem, Image, Icon, Divider } from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
@@ -113,6 +113,9 @@ export default class lista_tareas extends Component {
                 if (retorno.retorno == true) {
                     this.setState({ listaT: retorno.mensaje });
                 }
+                else {
+                    this.setState({ cargando: false });
+                }
             })
             .catch(function (err) {
                 console.log('error', err);
@@ -170,7 +173,22 @@ export default class lista_tareas extends Component {
         else {
             return (
                 <View>
-                    {this.state.cargando ? <PulseIndicator color='#008FAD' size={60} style={{ marginTop: 30 }} /> : <Text style={{ textAlign: "center" }}> No existen tareas </Text>}
+                    {this.state.cargando ? <PulseIndicator color='#008FAD' size={60} style={{ marginTop: 30 }} /> :
+                        <View style={{
+                            top: 15,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            flex: 1, 
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        height:600}}>
+                        <Image
+                            source={require('../imagenes/cama.png')}
+                            style={{ width: 300, height: 250 }}
+                        />
+                            <Text style={{ fontSize: 19 }}>La lista de asistencias esta vacia</Text>
+                        </View>}
                 </View>
             )
 

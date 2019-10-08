@@ -16,7 +16,13 @@ export default class Inicio extends Component {
     }
 
     static navigationOptions = {
-        title: 'Inicio',
+        headerStyle: {
+            backgroundColor: '#008FAD',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+        },
     };
 
 

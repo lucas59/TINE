@@ -3,7 +3,7 @@ import {ScrollView, StyleSheet, Text, Keyboard, View,ToastAndroid} from 'react-n
 import AsyncStorage from '@react-native-community/async-storage';
 const {server} = require('../config/keys');
 import NetInfo from '@react-native-community/netinfo';
-import {ListItem, Icon} from 'react-native-elements';
+import {ListItem, Icon, Image} from 'react-native-elements';
 const manejador = require('./manejadorSqlite');
 import {openDatabase} from 'react-native-sqlite-storage';
 var db = openDatabase({name: 'sqlliteTesis.db', createFromLocation: 1});
@@ -153,9 +153,7 @@ export default class lista_empresas extends Component {
         if (retorno.retorno == true) {
           console.log(retorno.mensaje);
           this.setState({listaT: retorno.mensaje});
-        } else {
-          alert(retorno.mensaje);
-        }
+        } 
         this.setState({cargando: false});
       })
       .catch(function(err) {
@@ -186,13 +184,27 @@ export default class lista_empresas extends Component {
       });
     } else {
       return (
-        <View>
-          {this.state.cargando ? (
-            <PulseIndicator color="#008FAD" size={60} style={{marginTop: 30}} />
-          ) : (
-            <Text style={{textAlign: 'center'}}> No existen empresas </Text>
-          )}
-        </View>
+      <View>
+        {
+          this.state.cargando ? <PulseIndicator color='#008FAD' size={60} style={{ marginTop: 30 }} /> :
+            <View style={{
+              top: 15,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: 600
+            }}>
+              <Image
+                source={require('../imagenes/empresa.png')}
+                style={{ width: 300, height: 250 }}
+              />
+              <Text style={{ fontSize: 19 }}>La lista de empresas esta vacia</Text>
+            </View>
+          }
+          </View>
       );
     }
   }

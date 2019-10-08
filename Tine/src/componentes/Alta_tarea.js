@@ -31,7 +31,7 @@ export default class Alta_tarea extends Component {
 
     static navigationOptions = ({ navigation }) => {
         return {
-            title: 'TINE',
+            title: 'Alta de tarea',
             headerStyle: {
                 backgroundColor: '#008FAD',
             },
