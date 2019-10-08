@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Alert, Text, View, Image, TouchableOpacity, Modal} from 'react-native';
-import {Button} from 'react-native-paper';
+import { Alert, Text, View, Image, Modal } from 'react-native';
+import { Button, TextInput } from 'react-native-paper';
 import styles from '../css/stylesPerfil';
-import {Icon} from 'react-native-elements';
-import {ScrollView, TextInput} from 'react-native-gesture-handler';
-const {server} = require('../config/keys');
-import ActionButton, {renderIcon} from 'react-native-action-button';
+import { Icon } from 'react-native-elements';
+import { ScrollView } from 'react-native-gesture-handler';
+const { server } = require('../config/keys');
+import ActionButton, { renderIcon } from 'react-native-action-button';
 
 export default class Profile extends Component {
   static navigationOptions = {
@@ -30,6 +30,7 @@ export default class Profile extends Component {
       foto: '',
       celular: '',
       modalVisibleEdit: false,
+      cargando: false
     };
 
     this.bajarDatos();
@@ -44,7 +45,7 @@ export default class Profile extends Component {
   };
 
   bajarDatos = () => {
-    const {navigation} = this.props;
+    const { navigation } = this.props;
     const session = JSON.parse(navigation.getParam('session'));
     console.log('session', session);
 
@@ -55,14 +56,14 @@ export default class Profile extends Component {
           Aceptar: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({session: session.id}),
+        body: JSON.stringify({ session: session.id }),
       })
         .then(res => {
           return res.json();
         })
         .then(data => this.actualizarState(data))
 
-        .catch(function(err) {
+        .catch(function (err) {
           console.log('error', err);
         });
     } else {
@@ -72,7 +73,7 @@ export default class Profile extends Component {
           Aceptar: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({session: session.id}),
+        body: JSON.stringify({ session: session.id }),
       })
         .then(res => {
           console.log('res', res);
@@ -80,7 +81,7 @@ export default class Profile extends Component {
         })
         .then(data => this.actualizarState(data))
 
-        .catch(function(err) {
+        .catch(function (err) {
           console.log('error', err);
         });
     }
@@ -98,7 +99,7 @@ export default class Profile extends Component {
 
   desactivar = () => {
     //console.log('desactivando');
-    const {navigation} = this.props;
+    const { navigation } = this.props;
     const session = JSON.parse(navigation.getParam('session'));
     console.log(session);
 
@@ -108,14 +109,14 @@ export default class Profile extends Component {
         Aceptar: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({session: session.id}),
+      body: JSON.stringify({ session: session.id }),
     })
       .then(res => {
         return res.json();
       })
       .then(data => this.cerrarSession(data.retorno))
 
-      .catch(function(err) {
+      .catch(function (err) {
         console.log('error', err);
       });
   };
@@ -130,9 +131,9 @@ export default class Profile extends Component {
           onPress: () => console.log('Preoceso cancelado'),
           style: 'cancel',
         },
-        {text: 'Si', onPress: () => this.desactivar()},
+        { text: 'Si', onPress: () => this.desactivar() },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
@@ -146,9 +147,9 @@ export default class Profile extends Component {
           onPress: () => console.log('Preoceso cancelado'),
           style: 'cancel',
         },
-        {text: 'Si', onPress: () => this.cerrarSession(true)},
+        { text: 'Si', onPress: () => this.cerrarSession(true) },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
@@ -157,10 +158,11 @@ export default class Profile extends Component {
   };
 
   setModalVisible(visible) {
-    this.setState({modalVisibleEdit: visible});
+    this.setState({ modalVisibleEdit: visible });
   }
 
   guardarDatos = () => {
+    this.setState({cargando: true});
     const {
       nombre,
       apellido,
@@ -206,11 +208,12 @@ export default class Profile extends Component {
         console.log(retorno.retorno);
         if (retorno.retorno == true) {
           this.setModalVisible(false);
+          this.setState({cargando: false});
         } else {
           alert(retorno.mensaje);
         }
       })
-      .catch(function(err) {
+      .catch(function (err) {
         ToastAndroid.show('Compruebe su conexión', ToastAndroid.LONG);
       });
   };
@@ -227,7 +230,7 @@ export default class Profile extends Component {
         <ScrollView>
           <View style={styles.container}>
             <View style={styles.header}></View>
-            <Image style={styles.avatar} source={{uri: imagen}} />
+            <Image style={styles.avatar} source={{ uri: imagen }} />
 
             <View style={styles.body}>
               <View style={styles.bodyContent}>
@@ -274,33 +277,86 @@ export default class Profile extends Component {
           <ScrollView>
             <View style={styles.container}>
               <View style={styles.header}></View>
-              <Image style={styles.avatar} source={{uri: imagen}} />
+              <Image style={styles.avatar} source={{ uri: imagen }} />
               <View style={styles.body}>
                 <View style={styles.bodyContent}>
                   <TextInput
-                    placeholder="Correo"
-                    onChangeText={email => this.setState({email})}>
-                    {this.state.email}
-                  </TextInput>
-                  <TextInput
-                    placeholder="Nombre"
-                    onChangeText={nombre => this.setState({nombre})}>
-                    {this.state.nombre}
-                  </TextInput>
-                  <TextInput
-                    placeholder="Apellido"
-                    onChangeText={apellido => this.setState({apellido})}>
-                    {this.state.apellido}
-                  </TextInput>
-                  <TextInput
-                    placeholder="Celular"
-                    onChangeText={celular => this.setState({celular})}>
-                    {this.state.celular}
-                  </TextInput>
+                    label="Correo"
+                    style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                    onChangeText={email => this.setState({ email })}
+                    selectionColor="#008FAD"
+                    underlineColor="#008FAD"
+                    theme={{
+                      colors: {
+                        primary: '#008FAD',
+                        underlineColor: 'transparent'
+                      }
 
-                  <TouchableOpacity onPress={this.guardarDatos}>
-                    <Text onPress={this.guardarDatos}>Terminar</Text>
-                  </TouchableOpacity>
+                    }}
+                    value={this.state.email}
+                  />
+                  <TextInput
+                    label="Nombre"
+                    style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                    onChangeText={nombre => this.setState({ nombre })}
+                    selectionColor="#008FAD"
+                    underlineColor="#008FAD"
+                    theme={{
+                      colors: {
+                        primary: '#008FAD',
+                        underlineColor: 'transparent'
+                      }
+
+                    }}
+                    value={this.state.nombre}
+                  />
+                  <TextInput
+                    label="Apellido"
+                    style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                    onChangeText={apellido => this.setState({ apellido })}
+                    selectionColor="#008FAD"
+                    underlineColor="#008FAD"
+                    theme={{
+                      colors: {
+                        primary: '#008FAD',
+                        underlineColor: 'transparent'
+                      }
+
+                    }}
+                    value={this.state.apellido}
+                  />
+                  <TextInput
+                    label="Celular"
+                    style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                    onChangeText={celular => this.setState({ celular })}
+                    selectionColor="#008FAD"
+                    underlineColor="#008FAD"
+                    theme={{
+                      colors: {
+                        primary: '#008FAD',
+                        underlineColor: 'transparent'
+                      }
+
+                    }}
+                    value={this.state.celular}
+                  />
+                  {this.state.cargando ?
+                    <Button
+                      loading={true}
+                      disabled={true}
+                      style={styles.buttonContainer}
+                      color="#008FAD"
+                      mode="contained"
+                      onPress={this.guardarDatos}>
+                </Button>
+                    :
+                    <Button
+                      style={styles.buttonContainer}
+                      color="#008FAD"
+                      mode="contained"
+                      onPress={this.guardarDatos}>
+                      Terminar
+                </Button>}
                 </View>
               </View>
             </View>
