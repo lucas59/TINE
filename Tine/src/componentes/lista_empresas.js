@@ -61,12 +61,16 @@ export default class lista_empresas extends Component {
     });
   }
   componentDidMount() {
-    this._isMounted = false;
+    this._isMounted = true;
     this.listar_empresa();
     MqttService.connectClient(
       this.mqttSuccessHandler,
       this.mqttConnectionLostHandler,
     );
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   onWORLD = mensaje => {

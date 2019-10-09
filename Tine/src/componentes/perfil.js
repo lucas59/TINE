@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
-import { Alert, Text, View, Image, Modal } from 'react-native';
+import { Alert, Text, View, Modal, Image } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import styles from '../css/stylesPerfil';
 import { Icon } from 'react-native-elements';
@@ -162,7 +162,7 @@ export default class Profile extends Component {
   }
 
   guardarDatos = () => {
-    this.setState({cargando: true});
+    this.setState({ cargando: true });
     const {
       nombre,
       apellido,
@@ -208,7 +208,7 @@ export default class Profile extends Component {
         console.log(retorno.retorno);
         if (retorno.retorno == true) {
           this.setModalVisible(false);
-          this.setState({cargando: false});
+          this.setState({ cargando: false });
         } else {
           alert(retorno.mensaje);
         }
@@ -229,7 +229,10 @@ export default class Profile extends Component {
       <>
         <ScrollView>
           <View style={styles.container}>
-            <View style={styles.header}></View>
+            <Image
+              source={require('../imagenes/fondo.jpeg')}
+              style={styles.header}
+            />
             <Image style={styles.avatar} source={{ uri: imagen }} />
 
             <View style={styles.body}>
@@ -237,8 +240,25 @@ export default class Profile extends Component {
                 <Text style={styles.name}>
                   {this.state.nombre} {this.state.apellido}{' '}
                 </Text>
-                <Text style={styles.info}>{this.state.email} </Text>
-                <Text style={styles.info}>{this.state.celular} </Text>
+                <View style={{
+                 paddingVertical: 15,
+                 paddingHorizontal: 10,
+                 flexDirection: "row",
+                 alignItems: "center"
+                }}>
+                  <Icon
+                    name='email'
+                    type='material-community'
+                    color="#008FAD"
+                  />
+                  <Text style={styles.info}> {this.state.email}      </Text>
+                  <Icon
+                    name='phone'
+                    type='material-community'
+                    color="#008FAD" />
+                  <Text style={styles.info}> {this.state.celular} </Text>
+                </View>
+
                 <Button
                   style={styles.buttonContainer}
                   color="#008FAD"
@@ -276,7 +296,10 @@ export default class Profile extends Component {
           }}>
           <ScrollView>
             <View style={styles.container}>
-              <View style={styles.header}></View>
+            <Image
+              source={require('../imagenes/fondo.jpeg')}
+              style={styles.header}
+            />
               <Image style={styles.avatar} source={{ uri: imagen }} />
               <View style={styles.body}>
                 <View style={styles.bodyContent}>
@@ -348,7 +371,7 @@ export default class Profile extends Component {
                       color="#008FAD"
                       mode="contained"
                       onPress={this.guardarDatos}>
-                </Button>
+                    </Button>
                     :
                     <Button
                       style={styles.buttonContainer}
