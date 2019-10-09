@@ -18,8 +18,8 @@ export default class Menu_listas extends Component {
             headerRight: (
                 <Icon
                     reverse
-                    name='face'
-                    type='material'
+                    name='account-circle'
+                    type='material-community'
                     color='#008FAD'
                     onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
             ),

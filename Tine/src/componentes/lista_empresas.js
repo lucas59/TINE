@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -8,12 +8,12 @@ import {
   ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-const {server} = require('../config/keys');
+const { server } = require('../config/keys');
 import NetInfo from '@react-native-community/netinfo';
-import {ListItem, Icon, Image} from 'react-native-elements';
+import { ListItem, Icon, Image } from 'react-native-elements';
 const manejador = require('./manejadorSqlite');
-import {openDatabase} from 'react-native-sqlite-storage';
-var db = openDatabase({name: 'sqlliteTesis.db', createFromLocation: 1});
+import { openDatabase } from 'react-native-sqlite-storage';
+var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 import MqttService from '../core/services/MqttService';
 import OfflineNotification from '../componentes/OfflineNotification';
 import OnlineNotification from '../componentes/OnlineNotification';
@@ -53,8 +53,8 @@ export default class lista_empresas extends Component {
       } else {
         this.promesa().then(lista_SC => {
           console.log('lista tareas: ', lista_SC);
-          this.setState({listaT: lista_SC});
-          this.setState({cargando: false});
+          this.setState({ listaT: lista_SC });
+          this.setState({ cargando: false });
         });
         console.log('offline');
       }
@@ -108,10 +108,10 @@ export default class lista_empresas extends Component {
   };
 
   promesa = async () => {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       console.log('empresa');
       setTimeout(() => {
-        db.transaction(async function(txn) {
+        db.transaction(async function (txn) {
           txn.executeSql('SELECT * FROM empresa', [], (tx, res) => {
             console.log(res);
             resolve(res.rows.raw());
@@ -121,7 +121,7 @@ export default class lista_empresas extends Component {
     });
   };
 
-  static navigationOptions = ({navigation}) => {
+  static navigationOptions = ({ navigation }) => {
     return {
       title: 'Lista de empresas',
       headerStyle: {
@@ -134,8 +134,8 @@ export default class lista_empresas extends Component {
       headerRight: (
         <Icon
           reverse
-          name="face"
-          type="material"
+          name='account-circle'
+          type='material-community'
           color="#008FAD"
           onPress={async () =>
             navigation.navigate('perfil', {
@@ -174,14 +174,14 @@ export default class lista_empresas extends Component {
         const retorno = data;
         if (retorno.retorno == true) {
           console.log(retorno.mensaje);
-          this.setState({listaT: retorno.mensaje});
+          this.setState({ listaT: retorno.mensaje });
         } else {
-          this.setState({listaT: null});
+          this.setState({ listaT: null });
         }
         console.log(retorno);
-        this.setState({cargando: false});
+        this.setState({ cargando: false });
       })
-      .catch(function(err) {
+      .catch(function (err) {
         console.log('error', err);
       });
   };
@@ -189,7 +189,7 @@ export default class lista_empresas extends Component {
   redireccionar_alta = async (id, nombre, foto) => {
     var myArray = [id, nombre, foto];
     AsyncStorage.setItem('empresa', JSON.stringify(myArray));
-    this.setState({nombre_empresa: nombre});
+    this.setState({ nombre_empresa: nombre });
     console.log(myArray);
     this.props.navigation.navigate('menu_listas');
   };
@@ -201,7 +201,7 @@ export default class lista_empresas extends Component {
         return (
           <ListItem
             key={i}
-            leftAvatar={{source: {uri: server.img + data.fotoPerfil}}}
+            leftAvatar={{ source: { uri: server.img + data.fotoPerfil } }}
             title={data.nombre}
             onPress={() =>
               this.redireccionar_alta(data.id, data.nombre, data.fotoPerfil)
@@ -213,38 +213,38 @@ export default class lista_empresas extends Component {
       return (
         <View>
           {this.state.cargando ? (
-            <PulseIndicator color="#008FAD" size={60} style={{marginTop: 30}} />
+            <PulseIndicator color="#008FAD" size={60} style={{ marginTop: 30 }} />
           ) : (
-            <View
-              style={{
-                top: 15,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: 600,
-              }}>
-              <Image
-                source={require('../imagenes/empresa.png')}
-                style={{width: 300, height: 250}}
-              />
-              <Text style={{fontSize: 19}}>
-                La lista de empresas esta vacia
+              <View
+                style={{
+                  top: 15,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: 600,
+                }}>
+                <Image
+                  source={require('../imagenes/empresa.png')}
+                  style={{ width: 300, height: 250 }}
+                />
+                <Text style={{ fontSize: 19 }}>
+                  La lista de empresas esta vacia
               </Text>
-            </View>
-          )}
+              </View>
+            )}
         </View>
       );
     }
   }
   someMethod() {
     // Force a render with a simulated state change
-    this.setState({state: this.state});
+    this.setState({ state: this.state });
   }
   render() {
-    const {isConnected} = this.state;
+    const { isConnected } = this.state;
     return (
       <>
         {!isConnected && <OfflineNotification />}
