@@ -220,6 +220,7 @@ export default class Profile extends Component {
 
   render() {
     var imagen;
+    console.log(this.state.fotoPerfil);
     if (this.state.fotoPerfil) {
       imagen = server.img + this.state.fotoPerfil;
     } else {
