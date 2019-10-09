@@ -80,8 +80,8 @@ export default class lista_tareas extends Component {
             headerRight: (
                 <Icon
                     reverse
-                    name='face'
-                    type='material'
+                    name='account-circle'
+                    type='material-community'
                     color='#008FAD'
                     onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
             ),
@@ -183,7 +183,7 @@ export default class lista_tareas extends Component {
                         <ListItem
                             leftIcon={{ name: 'assignment' }}
                             title={data.titulo != "" ? data.titulo : "Sin nombre"}
-                            rightTitle={diffDuration.hours() + "h " + diffDuration.minutes() + "m " + diffDuration.seconds() + "s"}
+                            rightTitle={diffDuration.days() + "d " +diffDuration.hours() + "h " + diffDuration.minutes() + "m " + diffDuration.seconds() + "s"}
                             onPress={() => Alert.alert(
                                 "Opciones",
                                 "de tarea " + data.titulo,

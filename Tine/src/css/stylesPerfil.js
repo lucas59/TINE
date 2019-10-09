@@ -1,19 +1,16 @@
 import { StyleSheet } from 'react-native';
 module.exports = StyleSheet.create({
     header: {
-        backgroundColor: "#008FAD",
         height: 200,
+width: 395
     },
     avatar: {
-        width: 130,
-        height: 130,
-        borderRadius: 63,
-        borderWidth: 4,
-        borderColor: "white",
+        width: 170,
+        height: 170,
         marginBottom: 10,
         alignSelf: 'center',
         position: 'absolute',
-        marginTop: 130
+        marginTop: 120
     },
     name: {
         fontSize: 22,
@@ -21,7 +18,7 @@ module.exports = StyleSheet.create({
         fontWeight: '600',
     },
     body: {
-        marginTop: 40,
+        marginTop: 70,
     },
     bodyContent: {
         flex: 1,
@@ -34,9 +31,7 @@ module.exports = StyleSheet.create({
         fontWeight: "600"
     },
     info: {
-        fontSize: 16,
-        color: "#00BFFF",
-        marginTop: 10
+        fontSize: 16
     },
     description: {
         fontSize: 16,

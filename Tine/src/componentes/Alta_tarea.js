@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ToastAndroid, PermissionsAndroid } from 'react-native';
+import { Text, View, ToastAndroid, PermissionsAndroid, BackHandler, Alert } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
@@ -27,28 +27,8 @@ export default class Alta_tarea extends Component {
     }
     componentDidMount() {
         this.comprobar_conexion();
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }
-
-    static navigationOptions = ({ navigation }) => {
-        return {
-            title: 'Alta de tarea',
-            headerStyle: {
-                backgroundColor: '#008FAD',
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-                fontWeight: 'bold',
-            },
-            headerRight: (
-                <Icon
-                    reverse
-                    name='face'
-                    type='material'
-                    color='#008FAD'
-                    onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
-            ),
-        }
-    };
 
     constructor(props) {
         super(props);
@@ -69,8 +49,48 @@ export default class Alta_tarea extends Component {
         };
         this.toggleStopwatch = this.toggleStopwatch.bind(this);
         this.resetStopwatch = this.resetStopwatch.bind(this);
+        this.handleBackPress = this.handleBackPress.bind(this);
 
     }
+
+    handleBackPress = () => {
+        Alert.alert(
+            'Salir de la tarea',
+            '¿Está seguro de salir de la tarea?',
+            [
+                { text: 'Yes', onPress: () => this.props.navigation.goBack() },
+                { text: 'No' }
+            ]
+        );
+        return true;
+    };
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: 'Alta de tarea',
+            headerStyle: {
+                backgroundColor: '#008FAD',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+            headerRight: (
+                <Icon
+                    reverse
+                    name='account-circle'
+                    type='material-community'
+                    color='#008FAD'
+                    onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
+            ),
+        }
+    };
+
+
 
 
     toggleStopwatch = async () => {
