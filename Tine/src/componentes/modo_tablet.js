@@ -11,7 +11,7 @@ var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 var idempleado;
 import NetInfo from "@react-native-community/netinfo";
 import BackgroundTimer from 'react-native-background-timer';
-
+import DeviceInfo from 'react-native-device-info';
 
 
 
@@ -86,6 +86,7 @@ export default class modoTablet extends Component {
     }
 
     promesa() {
+
         var codigo = this.state.codigo;
         var empresa_id = this.state.empresa_id;
         return new Promise(function (resolve, reject) {
@@ -112,6 +113,7 @@ export default class modoTablet extends Component {
                 });
             }, 1000);
         });
+
     }
     confirmar_usuario = async () => {
         Keyboard.dismiss();
@@ -208,9 +210,56 @@ export default class modoTablet extends Component {
         }
     }
     render() {
-        return (
-            <>
-                <View style={styles.pin}>
+        DeviceInfo.isTablet().then(async isTablet => {
+            if (!isTablet) {
+                return (
+                    <>
+                        <View style={styles.pin}>
+                            <PinView
+
+                                onComplete={(val, clear) => { this.setState({ codigo: val }), clear(), this.confirmar_usuario() }}
+                                pinLength={4}
+                                inputBgColor="#0083D0"
+                                inputBgOpacity={0.6}
+
+                            />
+                        </View>
+                        <View >
+                            <RNCamera
+                                style={styles.camara}
+                                type={RNCamera.Constants.Type.front}
+                                captureAudio={false}
+                            >
+                                {({ camera, status }) => {
+                                    if (status !== 'READY') return <PendingView />;
+                                    return (
+                                        <View style={{ position: 'relative', top: 300 }}>
+                                            <TouchableOpacity onPress={() => Alert.alert(
+                                                "Opciones",
+                                                "¿Usted esta ingresando o saliendo del establecimiento?",
+                                                [
+                                                    { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
+                                                    {
+                                                        text: "Saliendo",
+                                                        onPress: () => this.Alta_asistencia(camera, 0),
+                                                    },
+                                                ],
+                                                { cancelable: true }
+                                            )
+                                            } style={styles.capture}>
+                                                <Text style={{ fontSize: 14, color: 'white' }}> Aceptar </Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    );
+                                }}
+                            </RNCamera>
+                        </View>
+                    </>
+                )
+            }
+            else {
+                <>
+                <View>
                     <PinView
 
                         onComplete={(val, clear) => { this.setState({ codigo: val }), clear(), this.confirmar_usuario() }}
@@ -222,7 +271,6 @@ export default class modoTablet extends Component {
                 </View>
                 <View >
                     <RNCamera
-                        style={styles.camara}
                         type={RNCamera.Constants.Type.front}
                         captureAudio={false}
                     >
@@ -251,7 +299,8 @@ export default class modoTablet extends Component {
                     </RNCamera>
                 </View>
             </>
-        )
+            }
+        });
     }
 }
 
@@ -260,7 +309,7 @@ export default class modoTablet extends Component {
 
 const styles = StyleSheet.create({
     pin: {
-        position: 'absolute', top: 100, left: 100, bottom: 100, justifyContent: 'center',alignContent: 'center',
+        position: 'absolute', top: 100, left: 100, bottom: 100, justifyContent: 'center', alignContent: 'center',
         borderWidth: 1,
         borderRadius: 10,
         borderColor: '#ddd',
@@ -288,6 +337,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         paddingHorizontal: 20,
         margin: 20,
-        
+
     },
 });

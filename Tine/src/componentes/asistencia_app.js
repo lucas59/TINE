@@ -77,7 +77,7 @@ export default class asistencia_app extends Component {
                         const retorno = data;
                         console.log(retorno);
                         if (retorno.retorno == true) {
-                            this.state.empleado_id = retorno.id;
+                            this.setState({empleado_id : retorno.id});
                             if (retorno.estado_ree == 1) {
                                 this.setState({ mensaje_alert: retorno.mensaje });
                             }

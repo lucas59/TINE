@@ -56,7 +56,7 @@ export default class Login extends Component {
 
     saveData = async () => {
         Keyboard.dismiss();
-        this.setState({cargando: true});
+        this.setState({ cargando: true });
         const { email, password } = this.state;
 
         if (email == "" || password == "") {
@@ -81,7 +81,7 @@ export default class Login extends Component {
             .then(res => {
                 return res.json()
             })
-            .then(async data  => {
+            .then(async data => {
                 const retorno = data;
                 console.log(retorno);
                 if (retorno.retorno == true) {
@@ -91,34 +91,26 @@ export default class Login extends Component {
                         this.props.navigation.navigate('Inicio');
                     } else {
                         this.configuraciones(retorno.id);
-                        DeviceInfo.isTablet().then(async isTablet => {
-                            if (isTablet) {
-                                try {
-                                    const value = await AsyncStorage.getItem('configuraciones');
-                                    if (value !== null) {
-                                        this.setState({ 'modoTablet': JSON.parse(value).modoTablet.data[0] });
-                                    }
-                                } catch (e) {
-                                    console.log("error", e);
-                                }
-                                console.log("Modo tablet: ", this.state.modoTablet);
-                                if (this.state.modoTablet) {
-                                    await AsyncStorage.setItem('usuario', JSON.stringify(retorno));
-                                    this.props.navigation.navigate('Inicio');
-                                    manejador.bajarEmpleadosEmpresa(retorno.id);
-                                } else {
-                                    Alert.alert(
-                                        "Alerta",
-                                        "Usted no tiene permitido el ingreso en una tablet",
-                                    )
-                                }
-                            } else {
-                                Alert.alert(
-                                    "Alerta",
-                                    "La empresa solo puede ingresar desde una tablet",
-                                )
+                        try {
+                            const value = await AsyncStorage.getItem('configuraciones');
+                            if (value !== null) {
+                                this.setState({ 'modoTablet': JSON.parse(value).modoTablet.data[0] });
                             }
-                        });
+                        } catch (e) {
+                            console.log("error", e);
+                        }
+                        console.log("Modo tablet: ", this.state.modoTablet);
+                        if (this.state.modoTablet) {
+                            await AsyncStorage.setItem('usuario', JSON.stringify(retorno));
+                            this.props.navigation.navigate('Inicio');
+                            manejador.bajarEmpleadosEmpresa(retorno.id);
+                        } else {
+                            Alert.alert(
+                                "Alerta",
+                                "Usted no tiene permitido el ingreso en una tablet",
+                            )
+                        }
+
 
                     }
 
@@ -191,7 +183,7 @@ export default class Login extends Component {
                 <View style={styles.container}>
                     <View >
                         <Image
-                            source={ require('../imagenes/Tesis-logo.png') }
+                            source={require('../imagenes/Tesis-logo.png')}
                             style={{ width: 300, height: 300 }}
                         />
                         <TextInput
@@ -229,13 +221,13 @@ export default class Login extends Component {
                         />
                     </View>
 
-                    {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}></Button>: <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+                    {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}></Button> : <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
                         Iniciar
-  </Button>} 
+  </Button>}
                     <Text >¿Nuevo aquí?</Text>
                     <Text style={{ color: '#008FAD' }} onPress={this.openSignup}>Registrate</Text>
                 </View>
-                </ScrollView>
+            </ScrollView>
         )
     }
 

@@ -149,7 +149,7 @@ export default class lista_tareas extends Component {
             var fecha = null;
             return this.state.listaT.map((data, i) => {
                 //fecha pasa de Date a moment
-                const moment_fecha = moment(data.fecha);
+                const moment_fecha = moment(data.fecha).utc();
                 //setear la fecha de la tarea en una variable para luego compararla con la fecha de la tarea actual
                 var comp = fecha;
                 //fecha es igual a la fecha de la tarea actual
