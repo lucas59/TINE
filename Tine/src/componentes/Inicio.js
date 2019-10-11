@@ -4,17 +4,6 @@ const { server } = require('../config/keys');
 import BackgroundTimer from 'react-native-background-timer';
 var mytimer;
 export default class Inicio extends Component {
-
-    componentDidMount() {
-        myTimer = BackgroundTimer.setInterval(() => {
-            //console.log('timer');
-        }, 3000);
-    }
-    componentWillUnMount() {
-        // Code to stop timer.
-        BackgroundTimer.clearInterval(myTimer);
-    }
-
     static navigationOptions = {
         headerStyle: {
             backgroundColor: '#008FAD',
@@ -33,7 +22,6 @@ export default class Inicio extends Component {
         }
 
         this.Redirigir();
-
     }
 
 

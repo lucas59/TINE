@@ -12,7 +12,7 @@ var idempleado;
 import NetInfo from "@react-native-community/netinfo";
 import BackgroundTimer from 'react-native-background-timer';
 import DeviceInfo from 'react-native-device-info';
-
+import { Button } from 'react-native-paper';
 
 
 const PendingView = () => (
@@ -28,8 +28,26 @@ const PendingView = () => (
     </View>
 );
 export default class modoTablet extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            foto: '',
+            codigo: '',
+            inicio: '',
+            empleado_id: '',
+            empresa_id: '',
+            cameraType: 'front',
+            mirrorMode: false,
+            tablet: false,
+            cargando: false,
+            boton_act: false
+        }
+        this.perfil();
+       
+    }
 
     componentDidMount() {
+        this.establet();
         myTimer = BackgroundTimer.setInterval(() => {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
@@ -40,13 +58,14 @@ export default class modoTablet extends Component {
                 }
             })
         }, 5000);
+
     }
     componentWillUnmount() {
         BackgroundTimer.clearInterval(myTimer);
     }
     static navigationOptions = ({ navigation }) => {
         return {
-            title: 'ModoTablet',
+            title: 'Modo Tablet',
             headerStyle: {
                 backgroundColor: '#008FAD',
             },
@@ -71,22 +90,9 @@ export default class modoTablet extends Component {
     }
 
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            foto: '',
-            codigo: '',
-            inicio: '',
-            empleado_id: '',
-            empresa_id: '',
-            cameraType: 'front',
-            mirrorMode: false
-        }
-        this.perfil();
-    }
+
 
     promesa() {
-
         var codigo = this.state.codigo;
         var empresa_id = this.state.empresa_id;
         return new Promise(function (resolve, reject) {
@@ -94,9 +100,12 @@ export default class modoTablet extends Component {
                 db.transaction(function (tx) {
                     tx.executeSql('SELECT * FROM usuario', [], (tx, results) => {
                         for (var i = 0; i < results.rows.length; i++) {
+                            console.log("pin a ", results.rows.item(i).pin);
+                            console.log("pin b ", codigo);
                             if (results.rows.item(i).pin == codigo) {
                                 idempleado = results.rows.item(i).id;
                                 tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND empresa_id = ? AND tipo = 0', [results.rows.item(i).id, empresa_id], (tx, results) => {
+                                    console.log("numero", results.rows.length);
                                     if (results.rows.length > 0) {
                                         resolve(1);
                                     }
@@ -104,6 +113,7 @@ export default class modoTablet extends Component {
                                         resolve(2);
                                     }
                                 });
+                                break;
                             }
                             else {
                                 resolve(3);
@@ -121,10 +131,13 @@ export default class modoTablet extends Component {
         let sesion = JSON.parse(session);
         this.setState({ empresa_id: sesion.id });
         this.promesa().then((data) => {
+            console.log("data",data);
             if (data == 1) {
+                this.setState({ boton_act: true });
                 ToastAndroid.show('Buen viaje, seleccione aceptar', ToastAndroid.LONG);
             }
             else if (data == 2) {
+                this.setState({ boton_act: true });
                 ToastAndroid.show('Bienvenido, seleccione aceptar', ToastAndroid.LONG);
             }
             else if (data == 3) {
@@ -135,6 +148,7 @@ export default class modoTablet extends Component {
 
 
     Alta_asistencia = async (camera, estado) => {
+        this.setState({ cargando: true });
         console.log(camera);
         Keyboard.dismiss();
         const options = { quality: 0.5, base64: true, captureAudio: false };
@@ -151,6 +165,7 @@ export default class modoTablet extends Component {
                     txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo,estado) VALUES (?,?,?,?,?,?)', [idempleado, foto, fecha, empresa_id, estado, 0], (tx, results) => {
                         console.log(results.rowsAffected);
                         if (results.rowsAffected > 0) {
+                            this.setState({ boton_act : false });
                             console.log("insertó");
                             ToastAndroid.show('La asistencia se insertó correctamente', ToastAndroid.LONG);
                             db.transaction(function (txr) {
@@ -171,6 +186,7 @@ export default class modoTablet extends Component {
                 });
 
             });
+            this.setState({ cargando: false });
         }
         else {
             const { foto } = this.state;
@@ -203,38 +219,91 @@ export default class modoTablet extends Component {
                     } else {
                         alert(retorno.mensaje);
                     }
+                    this.setState({ cargando: false });
+                    this.setState({ boton_act : false });
                 })
                 .catch(function (err) {
                     console.log('error', err);
                 })
         }
     }
+
+    async establet() {
+        try {
+            await DeviceInfo.isTablet().then(async isTablet => {
+                console.log("es t", isTablet);
+                this.setState({ tablet: isTablet });
+            });
+        } catch (e) {
+            console.log("error", e);
+        }
+    }
+
+
     render() {
-        DeviceInfo.isTablet().then(async isTablet => {
-            if (!isTablet) {
-                return (
-                    <>
-                        <View style={styles.pin}>
-                            <PinView
+        console.log(this.state.tablet);
+        if (this.state.tablet) {
+            return (
+                <>
+                    <View style={styles.pin}>
+                        <PinView
 
-                                onComplete={(val, clear) => { this.setState({ codigo: val }), clear(), this.confirmar_usuario() }}
-                                pinLength={4}
-                                inputBgColor="#0083D0"
-                                inputBgOpacity={0.6}
+                            onComplete={(val, clear) => { this.setState({ codigo: val }), clear(), this.confirmar_usuario() }}
+                            pinLength={4}
+                            inputBgColor="#0083D0"
+                            inputBgOpacity={0.6}
 
-                            />
-                        </View>
-                        <View >
-                            <RNCamera
-                                style={styles.camara}
-                                type={RNCamera.Constants.Type.front}
-                                captureAudio={false}
-                            >
-                                {({ camera, status }) => {
-                                    if (status !== 'READY') return <PendingView />;
-                                    return (
-                                        <View style={{ position: 'relative', top: 300 }}>
-                                            <TouchableOpacity onPress={() => Alert.alert(
+                        />
+                    </View>
+                    <View >
+                        <RNCamera
+                            style={styles.camara}
+                            type={RNCamera.Constants.Type.front}
+                            captureAudio={false}
+                        >
+                            {({ camera, status }) => {
+                                if (status !== 'READY') return <PendingView />;
+                                return (
+                                    <View style={{ position: 'relative', top: 300 }}>
+                                        <TouchableOpacity onPress={() => Alert.alert(
+                                            "Opciones",
+                                            "¿Usted esta ingresando o saliendo del establecimiento?",
+                                            [
+                                                { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
+                                                {
+                                                    text: "Saliendo",
+                                                    onPress: () => this.Alta_asistencia(camera, 0),
+                                                },
+                                            ],
+                                            { cancelable: true }
+                                        )
+                                        } style={styles.capture}>
+                                            <Text style={{ fontSize: 14, color: 'white' }}> Aceptar </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                );
+                            }}
+                        </RNCamera>
+                    </View>
+                </>
+            )
+        }
+        else {
+            console.log("carga", this.state.cargando);
+            return (
+                <>
+                    <View style={{ alignContent: 'center', alignItems: 'center' }} >
+                        <RNCamera
+                            type={RNCamera.Constants.Type.front}
+                            captureAudio={false}
+                            style={{ top: 100, width: 150 }}
+                        >
+                            {({ camera, status }) => {
+                                if (status !== 'READY') return <PendingView />;
+                                return (
+                                    <View style={{ position: 'relative', top: 570 }}>
+                                        {this.state.cargando ? <Button style={styles.capture} mode="outlined" color="#008FAD"
+                                            style={{ marginTop: 10, width: 150 }} onPress={() => Alert.alert(
                                                 "Opciones",
                                                 "¿Usted esta ingresando o saliendo del establecimiento?",
                                                 [
@@ -244,63 +313,40 @@ export default class modoTablet extends Component {
                                                         onPress: () => this.Alta_asistencia(camera, 0),
                                                     },
                                                 ],
-                                                { cancelable: true }
-                                            )
-                                            } style={styles.capture}>
-                                                <Text style={{ fontSize: 14, color: 'white' }}> Aceptar </Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    );
-                                }}
-                            </RNCamera>
-                        </View>
-                    </>
-                )
-            }
-            else {
-                <>
-                <View>
-                    <PinView
+                                            )} loading={true}>
+                                            </Button>
+                                            : <Button style={styles.capture} mode="contained" color="#008FAD"
+                                                style={{ marginTop: 10, width: 150 }} onPress={() => Alert.alert(
+                                                    "Opciones",
+                                                    "¿Usted esta ingresando o saliendo del establecimiento?",
+                                                    [
+                                                        { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
+                                                        {
+                                                            text: "Saliendo",
+                                                            onPress: () => this.Alta_asistencia(camera, 0),
+                                                        },
+                                                    ],
+                                                )} disabled={this.state.boton_act ? false:true}>
+                                                Aceptar
+                                       </Button>}
+                                    </View>
+                                );
+                            }}
+                        </RNCamera>
+                    </View>
+                    <View style={{ position: "absolute", left: 0, right: 0, top: 260 }}>
+                        <PinView
+                            onComplete={(val, clear) => { this.setState({ codigo: val }), clear(), this.confirmar_usuario() }}
+                            pinLength={4}
+                            inputBgColor="#0083D0"
+                            inputBgOpacity={0.6}
 
-                        onComplete={(val, clear) => { this.setState({ codigo: val }), clear(), this.confirmar_usuario() }}
-                        pinLength={4}
-                        inputBgColor="#0083D0"
-                        inputBgOpacity={0.6}
+                        />
+                    </View>
+                </>
+            )
+        }
 
-                    />
-                </View>
-                <View >
-                    <RNCamera
-                        type={RNCamera.Constants.Type.front}
-                        captureAudio={false}
-                    >
-                        {({ camera, status }) => {
-                            if (status !== 'READY') return <PendingView />;
-                            return (
-                                <View style={{ position: 'relative', top: 300 }}>
-                                    <TouchableOpacity onPress={() => Alert.alert(
-                                        "Opciones",
-                                        "¿Usted esta ingresando o saliendo del establecimiento?",
-                                        [
-                                            { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
-                                            {
-                                                text: "Saliendo",
-                                                onPress: () => this.Alta_asistencia(camera, 0),
-                                            },
-                                        ],
-                                        { cancelable: true }
-                                    )
-                                    } style={styles.capture}>
-                                        <Text style={{ fontSize: 14, color: 'white' }}> Aceptar </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            );
-                        }}
-                    </RNCamera>
-                </View>
-            </>
-            }
-        });
     }
 }
 
