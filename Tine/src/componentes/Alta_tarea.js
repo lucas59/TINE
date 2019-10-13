@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ToastAndroid, PermissionsAndroid, BackHandler, Alert } from 'react-native';
+import { Text, View, ToastAndroid, PermissionsAndroid, BackHandler, Alert, ImageBackground } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
@@ -58,7 +58,7 @@ export default class Alta_tarea extends Component {
             'Salir de la tarea',
             '¿Está seguro de salir de la tarea?',
             [
-                { text: 'Yes', onPress: () => this.props.navigation.goBack() },
+                { text: 'Si', onPress: () => this.props.navigation.goBack() },
                 { text: 'No' }
             ]
         );
@@ -235,7 +235,14 @@ export default class Alta_tarea extends Component {
     render() {
         return (
 
-
+<ImageBackground
+            resizeMode='cover'
+            source={require('../imagenes/main.jpg')}
+            style={{
+              width: '100%',
+              height: '100%',
+              flex: 1
+            }}>
             <View style={styles.container}>
                 <Stopwatch laps msecs start={this.state.stopwatchStart}
                     reset={this.state.stopwatchReset}
@@ -265,7 +272,7 @@ export default class Alta_tarea extends Component {
                     </Button>
                 }
             </View>
-
+</ImageBackground>
         )
     }
 }

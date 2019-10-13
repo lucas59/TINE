@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, Keyboard, ToastAndroid, Text, ScrollView } from 'react-native';
+import { Alert, View, Keyboard, ToastAndroid, Text, ScrollView, ImageBackground } from 'react-native';
 import { Image } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { TextInput } from 'react-native-paper';
@@ -13,15 +13,8 @@ var timer;
 export default class Login extends Component {
 
     static navigationOptions = {
-        title: 'Ingresar',
-        headerStyle: {
-            backgroundColor: '#008FAD',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            fontWeight: 'bold',
-        },
-    };
+        header: null,
+        };
 
     constructor(props) {
         super(props);
@@ -179,55 +172,68 @@ export default class Login extends Component {
 
     render() {
         return (
-            <ScrollView>
-                <View style={styles.container}>
-                    <View >
-                        <Image
-                            source={require('../imagenes/Tesis-logo.png')}
-                            style={{ width: 300, height: 300 }}
-                        />
-                        <TextInput
-                            label="Email"
-                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                            onChangeText={(email) => this.setState({ email })}
-                            selectionColor="#008FAD"
-                            underlineColor="#008FAD"
-                            theme={{
-                                colors: {
-                                    primary: '#008FAD',
-                                    underlineColor: 'transparent'
-                                }
+            <ScrollView  contentContainerStyle={{
+                flex: 1
+            }}>
+                <ImageBackground style={styles.imgBackground}
+                    resizeMode='cover'
+                    source={require('../imagenes/login.jpg')}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        flex: 1
+                    }}>
 
-                            }}
-                            value={this.state.email}
-                        />
-                    </View>
-                    <View>
-                        <TextInput
-                            label="Contraseña"
-                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 30 }}
-                            onChangeText={(password) => this.setState({ password })}
-                            selectionColor="#008FAD"
-                            underlineColor="#008FAD"
-                            theme={{
-                                colors: {
-                                    primary: '#008FAD',
-                                    underlineColor: 'transparent',
-                                }
+                    <View style={styles.container}>
+                        <View>
+                            <Image
+                                source={require('../imagenes/Tesis-logo.png')}
+                                style={{ width: 300, height: 300 }}
+                            />
+                            <TextInput
+                                label="Email"
+                                style={{ width: 300, fontSize: 20, marginTop: 110, marginBottom: 10 }}
+                                onChangeText={(email) => this.setState({ email })}
+                                selectionColor="#008FAD"
+                                underlineColor="#008FAD"
+                                theme={{
+                                    colors: {
+                                        primary: '#008FAD',
+                                        underlineColor: 'transparent'
+                                    }
 
-                            }}
-                            value={this.state.password}
-                            secureTextEntry={true}
-                        />
-                    </View>
+                                }}
+                                value={this.state.email}
+                            />
+                        </View>
+                        <View>
+                            <TextInput
+                                label="Contraseña"
+                                style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 30 }}
+                                onChangeText={(password) => this.setState({ password })}
+                                selectionColor="#008FAD"
+                                underlineColor="#008FAD"
+                                theme={{
+                                    colors: {
+                                        primary: '#008FAD',
+                                        underlineColor: 'transparent',
+                                    }
 
-                    {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}></Button> : <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
-                        Iniciar
+                                }}
+                                value={this.state.password}
+                                secureTextEntry={true}
+                            />
+                        </View>
+
+                        {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}></Button> : <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+                            Iniciar
   </Button>}
-                    <Text >¿Nuevo aquí?</Text>
-                    <Text style={{ color: '#008FAD' }} onPress={this.openSignup}>Registrate</Text>
-                </View>
+                        <Text style={{ color: "white" }}>¿Nuevo aquí?</Text>
+                        <Text style={{ color: '#41d1f0' }} onPress={this.openSignup}>Registrate</Text>
+                    </View>
+                </ImageBackground>
             </ScrollView>
+
         )
     }
 

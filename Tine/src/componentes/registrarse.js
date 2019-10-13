@@ -3,7 +3,7 @@ import {
     StyleSheet,
     View,
     ToastAndroid,
-    KeyboardAvoidingView
+    ImageBackground
 } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -44,6 +44,7 @@ export default class Signup extends React.Component {
         const { email, password, fullName, tipo, documento } = this.state;
         if (email == "" || password == "" || fullName == "") {
             ToastAndroid.show('Ingresa datos validos.', ToastAndroid.SHORT);
+            this.setState({ cargando: false });
             return;
         }
 
@@ -105,6 +106,14 @@ export default class Signup extends React.Component {
             { label: 'Colaborador', value: 1 }
         ];
         return (
+            <ImageBackground
+            resizeMode='cover'
+            source={require('../imagenes/main.jpg')}
+            style={{
+              width: '100%',
+              height: '100%',
+              flex: 1
+            }}>
             <View style={styles.container}>
                 <View >
                     <TextInput
@@ -178,17 +187,19 @@ export default class Signup extends React.Component {
                 </View>
                 <View>
                     <RadioForm
+                        buttonColor={'#008FAD'}
                         radio_props={radio_props}
                         initial={0}
                         onPress={(value) => { this.setState({ tipo: value }) }}
                     />
                 </View>
-                {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+                {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginTop:20 }} color="#008FAD" mode="contained" onPress={this.saveData}>
   </Button> :
-                    <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+                    <Button style={{ width: 220, marginTop:20 }} color="#008FAD" mode="contained" onPress={this.saveData}>
                         Siguiente
   </Button>}
-            </View>
+                </View>
+                </ImageBackground>
         );
     }
 }
@@ -196,8 +207,11 @@ export default class Signup extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        top: 60,
+        alignSelf: 'center',
+        alignContent: "center",
+        alignItems:"center",
+        position: 'absolute'
     },
     inputs: {
         height: 45,
@@ -208,7 +222,6 @@ const styles = StyleSheet.create({
     inputIcon: {
         width: 30,
         height: 30,
-        marginLeft: 15,
         justifyContent: 'center'
     },
     buttonContainer: {
