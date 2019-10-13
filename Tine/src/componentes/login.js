@@ -177,7 +177,7 @@ export default class Login extends Component {
             }}>
                 <ImageBackground style={styles.imgBackground}
                     resizeMode='cover'
-                    source={require('../imagenes/login.jpg')}
+                    source={require('../imagenes/login.png')}
                     style={{
                         width: '100%',
                         height: '100%',

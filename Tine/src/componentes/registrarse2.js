@@ -209,7 +209,7 @@ export default class Signup2 extends React.Component {
             return (
                 <><ImageBackground
                     resizeMode='cover'
-                    source={require('../imagenes/main.jpg')}
+                    source={require('../imagenes/main.png')}
                     style={{
                         width: '100%',
                         height: '100%',
@@ -291,7 +291,7 @@ export default class Signup2 extends React.Component {
             return (
                 <ImageBackground
                     resizeMode='cover'
-                    source={require('../imagenes/main.jpg')}
+                    source={require('../imagenes/main.png')}
                     style={{
                         width: '100%',
                         height: '100%',

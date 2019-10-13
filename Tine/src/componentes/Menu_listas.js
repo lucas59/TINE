@@ -106,7 +106,7 @@ export default class Menu_listas extends Component {
 
                 <ImageBackground style={styles.imgBackground}
                     resizeMode='cover'
-                    source={require('../imagenes/menu.jpg')}
+                    source={require('../imagenes/menu.png')}
                     style={{
                         width: '100%',
                         height: '100%',
