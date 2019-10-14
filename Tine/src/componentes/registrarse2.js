@@ -10,7 +10,7 @@ export default class Signup2 extends React.Component {
     static navigationOptions = {
         title: 'Crea una cuenta',
         headerStyle: {
-            backgroundColor: '#008FAD',
+            backgroundColor: '#00748D',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -224,11 +224,11 @@ export default class Signup2 extends React.Component {
                                 label="Nombre"
                                 style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                                 onChangeText={(nombre) => this.setState({ nombre })}
-                                selectionColor="#008FAD"
-                                underlineColor="#008FAD"
+                                selectionColor="#00748D"
+                                underlineColor="#00748D"
                                 theme={{
                                     colors: {
-                                        primary: '#008FAD',
+                                        primary: '#00748D',
                                         underlineColor: 'transparent'
                                     }
 
@@ -241,11 +241,11 @@ export default class Signup2 extends React.Component {
                                 label="Apellido"
                                 style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                                 onChangeText={(apellido) => this.setState({ apellido })}
-                                selectionColor="#008FAD"
-                                underlineColor="#008FAD"
+                                selectionColor="#00748D"
+                                underlineColor="#00748D"
                                 theme={{
                                     colors: {
-                                        primary: '#008FAD',
+                                        primary: '#00748D',
                                         underlineColor: 'transparent'
                                     }
 
@@ -258,11 +258,11 @@ export default class Signup2 extends React.Component {
                                 label="Celular"
                                 style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                                 onChangeText={(celular) => this.setState({ celular })}
-                                selectionColor="#008FAD"
-                                underlineColor="#008FAD"
+                                selectionColor="#00748D"
+                                underlineColor="#00748D"
                                 theme={{
                                     colors: {
-                                        primary: '#008FAD',
+                                        primary: '#00748D',
                                         underlineColor: 'transparent'
                                     }
 
@@ -270,7 +270,7 @@ export default class Signup2 extends React.Component {
                                 value={this.state.celular}
                             />
                         </View>
-                        <Button style={{ width: 220, marginBottom: 20 }} color="#008FAD" mode="outlined" title="Fecha de nacimiento" onPress={this.showDateTimePicker_inicio}>Fecha de nacimiento</Button>
+                        <Button style={{ width: 220, marginBottom: 20 }} color="#00748D" mode="outlined" title="Fecha de nacimiento" onPress={this.showDateTimePicker_inicio}>Fecha de nacimiento</Button>
 
                         <DateTimePicker
                             isVisible={this.state.isDateTimePickerVisible_inicio}
@@ -278,8 +278,8 @@ export default class Signup2 extends React.Component {
                             onCancel={this.hideDateTimePicker_inicio}
                             mode={'date'}
                         />
-                        {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#008FAD" loading={true} mode="contained" ></Button> :
-                            <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.enviarDatosEmpleado}>
+                        {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#00748D" loading={true} mode="contained" ></Button> :
+                            <Button style={{ width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.enviarDatosEmpleado}>
                                 Registrarse
                     </Button>
                         }
@@ -304,11 +304,11 @@ export default class Signup2 extends React.Component {
                                 label="Nombre"
                                 style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                                 onChangeText={(nombre) => this.setState({ nombre })}
-                                selectionColor="#008FAD"
-                                underlineColor="#008FAD"
+                                selectionColor="#00748D"
+                                underlineColor="#00748D"
                                 theme={{
                                     colors: {
-                                        primary: '#008FAD',
+                                        primary: '#00748D',
                                         underlineColor: 'transparent'
                                     }
 
@@ -316,8 +316,8 @@ export default class Signup2 extends React.Component {
                                 value={this.state.nombre}
                             />
                         </View>
-                        {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#008FAD" loading={true} mode="contained" ></Button> :
-                            <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.enviarDatosEmpresa}>
+                        {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#00748D" loading={true} mode="contained" ></Button> :
+                            <Button style={{ width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.enviarDatosEmpresa}>
                                 Registrarse
                     </Button>
                         }

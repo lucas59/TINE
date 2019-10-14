@@ -73,7 +73,7 @@ export default class Alta_tarea extends Component {
         return {
             title: 'Alta de tarea',
             headerStyle: {
-                backgroundColor: '#008FAD',
+                backgroundColor: '#00748D',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -84,7 +84,7 @@ export default class Alta_tarea extends Component {
                     reverse
                     name='account-circle'
                     type='material-community'
-                    color='#008FAD'
+                    color='#00748D'
                     onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
             ),
         }
@@ -254,20 +254,20 @@ export default class Alta_tarea extends Component {
                     style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 30 }}
                     onChangeText={(titulo) => this.setState({ titulo })}
                     placeholder="¿En qué estás trabajando?"
-                    selectionColor="#008FAD"
-                    underlineColor="#008FAD"
+                    selectionColor="#00748D"
+                    underlineColor="#00748D"
                     autoFocus={true}
                     theme={{
                         colors: {
-                            primary: '#008FAD',
+                            primary: '#00748D',
                             underlineColor: 'transparent',
                         }
 
                     }}
                     value={this.state.titulo}
                 />
-                {this.state.cargando ? <Button disabled={true} style={{ width: 160, height: 50 }} color="#008FAD" loading={true} mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}></Button> :
-                    <Button style={{ width: 160, height: 50 }} color="#008FAD" mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}>
+                {this.state.cargando ? <Button disabled={true} style={{ width: 160, height: 50 }} color="#00748D" loading={true} mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}></Button> :
+                    <Button style={{ width: 160, height: 50 }} color="#00748D" mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}>
                         <Text style={{ fontSize: 23 }}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
                     </Button>
                 }
@@ -283,7 +283,7 @@ const options = {
         padding: 5,
         borderRadius: 200,
         borderWidth: 6,
-        borderColor: '#008FAD',
+        borderColor: '#00748D',
         width: 260,
         height: 260,
         justifyContent: 'center',

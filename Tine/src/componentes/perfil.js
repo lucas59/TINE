@@ -12,7 +12,7 @@ export default class Profile extends Component {
   static navigationOptions = {
     title: 'Perfil',
     headerStyle: {
-      backgroundColor: '#008FAD',
+      backgroundColor: '#00748D',
     },
     headerTintColor: '#fff',
     headerTitleStyle: {
@@ -256,26 +256,26 @@ export default class Profile extends Component {
                     <Icon
                       name='email'
                       type='material-community'
-                      color="#008FAD"
+                      color="#00748D"
                     />
                     <Text style={styles.info}> {this.state.email}      </Text>
                     <Icon
                       name='phone'
                       type='material-community'
-                      color="#008FAD" />
+                      color="#00748D" />
                     <Text style={styles.info}> {this.state.celular} </Text>
                   </View>
 
                   <Button
                     style={styles.buttonContainer}
-                    color="#008FAD"
+                    color="#00748D"
                     mode="contained"
                     onPress={this.desactivarCuenta}>
                     Desactivar cuenta
                 </Button>
                   <Button
                     style={styles.buttonContainer}
-                    color="#008FAD"
+                    color="#00748D"
                     mode="contained"
                     onPress={this.confirmCerrarSession}>
                     Cerrar sesión
@@ -287,7 +287,7 @@ export default class Profile extends Component {
         </ScrollView>
         <ActionButton
           renderIcon={active => <Icon name="edit" color="white" />}
-          buttonColor="#008FAD"
+          buttonColor="#00748D"
           //onPress={() => { this.props.navigation.navigate('modificarPerfil'); }}
           onPress={() => {
             this.setModalVisible(true);
@@ -322,11 +322,11 @@ export default class Profile extends Component {
                     label="Correo"
                     style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                     onChangeText={email => this.setState({ email })}
-                    selectionColor="#008FAD"
-                    underlineColor="#008FAD"
+                    selectionColor="#00748D"
+                    underlineColor="#00748D"
                     theme={{
                       colors: {
-                        primary: '#008FAD',
+                        primary: '#00748D',
                         underlineColor: 'transparent'
                       }
 
@@ -337,11 +337,11 @@ export default class Profile extends Component {
                     label="Nombre"
                     style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                     onChangeText={nombre => this.setState({ nombre })}
-                    selectionColor="#008FAD"
-                    underlineColor="#008FAD"
+                    selectionColor="#00748D"
+                    underlineColor="#00748D"
                     theme={{
                       colors: {
-                        primary: '#008FAD',
+                        primary: '#00748D',
                         underlineColor: 'transparent'
                       }
 
@@ -352,11 +352,11 @@ export default class Profile extends Component {
                     label="Apellido"
                     style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                     onChangeText={apellido => this.setState({ apellido })}
-                    selectionColor="#008FAD"
-                    underlineColor="#008FAD"
+                    selectionColor="#00748D"
+                    underlineColor="#00748D"
                     theme={{
                       colors: {
-                        primary: '#008FAD',
+                        primary: '#00748D',
                         underlineColor: 'transparent'
                       }
 
@@ -367,11 +367,11 @@ export default class Profile extends Component {
                     label="Celular"
                     style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                     onChangeText={celular => this.setState({ celular })}
-                    selectionColor="#008FAD"
-                    underlineColor="#008FAD"
+                    selectionColor="#00748D"
+                    underlineColor="#00748D"
                     theme={{
                       colors: {
-                        primary: '#008FAD',
+                        primary: '#00748D',
                         underlineColor: 'transparent'
                       }
 
@@ -383,14 +383,14 @@ export default class Profile extends Component {
                       loading={true}
                       disabled={true}
                       style={styles.buttonContainer}
-                      color="#008FAD"
+                      color="#00748D"
                       mode="contained"
                       onPress={this.guardarDatos}>
                     </Button>
                     :
                     <Button
                       style={styles.buttonContainer}
-                      color="#008FAD"
+                      color="#00748D"
                       mode="contained"
                       onPress={this.guardarDatos}>
                       Terminar

@@ -15,7 +15,7 @@ const PendingView = () => (
     <View
         style={{
             flex: 1,
-            backgroundColor: '#008FAD',
+            backgroundColor: '#00748D',
             justifyContent: 'center',
             alignItems: 'center',
         }}
@@ -236,8 +236,8 @@ export default class asistencia_app extends Component {
                             if (status !== 'READY') return <PendingView />;
                             return (
                                 <View style={{ position: 'relative', bottom: 20, left: 0, right: 0 }}>
-                                    {this.state.cargando ? <Button disabled={true} style={{ width: 200, height: 45 }} color="#008FAD" loading={true} mode="contained"></Button> :
-                                        <Button style={{ width: 200, height: 45 }} color="#008FAD" mode="contained" onPress={() => Alert.alert(
+                                    {this.state.cargando ? <Button disabled={true} style={{ width: 200, height: 45 }} color="#00748D" loading={true} mode="contained"></Button> :
+                                        <Button style={{ width: 200, height: 45 }} color="#00748D" mode="contained" onPress={() => Alert.alert(
                                             "Opciones",
                                             this.state.mensaje_alert,
                                             [
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     },
     capture: {
         flex: 0,
-        backgroundColor: '#008FAD',
+        backgroundColor: '#00748D',
         borderRadius: 5,
         padding: 15,
         alignSelf: 'center',

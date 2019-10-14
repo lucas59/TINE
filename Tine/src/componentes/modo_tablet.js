@@ -67,7 +67,7 @@ export default class modoTablet extends Component {
         return {
             title: 'Modo Tablet',
             headerStyle: {
-                backgroundColor: '#008FAD',
+                backgroundColor: '#00748D',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -78,7 +78,7 @@ export default class modoTablet extends Component {
                     reverse
                     name='account-circle'
                     type='material-community'
-                    color='#008FAD'
+                    color='#00748D'
                     onPress={async () => navigation.navigate('perfilEmpresa', { session: await AsyncStorage.getItem('usuario') })} />
             ),
         }
@@ -302,7 +302,7 @@ export default class modoTablet extends Component {
                                 if (status !== 'READY') return <PendingView />;
                                 return (
                                     <View style={{ position: 'relative', top: 570 }}>
-                                        {this.state.cargando ? <Button style={styles.capture} mode="outlined" color="#008FAD"
+                                        {this.state.cargando ? <Button style={styles.capture} mode="outlined" color="#00748D"
                                             style={{ marginTop: 10, width: 150 }} onPress={() => Alert.alert(
                                                 "Opciones",
                                                 "¿Usted esta ingresando o saliendo del establecimiento?",
@@ -315,7 +315,7 @@ export default class modoTablet extends Component {
                                                 ],
                                             )} loading={true}>
                                             </Button>
-                                            : <Button style={styles.capture} mode="contained" color="#008FAD"
+                                            : <Button style={styles.capture} mode="contained" color="#00748D"
                                                 style={{ marginTop: 10, width: 150 }} onPress={() => Alert.alert(
                                                     "Opciones",
                                                     "¿Usted esta ingresando o saliendo del establecimiento?",

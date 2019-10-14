@@ -6,7 +6,7 @@ var mytimer;
 export default class Inicio extends Component {
     static navigationOptions = {
         headerStyle: {
-            backgroundColor: '#008FAD',
+            backgroundColor: '#00748D',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {

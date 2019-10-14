@@ -194,11 +194,11 @@ export default class Login extends Component {
                                 label="Email"
                                 style={{ width: 300, fontSize: 20, marginTop: 110, marginBottom: 10 }}
                                 onChangeText={(email) => this.setState({ email })}
-                                selectionColor="#008FAD"
-                                underlineColor="#008FAD"
+                                selectionColor="#00748D"
+                                underlineColor="#00748D"
                                 theme={{
                                     colors: {
-                                        primary: '#008FAD',
+                                        primary: '#00748D',
                                         underlineColor: 'transparent'
                                     }
 
@@ -211,11 +211,11 @@ export default class Login extends Component {
                                 label="Contraseña"
                                 style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 30 }}
                                 onChangeText={(password) => this.setState({ password })}
-                                selectionColor="#008FAD"
-                                underlineColor="#008FAD"
+                                selectionColor="#00748D"
+                                underlineColor="#00748D"
                                 theme={{
                                     colors: {
-                                        primary: '#008FAD',
+                                        primary: '#00748D',
                                         underlineColor: 'transparent',
                                     }
 
@@ -225,7 +225,7 @@ export default class Login extends Component {
                             />
                         </View>
 
-                        {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}></Button> : <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+                        {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.saveData}></Button> : <Button style={{ width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.saveData}>
                             Iniciar
   </Button>}
                         <Text style={{ color: "white" }}>¿Nuevo aquí?</Text>

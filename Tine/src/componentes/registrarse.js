@@ -16,7 +16,7 @@ export default class Signup extends React.Component {
     static navigationOptions = {
         title: 'Crea una cuenta',
         headerStyle: {
-            backgroundColor: '#008FAD',
+            backgroundColor: '#00748D',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -120,11 +120,11 @@ export default class Signup extends React.Component {
                         label="Documento"
                         style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                         onChangeText={(documento) => this.setState({ documento })}
-                        selectionColor="#008FAD"
-                        underlineColor="#008FAD"
+                        selectionColor="#00748D"
+                        underlineColor="#00748D"
                         theme={{
                             colors: {
-                                primary: '#008FAD',
+                                primary: '#00748D',
                                 underlineColor: 'transparent'
                             }
 
@@ -138,11 +138,11 @@ export default class Signup extends React.Component {
                         label="Nombre"
                         style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                         onChangeText={(fullName) => this.setState({ fullName })}
-                        selectionColor="#008FAD"
-                        underlineColor="#008FAD"
+                        selectionColor="#00748D"
+                        underlineColor="#00748D"
                         theme={{
                             colors: {
-                                primary: '#008FAD',
+                                primary: '#00748D',
                                 underlineColor: 'transparent'
                             }
 
@@ -155,11 +155,11 @@ export default class Signup extends React.Component {
                         label="Correo"
                         style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                         onChangeText={(email) => this.setState({ email })}
-                        selectionColor="#008FAD"
-                        underlineColor="#008FAD"
+                        selectionColor="#00748D"
+                        underlineColor="#00748D"
                         theme={{
                             colors: {
-                                primary: '#008FAD',
+                                primary: '#00748D',
                                 underlineColor: 'transparent'
                             }
 
@@ -172,11 +172,11 @@ export default class Signup extends React.Component {
                         label="Contraseña"
                         style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                         onChangeText={(password) => this.setState({ password })}
-                        selectionColor="#008FAD"
-                        underlineColor="#008FAD"
+                        selectionColor="#00748D"
+                        underlineColor="#00748D"
                         theme={{
                             colors: {
-                                primary: '#008FAD',
+                                primary: '#00748D',
                                 underlineColor: 'transparent'
                             }
 
@@ -187,15 +187,15 @@ export default class Signup extends React.Component {
                 </View>
                 <View>
                     <RadioForm
-                        buttonColor={'#008FAD'}
+                        buttonColor={'#00748D'}
                         radio_props={radio_props}
                         initial={0}
                         onPress={(value) => { this.setState({ tipo: value }) }}
                     />
                 </View>
-                {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginTop:20 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+                {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginTop:20 }} color="#00748D" mode="contained" onPress={this.saveData}>
   </Button> :
-                    <Button style={{ width: 220, marginTop:20 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+                    <Button style={{ width: 220, marginTop:20 }} color="#00748D" mode="contained" onPress={this.saveData}>
                         Siguiente
   </Button>}
                 </View>

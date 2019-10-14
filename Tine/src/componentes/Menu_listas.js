@@ -9,7 +9,7 @@ export default class Menu_listas extends Component {
         return {
             title: 'TINE',
             headerStyle: {
-                backgroundColor: '#008FAD',
+                backgroundColor: '#00748D',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -20,7 +20,7 @@ export default class Menu_listas extends Component {
                     reverse
                     name='account-circle'
                     type='material-community'
-                    color='#008FAD'
+                    color='#00748D'
                     onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
             ),
         }
@@ -135,7 +135,7 @@ export default class Menu_listas extends Component {
                                     onPress={() => {
                                         this.props.navigation.navigate('lista_tareas');
                                     }}
-                                    color="#008FAD"
+                                    color="#00748D"
                                     width={250}
                                     height={60}
                                     style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}
@@ -153,7 +153,7 @@ export default class Menu_listas extends Component {
                                         this.props.navigation.navigate('lista_asistencias');
                                     }}
                                     mode="contained"
-                                    color="#008FAD"
+                                    color="#00748D"
                                     width={250}
                                     height={60}
                                     style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}

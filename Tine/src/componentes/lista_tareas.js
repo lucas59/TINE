@@ -71,7 +71,7 @@ export default class lista_tareas extends Component {
         return {
             title: 'Listas de tareas',
             headerStyle: {
-                backgroundColor: '#008FAD',
+                backgroundColor: '#00748D',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -82,7 +82,7 @@ export default class lista_tareas extends Component {
                     reverse
                     name='account-circle'
                     type='material-community'
-                    color='#008FAD'
+                    color='#00748D'
                     onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
             ),
         }
@@ -206,7 +206,7 @@ export default class lista_tareas extends Component {
         else {
             return (
                 <View>
-                    {this.state.cargando ? <PulseIndicator color='#008FAD' size={60} style={{ marginTop: 30 }} /> : <View style={{
+                    {this.state.cargando ? <PulseIndicator color='#00748D' size={60} style={{ marginTop: 30 }} /> : <View style={{
                         top: 15,
                         left: 0,
                         right: 0,
@@ -293,7 +293,7 @@ export default class lista_tareas extends Component {
                     </ScrollView>
                 </PTRView>
                 <ActionButton
-                    buttonColor="#008FAD"
+                    buttonColor="#00748D"
                     onPress={() => { this.props.navigation.navigate('altaTarea'); }}
                 />
 
