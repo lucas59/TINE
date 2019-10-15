@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, Keyboard, ToastAndroid, Text, ScrollView, ImageBackground } from 'react-native';
+import { Alert, View, Keyboard, Text, ScrollView, ImageBackground } from 'react-native';
 import { Image } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { TextInput } from 'react-native-paper';
@@ -8,6 +8,7 @@ import styles from '../css/styleLogin';
 const manejador = require("./manejadorSqlite");
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-paper';
+import Toast from 'react-native-simple-toast';
 var timer;
 
 export default class Login extends Component {
@@ -53,7 +54,7 @@ export default class Login extends Component {
         const { email, password } = this.state;
 
         if (email == "" || password == "") {
-            ToastAndroid.show('Ingresa datos validos.', ToastAndroid.SHORT);
+            Toast.show('Ingresa datos validos.');
             this.setState({ cargando: false });
             return;
         }
@@ -79,7 +80,7 @@ export default class Login extends Component {
                 console.log(retorno);
                 if (retorno.retorno == true) {
                     if (retorno.tipo == 1) {
-                        ToastAndroid.show('Bienvenido.', ToastAndroid.LONG);
+                        Toast.show('Bienvenido');    
                         await AsyncStorage.setItem('usuario', JSON.stringify(retorno));
                         this.props.navigation.navigate('Inicio');
                     } else {
@@ -108,7 +109,7 @@ export default class Login extends Component {
                     }
 
                 } else {
-                    ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
+                    Toast.show(retorno.mensaje);
                     console.log(retorno);
                 }
                 this.setState({ cargando: false });
@@ -116,7 +117,7 @@ export default class Login extends Component {
             })
             .catch(function (err) {
                 console.log(err);
-                ToastAndroid.show("Compruebe su conexión" + err, ToastAndroid.LONG);
+                Toast.show('Compriebe su conexion' + err);
             })
 
     }
