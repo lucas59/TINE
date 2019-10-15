@@ -4,8 +4,7 @@ import {
   StyleSheet,
   Text,
   Keyboard,
-  View,
-  ToastAndroid,
+  View
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');

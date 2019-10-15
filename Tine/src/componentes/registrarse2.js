@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, ImageBackground, ToastAndroid } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground } from 'react-native';
+import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-community/async-storage';
 import DateTimePicker from "react-native-modal-datetime-picker";
 const { server } = require('../config/keys');
@@ -72,7 +73,7 @@ export default class Signup2 extends React.Component {
         let ld = JSON.parse(usuario);
 
         if (nombre == "" || celular == "" || apellido == "" || nacimiento == null) {
-            ToastAndroid.show('Ingresa datos validos.', ToastAndroid.SHORT);
+            Toast.show('Ingresa datos validos.', Toast.SHORT);
             this.setState({ cargando: false });
             return;
         }
@@ -148,7 +149,7 @@ export default class Signup2 extends React.Component {
         let ld = JSON.parse(usuario);
 
         if (nombre == "") {
-            ToastAndroid.show('Ingresa datos validos.', ToastAndroid.SHORT);
+            Toast.show('Ingresa datos validos.', Toast.SHORT);
             return;
         }
 
@@ -197,7 +198,7 @@ export default class Signup2 extends React.Component {
                 this.setState({ cargando: false });
             })
             .catch(function (err) {
-                ToastAndroid.show("Compruebe su conexión", ToastAndroid.LONG);
+                Toast.show("Compruebe su conexión", Toast.LONG);
             })
     }
 

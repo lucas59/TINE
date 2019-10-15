@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ToastAndroid, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { TextInput, Button } from 'react-native-paper';
@@ -7,6 +7,7 @@ import {  Icon, Divider } from 'react-native-elements';
 import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
+import Toast from 'react-native-simple-toast';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 import NetInfo from "@react-native-community/netinfo";
 import BackgroundTimer from 'react-native-background-timer';
@@ -123,7 +124,7 @@ export default class Alta_tarea extends Component {
                     const retorno = data;
                     console.log(retorno.mensaje);
                     if (retorno.retorno == true) {
-                        ToastAndroid.show('La tarea se modificó correctamente', ToastAndroid.LONG);
+                        Toast.show('La tarea se modificó correctamente');
                         this.props.navigation.navigate('lista_tareas');
                     } else {
                         alert(retorno.mensaje);

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, Keyboard, Alert, ToastAndroid, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, Keyboard, Alert, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { RNCamera } from 'react-native-camera';
 import PinView from 'react-native-pin-view'
 import { Icon } from 'react-native-elements';
+import Toast from 'react-native-simple-toast';
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
@@ -134,14 +135,14 @@ export default class modoTablet extends Component {
             console.log("data",data);
             if (data == 1) {
                 this.setState({ boton_act: true });
-                ToastAndroid.show('Buen viaje, seleccione aceptar', ToastAndroid.LONG);
+                Toast.show('Buen viaje, seleccione aceptar');
             }
             else if (data == 2) {
                 this.setState({ boton_act: true });
-                ToastAndroid.show('Bienvenido, seleccione aceptar', ToastAndroid.LONG);
+                Toast.show('Bienvenido, seleccione aceptar');
             }
             else if (data == 3) {
-                ToastAndroid.show('Pin incorrecto', ToastAndroid.LONG);
+                Toast.show('Pin incorrecto');
             }
         });
     }
@@ -167,7 +168,7 @@ export default class modoTablet extends Component {
                         if (results.rowsAffected > 0) {
                             this.setState({ boton_act : false });
                             console.log("insertó");
-                            ToastAndroid.show('La asistencia se insertó correctamente', ToastAndroid.LONG);
+                            Toast.show('La asistencia se insertó correctamente');
                             db.transaction(function (txr) {
                                 txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
                                     console.log(results.rows.length);

@@ -2,13 +2,12 @@ import React from 'react';
 import {
     StyleSheet,
     View,
-    ToastAndroid,
     ImageBackground
 } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 import RadioForm from 'react-native-simple-radio-button';
-
+import Toast from 'react-native-simple-toast';
 const { server } = require('../config/keys');
 
 export default class Signup extends React.Component {
@@ -43,7 +42,7 @@ export default class Signup extends React.Component {
         this.setState({ cargando: true });
         const { email, password, fullName, tipo, documento } = this.state;
         if (email == "" || password == "" || fullName == "") {
-            ToastAndroid.show('Ingresa datos validos.', ToastAndroid.SHORT);
+            Toast.show('Ingresa datos validos.');
             this.setState({ cargando: false });
             return;
         }
@@ -83,7 +82,7 @@ export default class Signup extends React.Component {
                 const retorno = data;
                 console.log(retorno.retorno);
                 if (retorno.retorno == true) {
-                    //  ToastAndroid.show('Bienvenido', ToastAndroid.SHORT);
+                    //  Toast.show('Bienvenido', Toast.SHORT);
                     AsyncStorage.setItem('usuario', JSON.stringify(datos));
                     this.props.navigation.navigate('Signup2', {
                         datos: JSON.stringify(datos)
@@ -94,7 +93,7 @@ export default class Signup extends React.Component {
                 this.setState({ cargando: false });
             })
             .catch(function (err) {
-                ToastAndroid.show("Compruebe su conexión", ToastAndroid.LONG);
+                Toast.show("Compruebe su conexión", Toast.LONG);
             })
 
     }

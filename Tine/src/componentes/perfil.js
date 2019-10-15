@@ -6,6 +6,7 @@ import styles from '../css/stylesPerfil';
 import { Icon } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
 const { server } = require('../config/keys');
+import Toast from 'react-native-simple-toast';
 import ActionButton, { renderIcon } from 'react-native-action-button';
 
 export default class Profile extends Component {
@@ -179,7 +180,7 @@ export default class Profile extends Component {
       celular == '' ||
       documento == ''
     ) {
-      ToastAndroid.show('Ingresa datos validos.', ToastAndroid.SHORT);
+      Toast.show('Ingresa datos validos.');
       return;
     }
 
@@ -214,7 +215,7 @@ export default class Profile extends Component {
         }
       })
       .catch(function (err) {
-        ToastAndroid.show('Compruebe su conexión', ToastAndroid.LONG);
+        Toast.show('Compruebe su conexión');
       });
   };
 

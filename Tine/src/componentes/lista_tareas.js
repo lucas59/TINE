@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Alert, ToastAndroid, ScrollView, Keyboard } from 'react-native';
+import { View, Text, Alert, ScrollView, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo";
 const { server } = require('../config/keys');
@@ -7,6 +7,7 @@ import { ListItem, Icon, Image } from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
+import Toast from 'react-native-simple-toast';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 const manejador = require("./manejadorSqlite");
 import PTRView from 'react-native-pull-to-refresh';
@@ -262,9 +263,9 @@ export default class lista_tareas extends Component {
                     const retorno = data;
                     console.log(retorno.retorno);
                     if (retorno.retorno == true) {
-                        ToastAndroid.show('La tarea se eliminó correctamente', ToastAndroid.LONG);
+                        Toast.show('La tarea se eliminó correctamente');
                     } else {
-                        ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
+                        Toast.show(retorno.mensaje);
                     }
                 })
                 .catch(function (err) {

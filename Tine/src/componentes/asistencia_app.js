@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Keyboard, Alert, ToastAndroid, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, Keyboard, Alert, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { RNCamera } from 'react-native-camera';
 import moment from "moment";
@@ -8,7 +8,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { Button } from 'react-native-paper';
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
-
+import Toast from 'react-native-simple-toast';
 
 
 const PendingView = () => (
@@ -85,7 +85,7 @@ export default class asistencia_app extends Component {
                                 this.setState({ mensaje_alert: retorno.mensaje });
                             }
                         } else {
-                            ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
+                            Toast.show(retorno.mensaje);
                         }
                     })
                     .catch(function (err) {
@@ -172,7 +172,7 @@ export default class asistencia_app extends Component {
                         console.log(results.rowsAffected);
                         if (results.rowsAffected > 0) {
                             console.log("insertó");
-                            ToastAndroid.show('La asistencia se ingresó correctamente', ToastAndroid.LONG);
+                            Toast.show("la asistencia se ingresó correctamente");
                             this.setState({cargnado : false});
                         } else {
                             console.log("error");
@@ -207,12 +207,12 @@ export default class asistencia_app extends Component {
                 .then(async data => {
                     const retorno = data;
                     if (retorno.retorno == true) {
-                        ToastAndroid.show('La asistencia se ingresó correctamente', ToastAndroid.LONG);
+                        Toast.show("La asistencia se ingresó correctamente");
                         this.setState({cargnado : false});
                         this.props.navigation.navigate('lista_asistencias');
                     } else {
                         this.setState({cargnado : false});
-                        ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
+                        Toast.show(retorno.mensaje);
                     }
                 })
                 .catch(function (err) {
