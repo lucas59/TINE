@@ -4,8 +4,7 @@ import {
   StyleSheet,
   Text,
   Keyboard,
-  View,
-  ToastAndroid,
+  View
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
@@ -129,7 +128,7 @@ export default class lista_empresas extends Component {
     return {
       title: 'Lista de empresas',
       headerStyle: {
-        backgroundColor: '#008FAD',
+        backgroundColor: '#00748D',
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
@@ -140,7 +139,7 @@ export default class lista_empresas extends Component {
           reverse
           name='account-circle'
           type='material-community'
-          color="#008FAD"
+          color="#00748D"
           onPress={async () =>
             navigation.navigate('perfil', {
               session: await AsyncStorage.getItem('usuario'),
@@ -217,7 +216,7 @@ export default class lista_empresas extends Component {
       return (
         <View>
           {this.state.cargando ? (
-            <PulseIndicator color="#008FAD" size={60} style={{ marginTop: 30 }} />
+            <PulseIndicator color="#00748D" size={60} style={{ marginTop: 30 }} />
           ) : (
               <View
                 style={{

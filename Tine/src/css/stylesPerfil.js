@@ -2,15 +2,14 @@ import { StyleSheet } from 'react-native';
 module.exports = StyleSheet.create({
     header: {
         height: 200,
-width: 395
+        width: 395
     },
     avatar: {
         width: 170,
         height: 170,
-        marginBottom: 10,
+        top: 120,
         alignSelf: 'center',
-        position: 'absolute',
-        marginTop: 120
+        position: 'absolute'
     },
     name: {
         fontSize: 22,
@@ -18,8 +17,15 @@ width: 395
         fontWeight: '600',
     },
     body: {
-        marginTop: 70,
+        top: 330,
+        alignSelf: 'center',
+        position: 'absolute',
     },
+    body_m: {
+    top:270,
+    alignSelf: 'center',
+    position: 'absolute',
+},
     bodyContent: {
         flex: 1,
         alignItems: 'center',

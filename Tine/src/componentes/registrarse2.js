@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableHighlight, View, KeyboardAvoidingView, ToastAndroid } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground } from 'react-native';
+import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-community/async-storage';
 import DateTimePicker from "react-native-modal-datetime-picker";
 const { server } = require('../config/keys');
@@ -10,7 +11,7 @@ export default class Signup2 extends React.Component {
     static navigationOptions = {
         title: 'Crea una cuenta',
         headerStyle: {
-            backgroundColor: '#008FAD',
+            backgroundColor: '#00748D',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -26,7 +27,7 @@ export default class Signup2 extends React.Component {
             apellido: null,
             celular: null,
             nacimiento: null,
-            cargando : false
+            cargando: false
         };
     }
 
@@ -72,7 +73,8 @@ export default class Signup2 extends React.Component {
         let ld = JSON.parse(usuario);
 
         if (nombre == "" || celular == "" || apellido == "" || nacimiento == null) {
-            ToastAndroid.show('Ingresa datos validos.', ToastAndroid.SHORT);
+            Toast.show('Ingresa datos validos.', Toast.SHORT);
+            this.setState({ cargando: false });
             return;
         }
 
@@ -147,7 +149,7 @@ export default class Signup2 extends React.Component {
         let ld = JSON.parse(usuario);
 
         if (nombre == "") {
-            ToastAndroid.show('Ingresa datos validos.', ToastAndroid.SHORT);
+            Toast.show('Ingresa datos validos.', Toast.SHORT);
             return;
         }
 
@@ -196,7 +198,7 @@ export default class Signup2 extends React.Component {
                 this.setState({ cargando: false });
             })
             .catch(function (err) {
-                ToastAndroid.show("Compruebe su conexión", ToastAndroid.LONG);
+                Toast.show("Compruebe su conexión", Toast.LONG);
             })
     }
 
@@ -206,7 +208,14 @@ export default class Signup2 extends React.Component {
         const datos = JSON.parse(navigation.getParam('datos'));
         if (datos.tipo == 1) {
             return (
-<>
+                <><ImageBackground
+                    resizeMode='cover'
+                    source={require('../imagenes/main.png')}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        flex: 1
+                    }}>
                     <View style={styles.container}>
                         <Text style={{ fontSize: 30 }}>Bienvenido</Text>
 
@@ -216,11 +225,11 @@ export default class Signup2 extends React.Component {
                                 label="Nombre"
                                 style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                                 onChangeText={(nombre) => this.setState({ nombre })}
-                                selectionColor="#008FAD"
-                                underlineColor="#008FAD"
+                                selectionColor="#00748D"
+                                underlineColor="#00748D"
                                 theme={{
                                     colors: {
-                                        primary: '#008FAD',
+                                        primary: '#00748D',
                                         underlineColor: 'transparent'
                                     }
 
@@ -233,11 +242,11 @@ export default class Signup2 extends React.Component {
                                 label="Apellido"
                                 style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                                 onChangeText={(apellido) => this.setState({ apellido })}
-                                selectionColor="#008FAD"
-                                underlineColor="#008FAD"
+                                selectionColor="#00748D"
+                                underlineColor="#00748D"
                                 theme={{
                                     colors: {
-                                        primary: '#008FAD',
+                                        primary: '#00748D',
                                         underlineColor: 'transparent'
                                     }
 
@@ -250,11 +259,11 @@ export default class Signup2 extends React.Component {
                                 label="Celular"
                                 style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                                 onChangeText={(celular) => this.setState({ celular })}
-                                selectionColor="#008FAD"
-                                underlineColor="#008FAD"
+                                selectionColor="#00748D"
+                                underlineColor="#00748D"
                                 theme={{
                                     colors: {
-                                        primary: '#008FAD',
+                                        primary: '#00748D',
                                         underlineColor: 'transparent'
                                     }
 
@@ -262,7 +271,7 @@ export default class Signup2 extends React.Component {
                                 value={this.state.celular}
                             />
                         </View>
-                        <Button style={{ width: 220, marginBottom: 20 }} color="#008FAD" mode="outlined" title="Fecha de nacimiento" onPress={this.showDateTimePicker_inicio}>Fecha de nacimiento</Button>
+                        <Button style={{ width: 220, marginBottom: 20 }} color="#00748D" mode="outlined" title="Fecha de nacimiento" onPress={this.showDateTimePicker_inicio}>Fecha de nacimiento</Button>
 
                         <DateTimePicker
                             isVisible={this.state.isDateTimePickerVisible_inicio}
@@ -270,42 +279,51 @@ export default class Signup2 extends React.Component {
                             onCancel={this.hideDateTimePicker_inicio}
                             mode={'date'}
                         />
-                        {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#008FAD" loading={true} mode="contained" ></Button> :
-                            <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.enviarDatosEmpleado}>
+                        {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#00748D" loading={true} mode="contained" ></Button> :
+                            <Button style={{ width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.enviarDatosEmpleado}>
                                 Registrarse
                     </Button>
                         }
-                </View>
+                    </View>
+                </ImageBackground>
                 </>
             );
         } else {
             return (
-                behavior = "padding" >
-                <View style={styles.container}>
-                    <View>
-                        <TextInput
-                            label="Nombre"
-                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                            onChangeText={(nombre) => this.setState({ nombre })}
-                            selectionColor="#008FAD"
-                            underlineColor="#008FAD"
-                            theme={{
-                                colors: {
-                                    primary: '#008FAD',
-                                    underlineColor: 'transparent'
-                                }
+                <ImageBackground
+                    resizeMode='cover'
+                    source={require('../imagenes/main.png')}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        flex: 1
+                    }}>
+                    <View style={styles.container}>
+                        <View>
+                        <Text style={{textAlign:"center", fontSize: 30 }}>Bienvenido</Text>
+                            <TextInput
+                                label="Nombre"
+                                style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                                onChangeText={(nombre) => this.setState({ nombre })}
+                                selectionColor="#00748D"
+                                underlineColor="#00748D"
+                                theme={{
+                                    colors: {
+                                        primary: '#00748D',
+                                        underlineColor: 'transparent'
+                                    }
 
-                            }}
-                            value={this.state.nombre}
-                        />
-                    </View>
-                    {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#008FAD" loading={true} mode="contained" ></Button> :
-                        <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.enviarDatosEmpresa}>
-                            Registrarse
+                                }}
+                                value={this.state.nombre}
+                            />
+                        </View>
+                        {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#00748D" loading={true} mode="contained" ></Button> :
+                            <Button style={{ width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.enviarDatosEmpresa}>
+                                Registrarse
                     </Button>
-                    }
-                </View>
-
+                        }
+                    </View>
+                </ImageBackground>
             );
 
         }
@@ -327,9 +345,11 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#ffff',
+        top: 110,
+        alignSelf: 'center',
+        alignContent: "center",
+        alignItems:"center",
+        position: 'absolute'
     },
     inputs: {
         height: 45,

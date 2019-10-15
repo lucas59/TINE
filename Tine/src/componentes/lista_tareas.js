@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Alert, ToastAndroid, ScrollView, Keyboard } from 'react-native';
+import { View, Text, Alert, ScrollView, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo";
 const { server } = require('../config/keys');
@@ -7,6 +7,7 @@ import { ListItem, Icon, Image } from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
+import Toast from 'react-native-simple-toast';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 const manejador = require("./manejadorSqlite");
 import PTRView from 'react-native-pull-to-refresh';
@@ -71,7 +72,7 @@ export default class lista_tareas extends Component {
         return {
             title: 'Listas de tareas',
             headerStyle: {
-                backgroundColor: '#008FAD',
+                backgroundColor: '#00748D',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -82,7 +83,7 @@ export default class lista_tareas extends Component {
                     reverse
                     name='account-circle'
                     type='material-community'
-                    color='#008FAD'
+                    color='#00748D'
                     onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
             ),
         }
@@ -206,7 +207,7 @@ export default class lista_tareas extends Component {
         else {
             return (
                 <View>
-                    {this.state.cargando ? <PulseIndicator color='#008FAD' size={60} style={{ marginTop: 30 }} /> : <View style={{
+                    {this.state.cargando ? <PulseIndicator color='#00748D' size={60} style={{ marginTop: 30 }} /> : <View style={{
                         top: 15,
                         left: 0,
                         right: 0,
@@ -262,9 +263,9 @@ export default class lista_tareas extends Component {
                     const retorno = data;
                     console.log(retorno.retorno);
                     if (retorno.retorno == true) {
-                        ToastAndroid.show('La tarea se eliminó correctamente', ToastAndroid.LONG);
+                        Toast.show('La tarea se eliminó correctamente');
                     } else {
-                        ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
+                        Toast.show(retorno.mensaje);
                     }
                 })
                 .catch(function (err) {
@@ -293,7 +294,7 @@ export default class lista_tareas extends Component {
                     </ScrollView>
                 </PTRView>
                 <ActionButton
-                    buttonColor="#008FAD"
+                    buttonColor="#00748D"
                     onPress={() => { this.props.navigation.navigate('altaTarea'); }}
                 />
 

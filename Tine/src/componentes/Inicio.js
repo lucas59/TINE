@@ -4,20 +4,9 @@ const { server } = require('../config/keys');
 import BackgroundTimer from 'react-native-background-timer';
 var mytimer;
 export default class Inicio extends Component {
-
-    componentDidMount() {
-        myTimer = BackgroundTimer.setInterval(() => {
-            //console.log('timer');
-        }, 3000);
-    }
-    componentWillUnMount() {
-        // Code to stop timer.
-        BackgroundTimer.clearInterval(myTimer);
-    }
-
     static navigationOptions = {
         headerStyle: {
-            backgroundColor: '#008FAD',
+            backgroundColor: '#00748D',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -33,7 +22,6 @@ export default class Inicio extends Component {
         }
 
         this.Redirigir();
-
     }
 
 
@@ -47,11 +35,13 @@ export default class Inicio extends Component {
         if (session === null) {
             this.props.navigation.navigate('Login');
         } else {
+            console.log("parse" ,sessionParce);
             if (sessionParce.tipo == 0) {
                 console.log("entra");
                 this.props.navigation.navigate('modoTablet');
             }
             else {
+                console.log("entra 2");
                 this.props.navigation.navigate('lista_empresas');
             }
         }

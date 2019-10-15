@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Keyboard, Alert, ToastAndroid, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, Keyboard, Alert, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { RNCamera } from 'react-native-camera';
 import moment from "moment";
@@ -8,14 +8,14 @@ import NetInfo from "@react-native-community/netinfo";
 import { Button } from 'react-native-paper';
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
-
+import Toast from 'react-native-simple-toast';
 
 
 const PendingView = () => (
     <View
         style={{
             flex: 1,
-            backgroundColor: '#008FAD',
+            backgroundColor: '#00748D',
             justifyContent: 'center',
             alignItems: 'center',
         }}
@@ -77,7 +77,7 @@ export default class asistencia_app extends Component {
                         const retorno = data;
                         console.log(retorno);
                         if (retorno.retorno == true) {
-                            this.state.empleado_id = retorno.id;
+                            this.setState({empleado_id : retorno.id});
                             if (retorno.estado_ree == 1) {
                                 this.setState({ mensaje_alert: retorno.mensaje });
                             }
@@ -85,7 +85,7 @@ export default class asistencia_app extends Component {
                                 this.setState({ mensaje_alert: retorno.mensaje });
                             }
                         } else {
-                            ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
+                            Toast.show(retorno.mensaje);
                         }
                     })
                     .catch(function (err) {
@@ -172,7 +172,7 @@ export default class asistencia_app extends Component {
                         console.log(results.rowsAffected);
                         if (results.rowsAffected > 0) {
                             console.log("insertó");
-                            ToastAndroid.show('La asistencia se ingresó correctamente', ToastAndroid.LONG);
+                            Toast.show("la asistencia se ingresó correctamente");
                             this.setState({cargnado : false});
                         } else {
                             console.log("error");
@@ -207,12 +207,12 @@ export default class asistencia_app extends Component {
                 .then(async data => {
                     const retorno = data;
                     if (retorno.retorno == true) {
-                        ToastAndroid.show('La asistencia se ingresó correctamente', ToastAndroid.LONG);
+                        Toast.show("La asistencia se ingresó correctamente");
                         this.setState({cargnado : false});
                         this.props.navigation.navigate('lista_asistencias');
                     } else {
                         this.setState({cargnado : false});
-                        ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
+                        Toast.show(retorno.mensaje);
                     }
                 })
                 .catch(function (err) {
@@ -236,8 +236,8 @@ export default class asistencia_app extends Component {
                             if (status !== 'READY') return <PendingView />;
                             return (
                                 <View style={{ position: 'relative', bottom: 20, left: 0, right: 0 }}>
-                                    {this.state.cargando ? <Button disabled={true} style={{ width: 200, height: 45 }} color="#008FAD" loading={true} mode="contained"></Button> :
-                                        <Button style={{ width: 200, height: 45 }} color="#008FAD" mode="contained" onPress={() => Alert.alert(
+                                    {this.state.cargando ? <Button disabled={true} style={{ width: 200, height: 45 }} color="#00748D" loading={true} mode="contained"></Button> :
+                                        <Button style={{ width: 200, height: 45 }} color="#00748D" mode="contained" onPress={() => Alert.alert(
                                             "Opciones",
                                             this.state.mensaje_alert,
                                             [
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     },
     capture: {
         flex: 0,
-        backgroundColor: '#008FAD',
+        backgroundColor: '#00748D',
         borderRadius: 5,
         padding: 15,
         alignSelf: 'center',

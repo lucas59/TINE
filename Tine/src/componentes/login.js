@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, Keyboard, ToastAndroid, Text, ScrollView } from 'react-native';
+import { Alert, View, Keyboard, Text, ScrollView, ImageBackground } from 'react-native';
 import { Image } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { TextInput } from 'react-native-paper';
@@ -8,20 +8,14 @@ import styles from '../css/styleLogin';
 const manejador = require("./manejadorSqlite");
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-paper';
+import Toast from 'react-native-simple-toast';
 var timer;
 
 export default class Login extends Component {
 
     static navigationOptions = {
-        title: 'Ingresar',
-        headerStyle: {
-            backgroundColor: '#008FAD',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            fontWeight: 'bold',
-        },
-    };
+        header: null,
+        };
 
     constructor(props) {
         super(props);
@@ -56,11 +50,11 @@ export default class Login extends Component {
 
     saveData = async () => {
         Keyboard.dismiss();
-        this.setState({cargando: true});
+        this.setState({ cargando: true });
         const { email, password } = this.state;
 
         if (email == "" || password == "") {
-            ToastAndroid.show('Ingresa datos validos.', ToastAndroid.SHORT);
+            Toast.show('Ingresa datos validos.');
             this.setState({ cargando: false });
             return;
         }
@@ -81,49 +75,41 @@ export default class Login extends Component {
             .then(res => {
                 return res.json()
             })
-            .then(async data  => {
+            .then(async data => {
                 const retorno = data;
                 console.log(retorno);
                 if (retorno.retorno == true) {
                     if (retorno.tipo == 1) {
-                        ToastAndroid.show('Bienvenido.', ToastAndroid.LONG);
                         await AsyncStorage.setItem('usuario', JSON.stringify(retorno));
+                        Toast.show('Bienvenido');    
                         this.props.navigation.navigate('Inicio');
                     } else {
                         this.configuraciones(retorno.id);
-                        DeviceInfo.isTablet().then(async isTablet => {
-                            if (isTablet) {
-                                try {
-                                    const value = await AsyncStorage.getItem('configuraciones');
-                                    if (value !== null) {
-                                        this.setState({ 'modoTablet': JSON.parse(value).modoTablet.data[0] });
-                                    }
-                                } catch (e) {
-                                    console.log("error", e);
-                                }
-                                console.log("Modo tablet: ", this.state.modoTablet);
-                                if (this.state.modoTablet) {
-                                    await AsyncStorage.setItem('usuario', JSON.stringify(retorno));
-                                    this.props.navigation.navigate('Inicio');
-                                    manejador.bajarEmpleadosEmpresa(retorno.id);
-                                } else {
-                                    Alert.alert(
-                                        "Alerta",
-                                        "Usted no tiene permitido el ingreso en una tablet",
-                                    )
-                                }
-                            } else {
-                                Alert.alert(
-                                    "Alerta",
-                                    "La empresa solo puede ingresar desde una tablet",
-                                )
+                        try {
+                            const value = await AsyncStorage.getItem('configuraciones');
+                            if (value !== null) {
+                                this.setState({ 'modoTablet': JSON.parse(value).modoTablet.data[0] });
                             }
-                        });
+                        } catch (e) {
+                            console.log("error", e);
+                        }
+                        console.log("Modo tablet: ", this.state.modoTablet);
+                        if (this.state.modoTablet) {
+                            await AsyncStorage.setItem('usuario', JSON.stringify(retorno));
+                            this.props.navigation.navigate('Inicio');
+                            manejador.bajarEmpleadosEmpresa(retorno.id);
+                        } else {
+                            Alert.alert(
+                                "Alerta",
+                                "Usted no tiene permitido el ingreso en una tablet",
+                            )
+                        }
+
 
                     }
 
                 } else {
-                    ToastAndroid.show(retorno.mensaje, ToastAndroid.LONG);
+                    Toast.show(retorno.mensaje);
                     console.log(retorno);
                 }
                 this.setState({ cargando: false });
@@ -131,7 +117,7 @@ export default class Login extends Component {
             })
             .catch(function (err) {
                 console.log(err);
-                ToastAndroid.show("Compruebe su conexión" + err, ToastAndroid.LONG);
+                Toast.show('Compriebe su conexion' + err);
             })
 
     }
@@ -187,55 +173,68 @@ export default class Login extends Component {
 
     render() {
         return (
-            <ScrollView>
-                <View style={styles.container}>
-                    <View >
-                        <Image
-                            source={ require('../imagenes/Tesis-logo.png') }
-                            style={{ width: 300, height: 300 }}
-                        />
-                        <TextInput
-                            label="Email"
-                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                            onChangeText={(email) => this.setState({ email })}
-                            selectionColor="#008FAD"
-                            underlineColor="#008FAD"
-                            theme={{
-                                colors: {
-                                    primary: '#008FAD',
-                                    underlineColor: 'transparent'
-                                }
+            <ScrollView  contentContainerStyle={{
+                flex: 1
+            }}>
+                <ImageBackground style={styles.imgBackground}
+                    resizeMode='cover'
+                    source={require('../imagenes/login.png')}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        flex: 1
+                    }}>
 
-                            }}
-                            value={this.state.email}
-                        />
+                    <View style={styles.container}>
+                        <View>
+                            <Image
+                                source={require('../imagenes/Tesis-logo.png')}
+                                style={{ width: 300, height: 300 }}
+                            />
+                            <TextInput
+                                label="Email"
+                                style={{ width: 300, fontSize: 20, marginTop: 110, marginBottom: 10 }}
+                                onChangeText={(email) => this.setState({ email })}
+                                selectionColor="#00748D"
+                                underlineColor="#00748D"
+                                theme={{
+                                    colors: {
+                                        primary: '#00748D',
+                                        underlineColor: 'transparent'
+                                    }
+
+                                }}
+                                value={this.state.email}
+                            />
+                        </View>
+                        <View>
+                            <TextInput
+                                label="Contraseña"
+                                style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 30 }}
+                                onChangeText={(password) => this.setState({ password })}
+                                selectionColor="#00748D"
+                                underlineColor="#00748D"
+                                theme={{
+                                    colors: {
+                                        primary: '#00748D',
+                                        underlineColor: 'transparent',
+                                    }
+
+                                }}
+                                value={this.state.password}
+                                secureTextEntry={true}
+                            />
+                        </View>
+
+                        {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#007D8D" mode="contained" onPress={this.saveData}></Button> : <Button style={{ width: 220, marginBottom: 30 }} color="#007D8D" mode="contained" onPress={this.saveData}>
+                            Iniciar
+  </Button>}
+                        <Text style={{ color: "white" }}>¿Nuevo aquí?</Text>
+                        <Text style={{ color: '#41d1f0' }} onPress={this.openSignup}>Registrate</Text>
                     </View>
-                    <View>
-                        <TextInput
-                            label="Contraseña"
-                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 30 }}
-                            onChangeText={(password) => this.setState({ password })}
-                            selectionColor="#008FAD"
-                            underlineColor="#008FAD"
-                            theme={{
-                                colors: {
-                                    primary: '#008FAD',
-                                    underlineColor: 'transparent',
-                                }
+                </ImageBackground>
+            </ScrollView>
 
-                            }}
-                            value={this.state.password}
-                            secureTextEntry={true}
-                        />
-                    </View>
-
-                    {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}></Button>: <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
-                        Iniciar
-  </Button>} 
-                    <Text >¿Nuevo aquí?</Text>
-                    <Text style={{ color: '#008FAD' }} onPress={this.openSignup}>Registrate</Text>
-                </View>
-                </ScrollView>
         )
     }
 

@@ -2,13 +2,12 @@ import React from 'react';
 import {
     StyleSheet,
     View,
-    ToastAndroid,
-    KeyboardAvoidingView
+    ImageBackground
 } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 import RadioForm from 'react-native-simple-radio-button';
-
+import Toast from 'react-native-simple-toast';
 const { server } = require('../config/keys');
 
 export default class Signup extends React.Component {
@@ -16,7 +15,7 @@ export default class Signup extends React.Component {
     static navigationOptions = {
         title: 'Crea una cuenta',
         headerStyle: {
-            backgroundColor: '#008FAD',
+            backgroundColor: '#00748D',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -43,7 +42,8 @@ export default class Signup extends React.Component {
         this.setState({ cargando: true });
         const { email, password, fullName, tipo, documento } = this.state;
         if (email == "" || password == "" || fullName == "") {
-            ToastAndroid.show('Ingresa datos validos.', ToastAndroid.SHORT);
+            Toast.show('Ingresa datos validos.');
+            this.setState({ cargando: false });
             return;
         }
 
@@ -82,7 +82,7 @@ export default class Signup extends React.Component {
                 const retorno = data;
                 console.log(retorno.retorno);
                 if (retorno.retorno == true) {
-                    //  ToastAndroid.show('Bienvenido', ToastAndroid.SHORT);
+                    //  Toast.show('Bienvenido', Toast.SHORT);
                     AsyncStorage.setItem('usuario', JSON.stringify(datos));
                     this.props.navigation.navigate('Signup2', {
                         datos: JSON.stringify(datos)
@@ -93,7 +93,7 @@ export default class Signup extends React.Component {
                 this.setState({ cargando: false });
             })
             .catch(function (err) {
-                ToastAndroid.show("Compruebe su conexión", ToastAndroid.LONG);
+                Toast.show("Compruebe su conexión", Toast.LONG);
             })
 
     }
@@ -105,17 +105,25 @@ export default class Signup extends React.Component {
             { label: 'Colaborador', value: 1 }
         ];
         return (
+            <ImageBackground
+            resizeMode='cover'
+            source={require('../imagenes/main.png')}
+            style={{
+              width: '100%',
+              height: '100%',
+              flex: 1
+            }}>
             <View style={styles.container}>
                 <View >
                     <TextInput
                         label="Documento"
                         style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                         onChangeText={(documento) => this.setState({ documento })}
-                        selectionColor="#008FAD"
-                        underlineColor="#008FAD"
+                        selectionColor="#00748D"
+                        underlineColor="#00748D"
                         theme={{
                             colors: {
-                                primary: '#008FAD',
+                                primary: '#00748D',
                                 underlineColor: 'transparent'
                             }
 
@@ -129,11 +137,11 @@ export default class Signup extends React.Component {
                         label="Nombre"
                         style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                         onChangeText={(fullName) => this.setState({ fullName })}
-                        selectionColor="#008FAD"
-                        underlineColor="#008FAD"
+                        selectionColor="#00748D"
+                        underlineColor="#00748D"
                         theme={{
                             colors: {
-                                primary: '#008FAD',
+                                primary: '#00748D',
                                 underlineColor: 'transparent'
                             }
 
@@ -146,11 +154,11 @@ export default class Signup extends React.Component {
                         label="Correo"
                         style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                         onChangeText={(email) => this.setState({ email })}
-                        selectionColor="#008FAD"
-                        underlineColor="#008FAD"
+                        selectionColor="#00748D"
+                        underlineColor="#00748D"
                         theme={{
                             colors: {
-                                primary: '#008FAD',
+                                primary: '#00748D',
                                 underlineColor: 'transparent'
                             }
 
@@ -163,11 +171,11 @@ export default class Signup extends React.Component {
                         label="Contraseña"
                         style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
                         onChangeText={(password) => this.setState({ password })}
-                        selectionColor="#008FAD"
-                        underlineColor="#008FAD"
+                        selectionColor="#00748D"
+                        underlineColor="#00748D"
                         theme={{
                             colors: {
-                                primary: '#008FAD',
+                                primary: '#00748D',
                                 underlineColor: 'transparent'
                             }
 
@@ -178,17 +186,19 @@ export default class Signup extends React.Component {
                 </View>
                 <View>
                     <RadioForm
+                        buttonColor={'#00748D'}
                         radio_props={radio_props}
                         initial={0}
                         onPress={(value) => { this.setState({ tipo: value }) }}
                     />
                 </View>
-                {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+                {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginTop:20 }} color="#00748D" mode="contained" onPress={this.saveData}>
   </Button> :
-                    <Button style={{ width: 220, marginBottom: 30 }} color="#008FAD" mode="contained" onPress={this.saveData}>
+                    <Button style={{ width: 220, marginTop:20 }} color="#00748D" mode="contained" onPress={this.saveData}>
                         Siguiente
   </Button>}
-            </View>
+                </View>
+                </ImageBackground>
         );
     }
 }
@@ -196,8 +206,11 @@ export default class Signup extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        top: 60,
+        alignSelf: 'center',
+        alignContent: "center",
+        alignItems:"center",
+        position: 'absolute'
     },
     inputs: {
         height: 45,
@@ -208,7 +221,6 @@ const styles = StyleSheet.create({
     inputIcon: {
         width: 30,
         height: 30,
-        marginLeft: 15,
         justifyContent: 'center'
     },
     buttonContainer: {

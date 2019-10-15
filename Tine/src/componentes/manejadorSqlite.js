@@ -1,4 +1,4 @@
-import { ToastAndroid } from 'react-native';
+import Toast from 'react-native-simple-toast';
 import { openDatabase } from 'react-native-sqlite-storage';
 const { server } = require('../config/keys');
 import AsyncStorage from '@react-native-community/async-storage';
@@ -216,13 +216,13 @@ manejador.bajarEmpleadosEmpresa = (documento) => { ///baja los empleado al inici
         })
         .catch(function (err) {
             console.log("error: ", err)
-            ToastAndroid.show("Compruebe su conexión", ToastAndroid.LONG);
+            Toast.show("Compruebe su conexión");
         })
 }
 
 
 manejador.borrarTareas = () => {
-    ToastAndroid.show('pueba', ToastAndroid.LONG);
+    Toast.show('pueba',);
 }
 
 manejador.listarempresas = (id_usuario) => {

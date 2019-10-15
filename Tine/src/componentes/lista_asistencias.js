@@ -51,7 +51,7 @@ export default class lista_tareas extends Component {
         return {
             title: 'Listas de asistencias',
             headerStyle: {
-                backgroundColor: '#008FAD',
+                backgroundColor: '#00748D',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -62,7 +62,7 @@ export default class lista_tareas extends Component {
                     reverse
                     name='account-circle'
                     type='material-community'
-                    color='#008FAD'
+                    color='#00748D'
                     onPress={async () => navigation.navigate('perfil', { session: await AsyncStorage.getItem('usuario') })} />
 
             ),
@@ -149,7 +149,7 @@ export default class lista_tareas extends Component {
             var fecha = null;
             return this.state.listaT.map((data, i) => {
                 //fecha pasa de Date a moment
-                const moment_fecha = moment(data.fecha);
+                const moment_fecha = moment(data.fecha).utc();
                 //setear la fecha de la tarea en una variable para luego compararla con la fecha de la tarea actual
                 var comp = fecha;
                 //fecha es igual a la fecha de la tarea actual
@@ -174,7 +174,7 @@ export default class lista_tareas extends Component {
         else {
             return (
                 <View>
-                    {this.state.cargando ? <PulseIndicator color='#008FAD' size={60} style={{ marginTop: 30 }} /> :
+                    {this.state.cargando ? <PulseIndicator color='#00748D' size={60} style={{ marginTop: 30 }} /> :
                         <View style={{
                             top: 15,
                             left: 0,
@@ -217,7 +217,7 @@ export default class lista_tareas extends Component {
                     </ScrollView>
                     </PTRView>
                 <ActionButton
-                    buttonColor="#008FAD"
+                    buttonColor="#00748D"
                     onPress={() => { this.props.navigation.navigate('asistencia_app'); }}
                     />
                   
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     },
     button: {
         width: 300,
-        backgroundColor: '#008FAD',
+        backgroundColor: '#00748D',
         borderRadius: 25,
         marginVertical: 10,
         paddingVertical: 12
