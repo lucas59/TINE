@@ -80,8 +80,8 @@ export default class Login extends Component {
                 console.log(retorno);
                 if (retorno.retorno == true) {
                     if (retorno.tipo == 1) {
-                        Toast.show('Bienvenido');    
                         await AsyncStorage.setItem('usuario', JSON.stringify(retorno));
+                        Toast.show('Bienvenido');    
                         this.props.navigation.navigate('Inicio');
                     } else {
                         this.configuraciones(retorno.id);
@@ -226,7 +226,7 @@ export default class Login extends Component {
                             />
                         </View>
 
-                        {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.saveData}></Button> : <Button style={{ width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.saveData}>
+                        {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#007D8D" mode="contained" onPress={this.saveData}></Button> : <Button style={{ width: 220, marginBottom: 30 }} color="#007D8D" mode="contained" onPress={this.saveData}>
                             Iniciar
   </Button>}
                         <Text style={{ color: "white" }}>¿Nuevo aquí?</Text>

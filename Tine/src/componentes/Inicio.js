@@ -35,11 +35,13 @@ export default class Inicio extends Component {
         if (session === null) {
             this.props.navigation.navigate('Login');
         } else {
+            console.log("parse" ,sessionParce);
             if (sessionParce.tipo == 0) {
                 console.log("entra");
                 this.props.navigation.navigate('modoTablet');
             }
             else {
+                console.log("entra 2");
                 this.props.navigation.navigate('lista_empresas');
             }
         }
