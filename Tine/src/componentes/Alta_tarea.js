@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, PermissionsAndroid, BackHandler, Alert, ImageBackground } from 'react-native';
+import { Text, View, TouchableHighlight, BackHandler, Alert, ImageBackground } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
@@ -120,8 +120,7 @@ export default class Alta_tarea extends Component {
                         case RESULTS.GRANTED:
                             console.log('granted 1: ', this.state.permisos);
                             this.setState({ permisos: 1 });
-                            console.log('granted 2: ', this.state.permisos);
-                            console.log('3.The permission is acepted');
+                            console.log('3.permiso aceptado');
                             break;
                         case RESULTS.BLOCKED:
                                 alert("bloquedo");
@@ -130,7 +129,7 @@ export default class Alta_tarea extends Component {
                     }
                 })
                 .catch(error => {
-                    // …
+                    alert("error");
                 });
         }
         console.log('granted: ', this.state.permisos);
@@ -145,6 +144,7 @@ export default class Alta_tarea extends Component {
                         this.setState({ inicio: fecha });
                         this.setState({ long_ini: longitud });
                         this.setState({ lat_ini: latitud });
+                        AsyncStorage.setItem('tarea', JSON.stringify(tarea_send));
                     } else {
                         console.log("fin" + longitud);
                         console.log("fin" + latitud);
@@ -252,8 +252,6 @@ export default class Alta_tarea extends Component {
                     if (retorno.retorno == true) {
                         this.setState({ cargando: false });
                         Toast.show('La tarea se ingresó correctamente');
-                        Toast.show('La tarea se ingreso correctamente');
-                        AsyncStorage.setItem('tarea', JSON.stringify(tarea_send));
                         this.props.navigation.navigate('lista_tareas');
                     } else {
                         alert(retorno.mensaje);
@@ -300,10 +298,10 @@ export default class Alta_tarea extends Component {
                         }}
                         value={this.state.titulo}
                     />
-                    {this.state.cargando ? <Button disabled={true} style={{ width: 160, height: 50 }} color="#00748D" loading={true} mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}></Button> :
-                        <Button style={{ width: 160, height: 50 }} color="#00748D" mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}>
+                    {this.state.cargando ? <Button disabled={true} style={{ width: 160, height: 50 }} color="#00748D" loading={true} mode={!this.state.stopwatchStart ? "outlined" : "contained"}></Button> :
+                        <TouchableHighlight onPress={this.toggleStopwatch}><Button style={{ width: 160, height: 50 }} color="#00748D" mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}>
                             <Text style={{ fontSize: 23 }}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
-                        </Button>
+                        </Button></TouchableHighlight>
                     }
                 </View>
             </ImageBackground>

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, TouchableHighlight } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { TextInput, Button } from 'react-native-paper';
-import {  Icon, Divider } from 'react-native-elements';
+import { Icon, Divider } from 'react-native-elements';
 import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
@@ -194,67 +194,68 @@ export default class Alta_tarea extends Component {
     render() {
         return (
             <ImageBackground
-            resizeMode='cover'
-            source={require('../imagenes/main.png')}
-            style={{
-              width: '100%',
-              height: '100%',
-              flex: 1
-            }}>
-            <View style={styles.container}>
-                <TextInput
-                    label="Titulo de la tarea"
-                    style={{ width: 300, fontSize: 20, marginTop: 30 }}
-                    onChangeText={(tarea_titulo) => this.setState({ tarea_titulo })}
-                    placeholder="¿En qué estás trabajando?"
-                    selectionColor="#00748D"
-                    underlineColor="#00748D"
-                    autoFocus={true}
-                    theme={{
-                        colors: {
-                            primary: '#00748D',
-                            underlineColor: 'transparent',
-                        }
+                resizeMode='cover'
+                source={require('../imagenes/main.png')}
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    flex: 1
+                }}>
+                <View style={styles.container}>
+                    <TextInput
+                        label="Titulo de la tarea"
+                        style={{ width: 300, fontSize: 20, marginTop: 30 }}
+                        onChangeText={(tarea_titulo) => this.setState({ tarea_titulo })}
+                        placeholder="¿En qué estás trabajando?"
+                        selectionColor="#00748D"
+                        underlineColor="#00748D"
+                        autoFocus={true}
+                        theme={{
+                            colors: {
+                                primary: '#00748D',
+                                underlineColor: 'transparent',
+                            }
 
-                    }}
-                    value={this.state.tarea_titulo}
-                />
-                <Divider style={{ backgroundColor: '#00748D' }} />
-                <Button
-                    onPress={this.showDateTimePicker_inicio}
-                    style={{  height: 50, marginTop: 10 }} color="#00748D" mode="outlined"
-                >
-                <DateTimePicker
-                    isVisible={this.state.isDateTimePickerVisible_inicio}
-                    onConfirm={(date) => this.handleDatePicked_inicio(date)}
-                    onCancel={this.hideDateTimePicker_inicio}
-                    mode={'datetime'}
-                    date={moment(this.state.tarea_inicio).toDate()}
+                        }}
+                        value={this.state.tarea_titulo}
                     />
-                    <Text>{"Fecha de inicio: " + moment(this.state.tarea_inicio).format('MMMM Do YYYY, HH:mm:ss').toString()}</Text>
-                </Button>
-                <Divider style={{ backgroundColor: '#00748D' }} />
-                <Button
-                    onPress={this.showDateTimePicker_fin}
-                    style={{  height: 50 , marginTop: 10, marginBottom: 10}} color="#00748D" mode="outlined"
-                >
-                <DateTimePicker
-                    isVisible={this.state.isDateTimePickerVisible_fin}
-                    onConfirm={(date) => this.handleDatePicked_fin(date)}
-                    onCancel={this.hideDateTimePicker_fin}
-                    mode={'datetime'}
-                    date={moment(this.state.tarea_fin).toDate()}
-                    />
-                    <Text>{"Fecha de fin: " + moment(this.state.tarea_fin).format('MMMM Do YYYY, HH:mm:ss').toString()}</Text>
-                 </Button>
-                <Divider style={{ backgroundColor: '#00748D' }} />
-                {this.state.cargando ? <Button style={{ width: 160, height: 50 }} color="#00748D" loading={true} mode="contained" onPress={this.saveData} disabled={true} ></Button> :
-                    <Button style={{ width: 160, height: 50 }} color="#00748D" mode="contained" onPress={this.saveData}>
-                        <Text style={{ fontSize: 23 }}>Aceptar</Text>
+                    <Divider style={{ backgroundColor: '#00748D' }} />
+                    <Button
+                        onPress={this.showDateTimePicker_inicio}
+                        style={{ height: 50, marginTop: 10 }} color="#00748D" mode="outlined"
+                    >
+                        <DateTimePicker
+                            isVisible={this.state.isDateTimePickerVisible_inicio}
+                            onConfirm={(date) => this.handleDatePicked_inicio(date)}
+                            onCancel={this.hideDateTimePicker_inicio}
+                            mode={'datetime'}
+                            date={moment(this.state.tarea_inicio).toDate()}
+                        />
+                        <Text>{"Fecha de inicio: " + moment(this.state.tarea_inicio).format('MMMM Do YYYY, HH:mm:ss').toString()}</Text>
                     </Button>
-                }
+                    <Divider style={{ backgroundColor: '#00748D' }} />
+                    <Button
+                        onPress={this.showDateTimePicker_fin}
+                        style={{ height: 50, marginTop: 10, marginBottom: 10 }} color="#00748D" mode="outlined"
+                    >
+                        <DateTimePicker
+                            isVisible={this.state.isDateTimePickerVisible_fin}
+                            onConfirm={(date) => this.handleDatePicked_fin(date)}
+                            onCancel={this.hideDateTimePicker_fin}
+                            mode={'datetime'}
+                            date={moment(this.state.tarea_fin).toDate()}
+                        />
+                        <Text>{"Fecha de fin: " + moment(this.state.tarea_fin).format('MMMM Do YYYY, HH:mm:ss').toString()}</Text>
+                    </Button>
+                    <Divider style={{ backgroundColor: '#00748D' }} />
+                    {this.state.cargando ? <Button style={{ width: 160, height: 50 }} color="#00748D" loading={true} mode="contained" disabled={true} ></Button> :
+                        <TouchableHighlight onPress={this.saveData}>
+                            <Button style={{ width: 160, height: 50 }} color="#00748D" mode="contained" onPress={this.saveData}>
+                                Aceptar
+                    </Button></TouchableHighlight>
+                    }
                 </View>
-                </ImageBackground>
+            </ImageBackground>
         )
     }
 }

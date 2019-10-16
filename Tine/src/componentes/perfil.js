@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
-import { Alert, Text, View, Modal, Image, ImageBackground } from 'react-native';
+import { Alert, Text, View, Modal, Image, ImageBackground,TouchableHighlight } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import styles from '../css/stylesPerfil';
 import { Icon } from 'react-native-elements';
@@ -230,8 +230,8 @@ export default class Profile extends Component {
     return (
       <>
         <ScrollView contentContainerStyle={{
-                flex: 1
-            }}>
+          flex: 1
+        }}>
           <ImageBackground
             resizeMode='cover'
             source={require('../imagenes/perfil.png')}
@@ -266,21 +266,24 @@ export default class Profile extends Component {
                       color="#00748D" />
                     <Text style={styles.info}> {this.state.celular} </Text>
                   </View>
-
-                  <Button
-                    style={styles.buttonContainer}
-                    color="#00748D"
-                    mode="contained"
-                    onPress={this.desactivarCuenta}>
-                    Desactivar cuenta
+                  <TouchableHighlight onPress={this.desactivarCuenta}>
+                    <Button
+                      style={styles.buttonContainer}
+                      color="#00748D"
+                      mode="contained"
+                      onPress={this.desactivarCuenta}>
+                      Desactivar cuenta
                 </Button>
-                  <Button
-                    style={styles.buttonContainer}
-                    color="#00748D"
-                    mode="contained"
-                    onPress={this.confirmCerrarSession}>
-                    Cerrar sesión
+                  </TouchableHighlight>
+                  <TouchableHighlight onPress={this.desactivarCuenta}>
+                    <Button
+                      style={styles.buttonContainer}
+                      color="#00748D"
+                      mode="contained"
+                      onPress={this.confirmCerrarSession}>
+                      Cerrar sesión
                 </Button>
+                  </TouchableHighlight>
                 </View>
               </View>
             </View>
@@ -303,103 +306,106 @@ export default class Profile extends Component {
           onRequestClose={() => {
             this.setModalVisible(false);
           }}>
-       <ScrollView contentContainerStyle={{
+          <ScrollView contentContainerStyle={{
+            flex: 1
+          }}>
+            <ImageBackground
+              resizeMode='cover'
+              source={require('../imagenes/perfil.png')}
+              style={{
+                width: '100%',
+                height: '100%',
                 flex: 1
-            }}>
-          <ImageBackground
-            resizeMode='cover'
-            source={require('../imagenes/perfil.png')}
-            style={{
-              width: '100%',
-              height: '100%',
-              flex: 1
-            }}>
-            <View style={styles.container}>
-            
-              <Image style={styles.avatar} source={{ uri: imagen }} />
-              <View style={styles.body_m}>
-                <View style={styles.bodyContent}>
-                  <TextInput
-                    label="Correo"
-                    style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                    onChangeText={email => this.setState({ email })}
-                    selectionColor="#00748D"
-                    underlineColor="#00748D"
-                    theme={{
-                      colors: {
-                        primary: '#00748D',
-                        underlineColor: 'transparent'
-                      }
+              }}>
+              <View style={styles.container}>
 
-                    }}
-                    value={this.state.email}
-                  />
-                  <TextInput
-                    label="Nombre"
-                    style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                    onChangeText={nombre => this.setState({ nombre })}
-                    selectionColor="#00748D"
-                    underlineColor="#00748D"
-                    theme={{
-                      colors: {
-                        primary: '#00748D',
-                        underlineColor: 'transparent'
-                      }
+                <Image style={styles.avatar} source={{ uri: imagen }} />
+                <View style={styles.body_m}>
+                  <View style={styles.bodyContent}>
+                    <TextInput
+                      label="Correo"
+                      style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                      onChangeText={email => this.setState({ email })}
+                      selectionColor="#00748D"
+                      underlineColor="#00748D"
+                      theme={{
+                        colors: {
+                          primary: '#00748D',
+                          underlineColor: 'transparent'
+                        }
 
-                    }}
-                    value={this.state.nombre}
-                  />
-                  <TextInput
-                    label="Apellido"
-                    style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                    onChangeText={apellido => this.setState({ apellido })}
-                    selectionColor="#00748D"
-                    underlineColor="#00748D"
-                    theme={{
-                      colors: {
-                        primary: '#00748D',
-                        underlineColor: 'transparent'
-                      }
+                      }}
+                      value={this.state.email}
+                    />
+                    <TextInput
+                      label="Nombre"
+                      style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                      onChangeText={nombre => this.setState({ nombre })}
+                      selectionColor="#00748D"
+                      underlineColor="#00748D"
+                      theme={{
+                        colors: {
+                          primary: '#00748D',
+                          underlineColor: 'transparent'
+                        }
 
-                    }}
-                    value={this.state.apellido}
-                  />
-                  <TextInput
-                    label="Celular"
-                    style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                    onChangeText={celular => this.setState({ celular })}
-                    selectionColor="#00748D"
-                    underlineColor="#00748D"
-                    theme={{
-                      colors: {
-                        primary: '#00748D',
-                        underlineColor: 'transparent'
-                      }
+                      }}
+                      value={this.state.nombre}
+                    />
+                    <TextInput
+                      label="Apellido"
+                      style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                      onChangeText={apellido => this.setState({ apellido })}
+                      selectionColor="#00748D"
+                      underlineColor="#00748D"
+                      theme={{
+                        colors: {
+                          primary: '#00748D',
+                          underlineColor: 'transparent'
+                        }
 
-                    }}
-                    value={this.state.celular}
-                  />
-                  {this.state.cargando ?
-                    <Button
-                      loading={true}
-                      disabled={true}
-                      style={styles.buttonContainer}
-                      color="#00748D"
-                      mode="contained"
-                      onPress={this.guardarDatos}>
-                    </Button>
-                    :
-                    <Button
-                      style={styles.buttonContainer}
-                      color="#00748D"
-                      mode="contained"
-                      onPress={this.guardarDatos}>
-                      Terminar
-                </Button>}
+                      }}
+                      value={this.state.apellido}
+                    />
+                    <TextInput
+                      label="Celular"
+                      style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                      onChangeText={celular => this.setState({ celular })}
+                      selectionColor="#00748D"
+                      underlineColor="#00748D"
+                      theme={{
+                        colors: {
+                          primary: '#00748D',
+                          underlineColor: 'transparent'
+                        }
+
+                      }}
+                      value={this.state.celular}
+                    />
+                    {this.state.cargando ?
+                      <TouchableHighlight onPress={this.guardarDatos}>
+                      <Button
+                        loading={true}
+                        disabled={true}
+                        style={styles.buttonContainer}
+                        color="#00748D"
+                        mode="contained"
+                        onPress={this.guardarDatos}>
+                        </Button>
+                        </TouchableHighlight>
+                      :
+                      <TouchableHighlight onPress={this.guardarDatos}> 
+                      <Button
+                        style={styles.buttonContainer}
+                        color="#00748D"
+                        mode="contained"
+                        onPress={this.guardarDatos}>
+                        Terminar
+                </Button></TouchableHighlight>}
+                  </View>
                 </View>
               </View>
-              </View>
-              </ImageBackground>
+            </ImageBackground>
           </ScrollView>
         </Modal>
       </>
