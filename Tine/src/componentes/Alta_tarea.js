@@ -134,7 +134,7 @@ export default class Alta_tarea extends Component {
         }
         console.log('granted: ', this.state.permisos);
         if (this.state.permisos === 1) {
-            Geolocation.getCurrentPosition(
+            await Geolocation.getCurrentPosition(
                 (position) => {
                     longitud = JSON.stringify(position.coords.longitude);
                     latitud = JSON.stringify(position.coords.latitude);
@@ -144,7 +144,14 @@ export default class Alta_tarea extends Component {
                         this.setState({ inicio: fecha });
                         this.setState({ long_ini: longitud });
                         this.setState({ lat_ini: latitud });
-                        AsyncStorage.setItem('tarea', JSON.stringify(tarea_send));
+                        var tarea_pausa = {
+                            titulo: this.state.titulo,
+                            fecha: fecha,
+                            longitud: longitud,
+                            latitud:latitud
+                        }
+                        console.log(tarea_pausa);
+                        AsyncStorage.setItem('tarea', JSON.stringify(tarea_pausa));
                     } else {
                         console.log("fin" + longitud);
                         console.log("fin" + latitud);
