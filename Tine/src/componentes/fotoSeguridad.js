@@ -29,17 +29,39 @@ const PendingView = () => (
   </View>
 );
 export default class seguridadFoto extends Component {
- 
- 
-   
+  comprobar_ultima_asistencia_offline = async () => {
+    let session = await AsyncStorage.getItem('usuario');
+    let sesion = JSON.parse(session);
+    let session_2 = await AsyncStorage.getItem('empresa');
+    let empresa = JSON.parse(session_2);
+    var empresa_id = empresa[0];
+    return new Promise(function(resolve, reject) {
+      setTimeout(() => {
+        db.transaction(function(tx) {
+          console.log('entra', sesion.id);
+          console.log('entra', empresa_id);
+          tx.executeSql(
+            'SELECT * FROM asistencia WHERE id=(SELECT MAX(id) from asistencia) AND empleado_id = ? AND empresa_id = ? AND tipo = 1',
+            [sesion.id, empresa_id],
+            (tx, results) => {
+              if (results.rows.length > 0) {
+                resolve(1);
+              } else {
+                resolve(2);
+              }
+            },
+          );
+        });
+      }, 1000);
+    });
+  };
+
   componentDidMount = async () => {
-    this.comprobar_conexion();
     const value = await AsyncStorage.getItem('configuraciones');
     if (value !== null) {
       this.setState({camara: JSON.parse(value).camara.data[0]});
     }
   };
-
   static navigationOptions = {
     header: null,
   };
@@ -58,8 +80,7 @@ export default class seguridadFoto extends Component {
     };
   }
 
-  subirImagen = async camera => {
-    const {foto} = this.state;
+  subirfoto = async (camera, tipo) => {
     this.setState({cargando: true});
     Keyboard.dismiss();
     const options = {quality: 0.5, base64: true, captureAudio: false};
@@ -69,16 +90,14 @@ export default class seguridadFoto extends Component {
     } else {
       this.setState({foto: null});
     }
-
-    
+    const {foto} = this.state;
     let session = await AsyncStorage.getItem('usuario');
     let sesion = JSON.parse(session);
-    
     let foto_send = {
-      fecha: fecha,
       foto: foto,
-      empleado_id: sesion.id
+      empleado: sesion.id,
     };
+    console.log(server.api + 'fotoSeguridad');
     fetch(server.api + 'fotoSeguridad', {
       method: 'POST',
       headers: {
@@ -93,7 +112,7 @@ export default class seguridadFoto extends Component {
       .then(async data => {
         const retorno = data;
         if (retorno.retorno == true) {
-          Toast.show('La foto se registro correctamente');
+          Toast.show('La asistencia se ingresó correctamente');
           this.setState({cargnado: false});
           this.props.navigation.navigate('perfil');
         } else {
@@ -106,53 +125,42 @@ export default class seguridadFoto extends Component {
       });
   };
 
-
-
-
   render() {
     return (
       <>
         <View style={styles.main}>
-          {this.state.camara == 1  (
-            <RNCamera
-              style={styles.camara}
-              type={RNCamera.Constants.Type.front}
-              captureAudio={false}>
-                if (status !== 'READY') return <PendingView />;
-                return (
-                  <View
-                    style={{
-                      position: 'relative',
-                      bottom: 20,
-                      left: 0,
-                      right: 0,
-                    }}>
-                    {this.state.cargando ? (
-                      <Button
-                        disabled={true}
-                        style={{width: 200, height: 45}}
-                        color="#00748D"
-                        loading={true}
-                        mode="contained"></Button>
-                    ) : (
-                      <Button
-                        style={{width: 200, height: 45}}
-                        color="#00748D"
-                        mode="contained"
-                        onPress={() => {
-                          this.subirImagen(camera);
-                        }}>
-                        <Text style={{fontSize: 14, color: 'white'}}>
-                          {' '}
-                          Capturar{' '}
-                        </Text>
-                      </Button>
-                    )}
-                  </View>
-                );
-              }}
-            </RNCamera>
-          )}
+          <RNCamera
+            style={styles.camara}
+            type={RNCamera.Constants.Type.front}
+            captureAudio={false}>
+            {({camera, status}) => {
+              if (status !== 'READY') return <PendingView />;
+              return (
+                <View
+                  style={{position: 'relative', bottom: 20, left: 0, right: 0}}>
+                  {this.state.cargando ? (
+                    <Button
+                      disabled={true}
+                      style={{width: 200, height: 45}}
+                      color="#00748D"
+                      loading={true}
+                      mode="contained"></Button>
+                  ) : (
+                    <Button
+                      style={{width: 200, height: 45}}
+                      color="#00748D"
+                      mode="contained"
+                      onPress={() => this.subirfoto(camera, 1)}>
+                      <Text style={{fontSize: 14, color: 'white'}}>
+                        {' '}
+                        Capturar{' '}
+                      </Text>
+                    </Button>
+                  )}
+                </View>
+              );
+            }}
+          </RNCamera>
         </View>
       </>
     );
