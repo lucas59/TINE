@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, TouchableHighlight } from 'react-native';
 import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-community/async-storage';
 import DateTimePicker from "react-native-modal-datetime-picker";
@@ -122,7 +122,7 @@ export default class Signup2 extends React.Component {
                 if (retorno.retorno == true) {
                     var nuevaSession = {
                         id: datosFinales.documento,
-                        tipo: datosFinales.email
+                        tipo: datosFinales.tipo
                     }
                     AsyncStorage.setItem('usuario', JSON.stringify(nuevaSession));
                     this.setState({ cargando: true });
@@ -184,12 +184,16 @@ export default class Signup2 extends React.Component {
             .then(res => {
                 return res.json()
             })
-            .then(data => {
+            .then(async data  => {
                 const retorno = data;
                 console.log('retorno', retorno);
                 if (retorno.retorno == true) {
-                    this.props.navigation.navigate('Login');
-
+                    var nuevaSession = {
+                        id: datosFinales.documento,
+                        tipo: datosFinales.tipo
+                    }
+                    await AsyncStorage.setItem('usuario', JSON.stringify(nuevaSession));
+                    this.props.navigation.navigate('Inicio');
                 } else {
                     alert(
                         retorno.mensaje,
@@ -271,8 +275,9 @@ export default class Signup2 extends React.Component {
                                 value={this.state.celular}
                             />
                         </View>
-                        <Button style={{ width: 220, marginBottom: 20 }} color="#00748D" mode="outlined" title="Fecha de nacimiento" onPress={this.showDateTimePicker_inicio}>Fecha de nacimiento</Button>
-
+                        <TouchableHighlight onPress={this.showDateTimePicker_inicio}>
+                            <Button style={{ borderRadius: 30,width: 220, marginBottom: 20 }} color="#00748D" mode="outlined" title="Fecha de nacimiento" onPress={this.showDateTimePicker_inicio}>Fecha de nacimiento</Button>
+                        </TouchableHighlight>
                         <DateTimePicker
                             isVisible={this.state.isDateTimePickerVisible_inicio}
                             onConfirm={this.handleDatePicked_inicio}
@@ -280,9 +285,11 @@ export default class Signup2 extends React.Component {
                             mode={'date'}
                         />
                         {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#00748D" loading={true} mode="contained" ></Button> :
-                            <Button style={{ width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.enviarDatosEmpleado}>
-                                Registrarse
+                            <TouchableHighlight onPress={this.enviarDatosEmpleado}>
+                                <Button style={{ borderRadius: 30,width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.enviarDatosEmpleado}>
+                                    Registrarse
                     </Button>
+                            </TouchableHighlight>
                         }
                     </View>
                 </ImageBackground>
@@ -300,7 +307,7 @@ export default class Signup2 extends React.Component {
                     }}>
                     <View style={styles.container}>
                         <View>
-                        <Text style={{textAlign:"center", fontSize: 30 }}>Bienvenido</Text>
+                            <Text style={{ textAlign: "center", fontSize: 30 }}>Bienvenido</Text>
                             <TextInput
                                 label="Nombre"
                                 style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
@@ -317,10 +324,12 @@ export default class Signup2 extends React.Component {
                                 value={this.state.nombre}
                             />
                         </View>
-                        {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#00748D" loading={true} mode="contained" ></Button> :
-                            <Button style={{ width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.enviarDatosEmpresa}>
-                                Registrarse
+                        {this.state.cargando ? <Button disabled={true} style={{ borderRadius: 30,width: 220, height: 30 }} color="#00748D" loading={true} mode="contained" ></Button> :
+                            <TouchableHighlight onPress={this.enviarDatosEmpresa}>
+                                <Button style={{ borderRadius: 30,width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.enviarDatosEmpresa}>
+                                    Registrarse
                     </Button>
+                            </TouchableHighlight>
                         }
                     </View>
                 </ImageBackground>
@@ -348,7 +357,7 @@ const styles = StyleSheet.create({
         top: 110,
         alignSelf: 'center',
         alignContent: "center",
-        alignItems:"center",
+        alignItems: "center",
         position: 'absolute'
     },
     inputs: {

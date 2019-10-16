@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Keyboard, Alert, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, Keyboard, Alert, TouchableOpacity,TouchableHighlight, StyleSheet, Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { RNCamera } from 'react-native-camera';
 import moment from "moment";
@@ -77,7 +77,7 @@ export default class asistencia_app extends Component {
                         const retorno = data;
                         console.log(retorno);
                         if (retorno.retorno == true) {
-                            this.setState({empleado_id : retorno.id});
+                            this.setState({ empleado_id: retorno.id });
                             if (retorno.estado_ree == 1) {
                                 this.setState({ mensaje_alert: retorno.mensaje });
                             }
@@ -137,7 +137,7 @@ export default class asistencia_app extends Component {
 
 
     Alta_asistencia = async (camera, tipo) => {
-        this.setState({cargando : true});
+        this.setState({ cargando: true });
         console.log("el tipo: ", tipo);
         Keyboard.dismiss();
         this.comprobar_conexion();
@@ -173,7 +173,7 @@ export default class asistencia_app extends Component {
                         if (results.rowsAffected > 0) {
                             console.log("insertó");
                             Toast.show("la asistencia se ingresó correctamente");
-                            this.setState({cargnado : false});
+                            this.setState({ cargnado: false });
                         } else {
                             console.log("error");
                         }
@@ -208,10 +208,10 @@ export default class asistencia_app extends Component {
                     const retorno = data;
                     if (retorno.retorno == true) {
                         Toast.show("La asistencia se ingresó correctamente");
-                        this.setState({cargnado : false});
+                        this.setState({ cargnado: false });
                         this.props.navigation.navigate('lista_asistencias');
                     } else {
-                        this.setState({cargnado : false});
+                        this.setState({ cargnado: false });
                         Toast.show(retorno.mensaje);
                     }
                 })
@@ -236,8 +236,20 @@ export default class asistencia_app extends Component {
                             if (status !== 'READY') return <PendingView />;
                             return (
                                 <View style={{ position: 'relative', bottom: 20, left: 0, right: 0 }}>
-                                    {this.state.cargando ? <Button disabled={true} style={{ width: 200, height: 45 }} color="#00748D" loading={true} mode="contained"></Button> :
-                                        <Button style={{ width: 200, height: 45 }} color="#00748D" mode="contained" onPress={() => Alert.alert(
+
+                                    {this.state.cargando ? <Button disabled={true} style={{ borderRadius: 30,width: 200, height: 45 }} color="#00748D" loading={true} mode="contained"></Button> :
+                                        <TouchableHighlight onPress={() => Alert.alert(
+                                            "Opciones",
+                                            this.state.mensaje_alert,
+                                            [
+                                                { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
+                                                {
+                                                    text: "Saliendo",
+                                                    onPress: () => this.Alta_asistencia(camera, 0),
+                                                },
+                                            ],
+                                            { cancelable: true }
+                                        )} ><Button style={{ borderRadius: 30,width: 200, height: 45 }} color="#00748D" mode="contained" onPress={() => Alert.alert(
                                             "Opciones",
                                             this.state.mensaje_alert,
                                             [
@@ -249,8 +261,9 @@ export default class asistencia_app extends Component {
                                             ],
                                             { cancelable: true }
                                         )}>
-                                            <Text style={{ fontSize: 14, color: 'white' }}> Capturar y aceptar </Text>
-                                        </Button>
+                                                <Text style={{ fontSize: 14, color: 'white' }}> Capturar y aceptar </Text>
+                                            </Button>
+                                        </TouchableHighlight>
                                     }
                                 </View>
                             );

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Keyboard, Alert, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, Keyboard, Alert, TouchableOpacity, StyleSheet, Text,TouchableHighlight } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { RNCamera } from 'react-native-camera';
@@ -304,7 +304,9 @@ export default class modoTablet extends Component {
                                 return (
                                     <View style={{ position: 'relative', top: 570 }}>
                                         {this.state.cargando ? <Button style={styles.capture} mode="outlined" color="#00748D"
-                                            style={{ marginTop: 10, width: 150 }} onPress={() => Alert.alert(
+                                            style={{ marginTop: 10, width: 150 }} disabled={true} loading={true}>
+                                            </Button>
+                                            : <TouchableHighlight onPress={() => Alert.alert(
                                                 "Opciones",
                                                 "¿Usted esta ingresando o saliendo del establecimiento?",
                                                 [
@@ -314,9 +316,7 @@ export default class modoTablet extends Component {
                                                         onPress: () => this.Alta_asistencia(camera, 0),
                                                     },
                                                 ],
-                                            )} loading={true}>
-                                            </Button>
-                                            : <Button style={styles.capture} mode="contained" color="#00748D"
+                                            )}><Button style={styles.capture} mode="contained" color="#00748D"
                                                 style={{ marginTop: 10, width: 150 }} onPress={() => Alert.alert(
                                                     "Opciones",
                                                     "¿Usted esta ingresando o saliendo del establecimiento?",
@@ -329,7 +329,7 @@ export default class modoTablet extends Component {
                                                     ],
                                                 )} disabled={this.state.boton_act ? false:true}>
                                                 Aceptar
-                                       </Button>}
+                                       </Button></TouchableHighlight>}
                                     </View>
                                 );
                             }}
@@ -384,6 +384,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         paddingHorizontal: 20,
         margin: 20,
+        borderRadius: 30,
 
     },
 });

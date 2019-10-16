@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, Keyboard, Text, ScrollView, ImageBackground } from 'react-native';
+import { Alert, View, Keyboard, Text, ScrollView, ImageBackground,TouchableHighlight } from 'react-native';
 import { Image } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { TextInput } from 'react-native-paper';
@@ -15,7 +15,7 @@ export default class Login extends Component {
 
     static navigationOptions = {
         header: null,
-        };
+    };
 
     constructor(props) {
         super(props);
@@ -81,7 +81,7 @@ export default class Login extends Component {
                 if (retorno.retorno == true) {
                     if (retorno.tipo == 1) {
                         await AsyncStorage.setItem('usuario', JSON.stringify(retorno));
-                        Toast.show('Bienvenido');    
+                        Toast.show('Bienvenido');
                         this.props.navigation.navigate('Inicio');
                     } else {
                         this.configuraciones(retorno.id);
@@ -117,7 +117,7 @@ export default class Login extends Component {
             })
             .catch(function (err) {
                 console.log(err);
-                Toast.show('Compriebe su conexion' + err);
+                Toast.show('Compruebe su conexion' + err);
             })
 
     }
@@ -173,7 +173,7 @@ export default class Login extends Component {
 
     render() {
         return (
-            <ScrollView  contentContainerStyle={{
+            <ScrollView contentContainerStyle={{
                 flex: 1
             }}>
                 <ImageBackground style={styles.imgBackground}
@@ -226,9 +226,10 @@ export default class Login extends Component {
                             />
                         </View>
 
-                        {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#007D8D" mode="contained" onPress={this.saveData}></Button> : <Button style={{ width: 220, marginBottom: 30 }} color="#007D8D" mode="contained" onPress={this.saveData}>
-                            Iniciar
-  </Button>}
+                        {this.state.cargando ? <Button loading={true} disabled={true} style={{ borderRadius: 30,width: 220, marginBottom: 30 }} color="#007D8D" mode="contained"></Button> :
+                            <TouchableHighlight onPress={this.saveData}><Button style={{ borderRadius: 30,width: 220, marginBottom: 30 }} color="#007D8D" mode="contained" onPress={this.saveData}>
+                                Iniciar
+  </Button></TouchableHighlight>}
                         <Text style={{ color: "white" }}>¿Nuevo aquí?</Text>
                         <Text style={{ color: '#41d1f0' }} onPress={this.openSignup}>Registrate</Text>
                     </View>

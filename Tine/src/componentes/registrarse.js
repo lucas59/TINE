@@ -2,7 +2,8 @@ import React from 'react';
 import {
     StyleSheet,
     View,
-    ImageBackground
+    ImageBackground,
+    TouchableHighlight
 } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -106,99 +107,101 @@ export default class Signup extends React.Component {
         ];
         return (
             <ImageBackground
-            resizeMode='cover'
-            source={require('../imagenes/main.png')}
-            style={{
-              width: '100%',
-              height: '100%',
-              flex: 1
-            }}>
-            <View style={styles.container}>
-                <View >
-                    <TextInput
-                        label="Documento"
-                        style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                        onChangeText={(documento) => this.setState({ documento })}
-                        selectionColor="#00748D"
-                        underlineColor="#00748D"
-                        theme={{
-                            colors: {
-                                primary: '#00748D',
-                                underlineColor: 'transparent'
-                            }
+                resizeMode='cover'
+                source={require('../imagenes/main.png')}
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    flex: 1
+                }}>
+                <View style={styles.container}>
+                    <View >
+                        <TextInput
+                            label="Documento"
+                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                            onChangeText={(documento) => this.setState({ documento })}
+                            selectionColor="#00748D"
+                            underlineColor="#00748D"
+                            theme={{
+                                colors: {
+                                    primary: '#00748D',
+                                    underlineColor: 'transparent'
+                                }
 
-                        }}
-                        value={this.state.documento}
-                    />
+                            }}
+                            value={this.state.documento}
+                        />
 
-                </View>
-                <View >
-                    <TextInput
-                        label="Nombre"
-                        style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                        onChangeText={(fullName) => this.setState({ fullName })}
-                        selectionColor="#00748D"
-                        underlineColor="#00748D"
-                        theme={{
-                            colors: {
-                                primary: '#00748D',
-                                underlineColor: 'transparent'
-                            }
+                    </View>
+                    <View >
+                        <TextInput
+                            label="Nombre"
+                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                            onChangeText={(fullName) => this.setState({ fullName })}
+                            selectionColor="#00748D"
+                            underlineColor="#00748D"
+                            theme={{
+                                colors: {
+                                    primary: '#00748D',
+                                    underlineColor: 'transparent'
+                                }
 
-                        }}
-                        value={this.state.fullName}
-                    />
-                </View>
-                <View >
-                    <TextInput
-                        label="Correo"
-                        style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                        onChangeText={(email) => this.setState({ email })}
-                        selectionColor="#00748D"
-                        underlineColor="#00748D"
-                        theme={{
-                            colors: {
-                                primary: '#00748D',
-                                underlineColor: 'transparent'
-                            }
+                            }}
+                            value={this.state.fullName}
+                        />
+                    </View>
+                    <View >
+                        <TextInput
+                            label="Correo"
+                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                            onChangeText={(email) => this.setState({ email })}
+                            selectionColor="#00748D"
+                            underlineColor="#00748D"
+                            theme={{
+                                colors: {
+                                    primary: '#00748D',
+                                    underlineColor: 'transparent'
+                                }
 
-                        }}
-                        value={this.state.email}
-                    />
-                </View>
-                <View >
-                    <TextInput
-                        label="Contraseña"
-                        style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
-                        onChangeText={(password) => this.setState({ password })}
-                        selectionColor="#00748D"
-                        underlineColor="#00748D"
-                        theme={{
-                            colors: {
-                                primary: '#00748D',
-                                underlineColor: 'transparent'
-                            }
+                            }}
+                            value={this.state.email}
+                        />
+                    </View>
+                    <View >
+                        <TextInput
+                            label="Contraseña"
+                            style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 10 }}
+                            onChangeText={(password) => this.setState({ password })}
+                            selectionColor="#00748D"
+                            underlineColor="#00748D"
+                            theme={{
+                                colors: {
+                                    primary: '#00748D',
+                                    underlineColor: 'transparent'
+                                }
 
-                        }}
-                        value={this.state.password}
-                        secureTextEntry={true}
-                    />
+                            }}
+                            value={this.state.password}
+                            secureTextEntry={true}
+                        />
+                    </View>
+                    <View>
+                        <RadioForm
+                            buttonColor={'#00748D'}
+                            radio_props={radio_props}
+                            initial={0}
+                            onPress={(value) => { this.setState({ tipo: value }) }}
+                        />
+                    </View>
+                    {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginTop: 20 }} color="#00748D" mode="contained" onPress={this.saveData}>
+                    </Button> :
+                        <TouchableHighlight onPress={this.saveData}>
+                            <Button style={{ borderRadius: 30,width: 220, marginTop: 20 }} color="#00748D" mode="contained" onPress={this.saveData}>
+                                Siguiente
+                                </Button>
+                        </TouchableHighlight>}
                 </View>
-                <View>
-                    <RadioForm
-                        buttonColor={'#00748D'}
-                        radio_props={radio_props}
-                        initial={0}
-                        onPress={(value) => { this.setState({ tipo: value }) }}
-                    />
-                </View>
-                {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginTop:20 }} color="#00748D" mode="contained" onPress={this.saveData}>
-  </Button> :
-                    <Button style={{ width: 220, marginTop:20 }} color="#00748D" mode="contained" onPress={this.saveData}>
-                        Siguiente
-  </Button>}
-                </View>
-                </ImageBackground>
+            </ImageBackground>
         );
     }
 }
@@ -209,7 +212,7 @@ const styles = StyleSheet.create({
         top: 60,
         alignSelf: 'center',
         alignContent: "center",
-        alignItems:"center",
+        alignItems: "center",
         position: 'absolute'
     },
     inputs: {
