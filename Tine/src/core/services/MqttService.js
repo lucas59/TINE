@@ -36,13 +36,11 @@ class MqttService {
   }
 
   connectClient = (onSuccessHandler, onConnectionLostHandler) => {
-    console.log("--a");
     this.onSuccessHandler = onSuccessHandler;
 
     this.onConnectionLostHandler = onConnectionLostHandler;
 
     this.client.onConnectionLost = () => {
-      console.log("--b");
       this.isConnected = false;
       onConnectionLostHandler();
     };
@@ -55,7 +53,6 @@ class MqttService {
   
         onSuccess: () => {
           this.isConnected = true;
-          console.log('anda');
   
           onSuccessHandler();
         },
@@ -74,11 +71,8 @@ class MqttService {
   };
 
   onFailure = ({errorMessage}) => {
-    console.log("--c");
-    console.log('errmqtt', errorMessage);
 
     this.isConnected = false;
-    console.log('asdasd');
     Alert.alert(
       'Could not connect to MQTT',
       [
@@ -106,7 +100,6 @@ class MqttService {
 
   publishMessage = (topic, message) => {
     if (!this.isConnected) {
-      console.info('not connected');
 
       return;
     }
@@ -116,7 +109,6 @@ class MqttService {
 
   subscribe = (topic, callback) => {
     if (!this.isConnected) {
-      console.info('not connected');
 
       return;
     }
@@ -128,7 +120,6 @@ class MqttService {
 
   unsubscribe = topic => {
     if (!this.isConnected) {
-      console.info('not connected');
 
       return;
     }

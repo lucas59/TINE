@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
-import { Alert, Text, View, Modal, Image, ImageBackground,TouchableHighlight } from 'react-native';
+import { Alert, Text, View, Modal, Image, ImageBackground, TouchableHighlight } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import styles from '../css/stylesPerfil';
 import { Icon } from 'react-native-elements';
@@ -162,6 +162,9 @@ export default class Profile extends Component {
     this.setState({ modalVisibleEdit: visible });
   }
 
+  agregarFotoSeguridad = () => {
+    this.props.navigation.navigate('fotoSeguridad');
+  }
   guardarDatos = () => {
     this.setState({ cargando: true });
     const {
@@ -275,7 +278,16 @@ export default class Profile extends Component {
                       Desactivar cuenta
                 </Button>
                   </TouchableHighlight>
-                  <TouchableHighlight onPress={this.desactivarCuenta}>
+                  <TouchableHighlight onPress={() => { this.props.navigation.navigate('seguridadFoto'); }}>
+                    <Button
+                      style={styles.buttonContainer}
+                      color="#00748D"
+                      mode="contained"
+                      onPress={() => { this.props.navigation.navigate('seguridadFoto'); }}>
+                      Agreagar una foto de seguridad
+                </Button>
+                  </TouchableHighlight>
+                  <TouchableHighlight onPress={this.confirmCerrarSession}>
                     <Button
                       style={styles.buttonContainer}
                       color="#00748D"
@@ -384,23 +396,23 @@ export default class Profile extends Component {
                     />
                     {this.state.cargando ?
                       <TouchableHighlight onPress={this.guardarDatos}>
-                      <Button
-                        loading={true}
-                        disabled={true}
-                        style={styles.buttonContainer}
-                        color="#00748D"
-                        mode="contained"
-                        onPress={this.guardarDatos}>
+                        <Button
+                          loading={true}
+                          disabled={true}
+                          style={styles.buttonContainer}
+                          color="#00748D"
+                          mode="contained"
+                          onPress={this.guardarDatos}>
                         </Button>
-                        </TouchableHighlight>
+                      </TouchableHighlight>
                       :
-                      <TouchableHighlight onPress={this.guardarDatos}> 
-                      <Button
-                        style={styles.buttonContainer}
-                        color="#00748D"
-                        mode="contained"
-                        onPress={this.guardarDatos}>
-                        Terminar
+                      <TouchableHighlight onPress={this.guardarDatos}>
+                        <Button
+                          style={styles.buttonContainer}
+                          color="#00748D"
+                          mode="contained"
+                          onPress={this.guardarDatos}>
+                          Terminar
                 </Button></TouchableHighlight>}
                   </View>
                 </View>
