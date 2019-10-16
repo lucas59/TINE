@@ -101,46 +101,21 @@ export default class Alta_tarea extends Component {
         let fecha = moment(new Date()).format();
         var longitud;
         var latitud;
-        var granted = 0;
+        
         if (Platform.OS == 'ios') {
-            await check(PERMISSIONS.IOS.LOCATION_ALWAYS)
-                .then(result => {
-                    switch (result) {
-                        case RESULTS.UNAVAILABLE:
-                            console.log(
-                                '1.This feature is not available (on this device / in this context)',
-                            );
-                            break;
-                        case RESULTS.DENIED:
-                            console.log(
-                                '2.The permission has not been requested / is denied but requestable',
-                            );
-                            break;
-                        case RESULTS.GRANTED:
-                            this.setState({ permisos: 1 });
-                            console.log('3.The permission is denied and not requestable anymore');
-                            break;
-                        case RESULTS.BLOCKED:
-                            console.log('4.The permission is denied and not requestable anymore');
-                            break;
-                    }
-                })
-                .catch(error => {
-                    // …
-                });
+            await Geolocation.requestAuthorization();
+            this.setState({permisos : 1});
         } else if (Platform.OS == 'android') {
             await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
                 .then(result => {
                     switch (result) {
                         case RESULTS.UNAVAILABLE:
-                            console.log(
-                                '1.This feature is not available (on this device / in this context)',
-                            );
+                            alert("Geolocalización no permitida");
+                                this.props.navigation.navigate('lista_tareas');
                             break;
                         case RESULTS.DENIED:
-                            console.log(
-                                '2.The permission has not been requested / is denied but requestable',
-                            );
+                                alert("Sin permisos");
+                                this.props.navigation.navigate('lista_tareas');
                             break;
                         case RESULTS.GRANTED:
                             console.log('granted 1: ', this.state.permisos);
@@ -149,7 +124,8 @@ export default class Alta_tarea extends Component {
                             console.log('3.The permission is acepted');
                             break;
                         case RESULTS.BLOCKED:
-                            console.log('4.The permission is denied and not requestable anymore');
+                                alert("bloquedo");
+                                this.props.navigation.navigate('lista_tareas');
                             break;
                     }
                 })
@@ -178,7 +154,8 @@ export default class Alta_tarea extends Component {
                         this.saveData();
                     }
                 },
-                (error) => alert(error.message),
+                (error) => {alert(error.message);
+                     this.props.navigation.navigate('lista_tareas');},
                 { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
             );
         } else {
