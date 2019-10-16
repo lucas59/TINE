@@ -162,6 +162,9 @@ export default class Profile extends Component {
     this.setState({ modalVisibleEdit: visible });
   }
 
+  agregarFotoSeguridad = () =>{
+    this.props.navigation.navigate('fotoSeguridad');
+  }
   guardarDatos = () => {
     this.setState({ cargando: true });
     const {
@@ -273,6 +276,13 @@ export default class Profile extends Component {
                     mode="contained"
                     onPress={this.desactivarCuenta}>
                     Desactivar cuenta
+                </Button>
+                <Button
+                    style={styles.buttonContainer}
+                    color="#00748D"
+                    mode="contained"
+                    onPress={() => { this.props.navigation.navigate('seguridadFoto'); }}>
+                    Agreagar una foto de seguridad
                 </Button>
                   <Button
                     style={styles.buttonContainer}
