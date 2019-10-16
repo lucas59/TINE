@@ -222,7 +222,7 @@ export default class Alta_tarea extends Component {
                     <Divider style={{ backgroundColor: '#00748D' }} />
                     <Button
                         onPress={this.showDateTimePicker_inicio}
-                        style={{ height: 50, marginTop: 10 }} color="#00748D" mode="outlined"
+                        style={{ borderRadius: 30,height: 50, marginTop: 10 }} color="#00748D" mode="outlined"
                     >
                         <DateTimePicker
                             isVisible={this.state.isDateTimePickerVisible_inicio}
@@ -236,7 +236,7 @@ export default class Alta_tarea extends Component {
                     <Divider style={{ backgroundColor: '#00748D' }} />
                     <Button
                         onPress={this.showDateTimePicker_fin}
-                        style={{ height: 50, marginTop: 10, marginBottom: 10 }} color="#00748D" mode="outlined"
+                        style={{ borderRadius: 30,height: 50, marginTop: 10, marginBottom: 10 }} color="#00748D" mode="outlined"
                     >
                         <DateTimePicker
                             isVisible={this.state.isDateTimePickerVisible_fin}
@@ -248,9 +248,9 @@ export default class Alta_tarea extends Component {
                         <Text>{"Fecha de fin: " + moment(this.state.tarea_fin).format('MMMM Do YYYY, HH:mm:ss').toString()}</Text>
                     </Button>
                     <Divider style={{ backgroundColor: '#00748D' }} />
-                    {this.state.cargando ? <Button style={{ width: 160, height: 50 }} color="#00748D" loading={true} mode="contained" disabled={true} ></Button> :
+                    {this.state.cargando ? <Button style={{ borderRadius: 30,width: 160, height: 50 }} color="#00748D" loading={true} mode="contained" disabled={true} ></Button> :
                         <TouchableHighlight onPress={this.saveData}>
-                            <Button style={{ width: 160, height: 50 }} color="#00748D" mode="contained" onPress={this.saveData}>
+                            <Button style={{ borderRadius: 30,width: 160, height: 50 }} color="#00748D" mode="contained" onPress={this.saveData}>
                                 Aceptar
                     </Button></TouchableHighlight>
                     }

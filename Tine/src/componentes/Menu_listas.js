@@ -138,7 +138,7 @@ export default class Menu_listas extends Component {
                                     color="#00748D"
                                     width={250}
                                     height={60}
-                                    style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}
+                                    style={{ borderRadius: 30,borderRadius: 30,flexDirection: "row", justifyContent: "center", alignItems: "center" }}
                                 >
                                     Listas de tareas
                             </Button> : null}
@@ -156,7 +156,7 @@ export default class Menu_listas extends Component {
                                     color="#00748D"
                                     width={250}
                                     height={60}
-                                    style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}
+                                    style={{ borderRadius: 30,flexDirection: "row", justifyContent: "center", alignItems: "center" }}
                                 >
                                     Lista de asistencias
     </Button> : null}

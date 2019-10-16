@@ -196,7 +196,7 @@ export default class Signup extends React.Component {
                     {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginTop: 20 }} color="#00748D" mode="contained" onPress={this.saveData}>
                     </Button> :
                         <TouchableHighlight onPress={this.saveData}>
-                            <Button style={{ width: 220, marginTop: 20 }} color="#00748D" mode="contained" onPress={this.saveData}>
+                            <Button style={{ borderRadius: 30,width: 220, marginTop: 20 }} color="#00748D" mode="contained" onPress={this.saveData}>
                                 Siguiente
                                 </Button>
                         </TouchableHighlight>}

@@ -237,7 +237,7 @@ export default class asistencia_app extends Component {
                             return (
                                 <View style={{ position: 'relative', bottom: 20, left: 0, right: 0 }}>
 
-                                    {this.state.cargando ? <Button disabled={true} style={{ width: 200, height: 45 }} color="#00748D" loading={true} mode="contained"></Button> :
+                                    {this.state.cargando ? <Button disabled={true} style={{ borderRadius: 30,width: 200, height: 45 }} color="#00748D" loading={true} mode="contained"></Button> :
                                         <TouchableHighlight onPress={() => Alert.alert(
                                             "Opciones",
                                             this.state.mensaje_alert,
@@ -249,7 +249,7 @@ export default class asistencia_app extends Component {
                                                 },
                                             ],
                                             { cancelable: true }
-                                        )} ><Button style={{ width: 200, height: 45 }} color="#00748D" mode="contained" onPress={() => Alert.alert(
+                                        )} ><Button style={{ borderRadius: 30,width: 200, height: 45 }} color="#00748D" mode="contained" onPress={() => Alert.alert(
                                             "Opciones",
                                             this.state.mensaje_alert,
                                             [

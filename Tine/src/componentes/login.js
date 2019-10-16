@@ -226,8 +226,8 @@ export default class Login extends Component {
                             />
                         </View>
 
-                        {this.state.cargando ? <Button loading={true} disabled={true} style={{ width: 220, marginBottom: 30 }} color="#007D8D" mode="contained"></Button> :
-                            <TouchableHighlight onPress={this.saveData}><Button style={{ width: 220, marginBottom: 30 }} color="#007D8D" mode="contained" onPress={this.saveData}>
+                        {this.state.cargando ? <Button loading={true} disabled={true} style={{ borderRadius: 30,width: 220, marginBottom: 30 }} color="#007D8D" mode="contained"></Button> :
+                            <TouchableHighlight onPress={this.saveData}><Button style={{ borderRadius: 30,width: 220, marginBottom: 30 }} color="#007D8D" mode="contained" onPress={this.saveData}>
                                 Iniciar
   </Button></TouchableHighlight>}
                         <Text style={{ color: "white" }}>¿Nuevo aquí?</Text>

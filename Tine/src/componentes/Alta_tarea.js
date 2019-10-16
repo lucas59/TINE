@@ -298,8 +298,8 @@ export default class Alta_tarea extends Component {
                         }}
                         value={this.state.titulo}
                     />
-                    {this.state.cargando ? <Button disabled={true} style={{ width: 160, height: 50 }} color="#00748D" loading={true} mode={!this.state.stopwatchStart ? "outlined" : "contained"}></Button> :
-                        <TouchableHighlight onPress={this.toggleStopwatch}><Button style={{ width: 160, height: 50 }} color="#00748D" mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}>
+                    {this.state.cargando ? <Button disabled={true} style={{ borderRadius: 30,width: 160, height: 50 }} color="#00748D" loading={true} mode={!this.state.stopwatchStart ? "outlined" : "contained"}></Button> :
+                        <TouchableHighlight onPress={this.toggleStopwatch}><Button style={{borderRadius: 30, width: 160, height: 50 }} color="#00748D" mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}>
                             <Text style={{ fontSize: 23 }}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
                         </Button></TouchableHighlight>
                     }

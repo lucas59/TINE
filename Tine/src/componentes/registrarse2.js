@@ -276,7 +276,7 @@ export default class Signup2 extends React.Component {
                             />
                         </View>
                         <TouchableHighlight onPress={this.showDateTimePicker_inicio}>
-                            <Button style={{ width: 220, marginBottom: 20 }} color="#00748D" mode="outlined" title="Fecha de nacimiento" onPress={this.showDateTimePicker_inicio}>Fecha de nacimiento</Button>
+                            <Button style={{ borderRadius: 30,width: 220, marginBottom: 20 }} color="#00748D" mode="outlined" title="Fecha de nacimiento" onPress={this.showDateTimePicker_inicio}>Fecha de nacimiento</Button>
                         </TouchableHighlight>
                         <DateTimePicker
                             isVisible={this.state.isDateTimePickerVisible_inicio}
@@ -286,7 +286,7 @@ export default class Signup2 extends React.Component {
                         />
                         {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#00748D" loading={true} mode="contained" ></Button> :
                             <TouchableHighlight onPress={this.enviarDatosEmpleado}>
-                                <Button style={{ width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.enviarDatosEmpleado}>
+                                <Button style={{ borderRadius: 30,width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.enviarDatosEmpleado}>
                                     Registrarse
                     </Button>
                             </TouchableHighlight>
@@ -324,9 +324,9 @@ export default class Signup2 extends React.Component {
                                 value={this.state.nombre}
                             />
                         </View>
-                        {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#00748D" loading={true} mode="contained" ></Button> :
+                        {this.state.cargando ? <Button disabled={true} style={{ borderRadius: 30,width: 220, height: 30 }} color="#00748D" loading={true} mode="contained" ></Button> :
                             <TouchableHighlight onPress={this.enviarDatosEmpresa}>
-                                <Button style={{ width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.enviarDatosEmpresa}>
+                                <Button style={{ borderRadius: 30,width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.enviarDatosEmpresa}>
                                     Registrarse
                     </Button>
                             </TouchableHighlight>

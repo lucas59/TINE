@@ -384,6 +384,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         paddingHorizontal: 20,
         margin: 20,
+        borderRadius: 30,
 
     },
 });
