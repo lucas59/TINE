@@ -112,7 +112,7 @@ export default class seguridadFoto extends Component {
       .then(async data => {
         const retorno = data;
         if (retorno.retorno == true) {
-          Toast.show('La asistencia se ingresó correctamente');
+          Toast.show('Foto de seguridad ingresada correctamente');
           this.setState({cargnado: false});
           this.props.navigation.navigate('perfil');
         } else {
