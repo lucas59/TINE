@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Keyboard, Alert, TouchableOpacity, StyleSheet, Text,TouchableHighlight } from 'react-native';
+import { View, Keyboard, Alert, TouchableOpacity, StyleSheet, Text, TouchableHighlight } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { RNCamera } from 'react-native-camera';
@@ -44,7 +44,7 @@ export default class modoTablet extends Component {
             boton_act: false
         }
         this.perfil();
-       
+
     }
 
     componentDidMount() {
@@ -132,7 +132,7 @@ export default class modoTablet extends Component {
         let sesion = JSON.parse(session);
         this.setState({ empresa_id: sesion.id });
         this.promesa().then((data) => {
-            console.log("data",data);
+            console.log("data", data);
             if (data == 1) {
                 this.setState({ boton_act: true });
                 Toast.show('Buen viaje, seleccione aceptar');
@@ -166,7 +166,7 @@ export default class modoTablet extends Component {
                     txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo,estado) VALUES (?,?,?,?,?,?)', [idempleado, foto, fecha, empresa_id, estado, 0], (tx, results) => {
                         console.log(results.rowsAffected);
                         if (results.rowsAffected > 0) {
-                            this.setState({ boton_act : false });
+                            this.setState({ boton_act: false });
                             console.log("insertó");
                             Toast.show('La asistencia se insertó correctamente');
                             db.transaction(function (txr) {
@@ -221,7 +221,7 @@ export default class modoTablet extends Component {
                         alert(retorno.mensaje);
                     }
                     this.setState({ cargando: false });
-                    this.setState({ boton_act : false });
+                    this.setState({ boton_act: false });
                 })
                 .catch(function (err) {
                     console.log('error', err);
@@ -305,8 +305,8 @@ export default class modoTablet extends Component {
                                     <View style={{ position: 'relative', top: 570 }}>
                                         {this.state.cargando ? <Button style={styles.capture} mode="outlined" color="#00748D"
                                             style={{ marginTop: 10, width: 150 }} disabled={true} loading={true}>
-                                            </Button>
-                                            : <TouchableHighlight onPress={() => Alert.alert(
+                                        </Button>
+                                            : this.state.boton_act ? <TouchableHighlight onPress={() => Alert.alert(
                                                 "Opciones",
                                                 "¿Usted esta ingresando o saliendo del establecimiento?",
                                                 [
@@ -327,9 +327,13 @@ export default class modoTablet extends Component {
                                                             onPress: () => this.Alta_asistencia(camera, 0),
                                                         },
                                                     ],
-                                                )} disabled={this.state.boton_act ? false:true}>
-                                                Aceptar
-                                       </Button></TouchableHighlight>}
+                                                )} disabled={false}>
+                                                    Aceptar
+                                       </Button></TouchableHighlight> : <Button style={styles.capture} mode="contained" color="#00748D"
+                                                    style={{ marginTop: 10, width: 150 }} disabled={true}>
+                                                    Aceptar
+                                       </Button>
+                                        }
                                     </View>
                                 );
                             }}
