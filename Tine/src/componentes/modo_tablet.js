@@ -150,8 +150,6 @@ export default class modoTablet extends Component {
 
     Alta_asistencia = async (camera, estado) => {
         this.setState({ cargando: true });
-        console.log(camera);
-        Keyboard.dismiss();
         const options = { quality: 0.5, base64: true, captureAudio: false };
         const data = await camera.takePictureAsync(options);
         this.setState({ foto: data.base64 });
@@ -232,7 +230,6 @@ export default class modoTablet extends Component {
     async establet() {
         try {
             await DeviceInfo.isTablet().then(async isTablet => {
-                console.log("es t", isTablet);
                 this.setState({ tablet: isTablet });
             });
         } catch (e) {
@@ -265,7 +262,7 @@ export default class modoTablet extends Component {
                             {({ camera, status }) => {
                                 if (status !== 'READY') return <PendingView />;
                                 return (
-                                    <View style={{ position: 'relative', top: 300 }}>
+                                    <View style={{ position: 'absolute', bottom: -100,right:50,left:50 }}>
                                         <TouchableOpacity onPress={() => Alert.alert(
                                             "Opciones",
                                             "¿Usted esta ingresando o saliendo del establecimiento?",

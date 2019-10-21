@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableHighlight, BackHandler, Alert, ImageBackground } from 'react-native';
+import { Text, View,PermissionsAndroid, TouchableHighlight, BackHandler, Alert, ImageBackground } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { Icon } from 'react-native-elements';
 import { Stopwatch } from 'react-native-stopwatch-timer';
-//import Geolocation from '@react-native-community/geolocation';
 import Geolocation from 'react-native-geolocation-service';
 import NetInfo from "@react-native-community/netinfo";
 import moment from "moment";
@@ -101,41 +100,22 @@ export default class Alta_tarea extends Component {
         let fecha = moment(new Date()).format();
         var longitud;
         var latitud;
-        
+        var granted;
+        console.log(Platform.OS);
         if (Platform.OS == 'ios') {
             await Geolocation.requestAuthorization();
             this.setState({permisos : 1});
         } else if (Platform.OS == 'android') {
-            await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-                .then(result => {
-                    switch (result) {
-                        case RESULTS.UNAVAILABLE:
-                            alert("Geolocalización no permitida");
-                                this.props.navigation.navigate('lista_tareas');
-                            break;
-                        case RESULTS.DENIED:
-                                alert("Sin permisos");
-                                this.props.navigation.navigate('lista_tareas');
-                            break;
-                        case RESULTS.GRANTED:
-                            console.log('granted 1: ', this.state.permisos);
-                            this.setState({ permisos: 1 });
-                            console.log('3.permiso aceptado');
-                            break;
-                        case RESULTS.BLOCKED:
-                                alert("bloquedo");
-                                this.props.navigation.navigate('lista_tareas');
-                            break;
-                    }
-                })
-                .catch(error => {
-                    alert("error");
-                });
+            this.granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+            )
+            console.log("perm", this.granted);
+            if (this.granted == PermissionsAndroid.RESULTS.GRANTED) { this.setState({ permisos: 1 }); }
         }
         console.log('granted: ', this.state.permisos);
         if (this.state.permisos === 1) {
             await Geolocation.getCurrentPosition(
-                (position) => {
+                async (position)=>  {
                     longitud = JSON.stringify(position.coords.longitude);
                     latitud = JSON.stringify(position.coords.latitude);
                     if (this.state.stopwatchStart) {
@@ -144,21 +124,23 @@ export default class Alta_tarea extends Component {
                         this.setState({ inicio: fecha });
                         this.setState({ long_ini: longitud });
                         this.setState({ lat_ini: latitud });
-                        var tarea_pausa = {
+                        var tarea_pausa = JSON.stringify({
                             titulo: this.state.titulo,
                             fecha: fecha,
                             longitud: longitud,
                             latitud:latitud
-                        }
+                        })
                         console.log(tarea_pausa);
-                        AsyncStorage.setItem('tarea', JSON.stringify(tarea_pausa));
+                        await AsyncStorage.setItem('tarea', tarea_pausa);
                     } else {
+                        AsyncStorage.setItem('tarea', null);
                         console.log("fin" + longitud);
                         console.log("fin" + latitud);
                         this.setState({ fin: fecha });
                         this.setState({ long_fin: longitud });
                         this.setState({ lat_fin: latitud });
                         this.saveData();
+
                     }
                 },
                 (error) => {alert(error.message);

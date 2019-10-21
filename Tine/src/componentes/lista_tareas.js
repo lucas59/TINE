@@ -95,7 +95,8 @@ export default class lista_tareas extends Component {
             listaT: '',
             usuario: '',
             empresa: '',
-            cargando: true
+            cargando: true,
+            fecha_actual: ''
         }
         cont = 0;
         this.props.navigation.addListener(
@@ -161,8 +162,25 @@ export default class lista_tareas extends Component {
         });
     }
 
-    parseData() {
+    async parseData() {
         Keyboard.dismiss();
+        var tarea_pausa = await AsyncStorage.getItem("tarea");
+        console.log("tarea pausa",tarea_pausa);
+        if (tarea_pausa == true) {
+            const moment_inicio_1 = moment(tarea_pausa.fecha);
+            const moment_final_1 = moment(this.state.fecha_actual);
+            const diff_1 = moment_final_1.diff(moment_inicio_1);
+            const diffDuration_1 = moment.duration(diff_1);
+            return (
+                <View >
+                    <ListItem
+                        leftIcon={{ name: 'assignment' }}
+                        title={tarea_pausa.titulo != "" ? tarea_pausa.titulo : "Sin nombre"}
+                        rightTitle={diffDuration_1.days() + "d " +diffDuration_1.hours() + "h " + diffDuration_1.minutes() + "m " + diffDuration_1.seconds() + "s"}
+                    />
+                </View>
+            )
+        }
         if (this.state.listaT) {
             var fecha = null;
             return this.state.listaT.map((data, i) => {
