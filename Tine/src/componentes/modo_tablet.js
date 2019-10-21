@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Keyboard, Alert, TouchableOpacity, StyleSheet, Text, TouchableHighlight } from 'react-native';
+import { View, Alert, TouchableOpacity, StyleSheet, Text, TouchableHighlight } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { RNCamera } from 'react-native-camera';
@@ -127,7 +127,7 @@ export default class modoTablet extends Component {
 
     }
     confirmar_usuario = async () => {
-        Keyboard.dismiss();
+        this.setState({ cargando: true });
         let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
         this.setState({ empresa_id: sesion.id });
@@ -135,13 +135,16 @@ export default class modoTablet extends Component {
             console.log("data", data);
             if (data == 1) {
                 this.setState({ boton_act: true });
+                this.setState({ cargando: false });
                 Toast.show('Buen viaje, seleccione aceptar');
             }
             else if (data == 2) {
                 this.setState({ boton_act: true });
+                this.setState({ cargando: false });
                 Toast.show('Bienvenido, seleccione aceptar');
             }
             else if (data == 3) {
+                this.setState({ cargando: false });
                 Toast.show('Pin incorrecto');
             }
         });
@@ -263,21 +266,37 @@ export default class modoTablet extends Component {
                                 if (status !== 'READY') return <PendingView />;
                                 return (
                                     <View style={{ position: 'absolute', bottom: -100,right:50,left:50 }}>
-                                        <TouchableOpacity onPress={() => Alert.alert(
-                                            "Opciones",
-                                            "¿Usted esta ingresando o saliendo del establecimiento?",
-                                            [
-                                                { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
-                                                {
-                                                    text: "Saliendo",
-                                                    onPress: () => this.Alta_asistencia(camera, 0),
-                                                },
-                                            ],
-                                            { cancelable: true }
-                                        )
-                                        } style={styles.capture}>
-                                            <Text style={{ fontSize: 14, color: 'white' }}> Aceptar </Text>
-                                        </TouchableOpacity>
+                                        {this.state.cargando ? <Button  mode="outlined" color="#00748D"
+                                             disabled={true} loading={true}>
+                                        </Button>
+                                            : this.state.boton_act ? <TouchableHighlight onPress={() => Alert.alert(
+                                                "Opciones",
+                                                "¿Usted esta ingresando o saliendo del establecimiento?",
+                                                [
+                                                    { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
+                                                    {
+                                                        text: "Saliendo",
+                                                        onPress: () => this.Alta_asistencia(camera, 0),
+                                                    },
+                                                ],
+                                            )}><Button  mode="contained" color="#00748D"
+                                                 onPress={() => Alert.alert(
+                                                    "Opciones",
+                                                    "¿Usted esta ingresando o saliendo del establecimiento?",
+                                                    [
+                                                        { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
+                                                        {
+                                                            text: "Saliendo",
+                                                            onPress: () => this.Alta_asistencia(camera, 0),
+                                                        },
+                                                    ],
+                                                )} disabled={false}>
+                                                    Aceptar
+                                       </Button></TouchableHighlight> : <Button  mode="contained" color="#00748D"
+                                                disabled={true}>
+                                                    Aceptar
+                                       </Button>
+                                        }
                                     </View>
                                 );
                             }}
@@ -375,7 +394,7 @@ const styles = StyleSheet.create({
     camara: {
         width: 400,
         height: 300,
-        position: 'absolute', top: 180, right: 100, bottom: 0
+        position: 'absolute', top: 160, right: 100, bottom: 0
     },
     capture: {
         flex: 0,
