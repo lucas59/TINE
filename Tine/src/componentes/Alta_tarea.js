@@ -124,14 +124,14 @@ export default class Alta_tarea extends Component {
                         this.setState({ inicio: fecha });
                         this.setState({ long_ini: longitud });
                         this.setState({ lat_ini: latitud });
-                        var tarea_pausa = JSON.stringify({
+                       /* var tarea_pausa = JSON.stringify({
                             titulo: this.state.titulo,
                             fecha: fecha,
                             longitud: longitud,
                             latitud:latitud
                         })
                         console.log(tarea_pausa);
-                        await AsyncStorage.setItem('tarea', tarea_pausa);
+                        await AsyncStorage.setItem('tarea', tarea_pausa);*/
                     } else {
                         AsyncStorage.setItem('tarea', null);
                         console.log("fin" + longitud);
