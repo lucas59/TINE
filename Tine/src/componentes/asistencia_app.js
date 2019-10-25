@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Keyboard, Alert, TouchableOpacity,TouchableHighlight, StyleSheet, Text } from 'react-native';
+import { View, Keyboard, Alert, TouchableOpacity, Image, TouchableHighlight, StyleSheet, Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { RNCamera } from 'react-native-camera';
 import moment from "moment";
@@ -237,7 +237,7 @@ export default class asistencia_app extends Component {
                             return (
                                 <View style={{ position: 'relative', bottom: 20, left: 0, right: 0 }}>
 
-                                    {this.state.cargando ? <Button disabled={true} style={{ borderRadius: 30,width: 200, height: 45 }} color="#00748D" loading={true} mode="contained"></Button> :
+                                    {this.state.cargando ? <Button disabled={true} style={{ borderRadius: 30, width: 200, height: 45 }} color="#00748D" loading={true} mode="contained"></Button> :
                                         <TouchableHighlight onPress={() => Alert.alert(
                                             "Opciones",
                                             this.state.mensaje_alert,
@@ -249,7 +249,7 @@ export default class asistencia_app extends Component {
                                                 },
                                             ],
                                             { cancelable: true }
-                                        )} ><Button style={{ borderRadius: 30,width: 200, height: 45 }} color="#00748D" mode="contained" onPress={() => Alert.alert(
+                                        )} ><Button style={{ borderRadius: 30, width: 200, height: 45 }} color="#00748D" mode="contained" onPress={() => Alert.alert(
                                             "Opciones",
                                             this.state.mensaje_alert,
                                             [
@@ -270,8 +270,25 @@ export default class asistencia_app extends Component {
 
                         }}
                     </RNCamera> :
-                        <View style={{ position: 'relative', bottom: 0, left: 0, right: 0 }}>
-                            <Text>Su empresa no tiene permisos para usar la camara en el telefono</Text>
+
+                        <View
+                            style={{
+                                top: 15,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                height: 600
+                            }}>
+                            <Image
+                                source={require('../imagenes/camara.png')}
+                                style={{ width: 300, height: 250 }}
+                            />
+                            <Text style={{ fontSize: 19, textAlign: 'center' }}>
+                                Usted no tiene permisos para usar la cámara en el teléfono
+              </Text>
                             <TouchableOpacity onPress={() => Alert.alert(
                                 "Opciones",
                                 this.state.mensaje_alert,
@@ -287,6 +304,7 @@ export default class asistencia_app extends Component {
                             } style={styles.capture}>
                                 <Text style={{ fontSize: 14, color: 'white' }}> Capturar y aceptar </Text>
                             </TouchableOpacity>
+
                         </View>
                     }
 

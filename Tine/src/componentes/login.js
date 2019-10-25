@@ -192,7 +192,7 @@ export default class Login extends Component {
                                 style={{ width: 300, height: 300 }}
                             />
                             <TextInput
-                                label="Email"
+                                label="Email o usuario"
                                 style={{ width: 300, fontSize: 20, marginTop: 110, marginBottom: 10 }}
                                 onChangeText={(email) => this.setState({ email })}
                                 selectionColor="#00748D"

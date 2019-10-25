@@ -17,12 +17,12 @@ module.exports = StyleSheet.create({
         fontWeight: '600',
     },
     body: {
-        top: 330,
+        top: 290,
         alignSelf: 'center',
         position: 'absolute',
     },
     body_m: {
-    top:270,
+        top:270,
     alignSelf: 'center',
     position: 'absolute',
 },

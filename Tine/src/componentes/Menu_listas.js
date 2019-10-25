@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Icon, Avatar } from 'react-native-elements';
 import { Button } from 'react-native-paper';
-import { View, StyleSheet, ImageBackground, TouchableHighlight } from 'react-native';
+import { View, StyleSheet, ImageBackground, TouchableHighlight, Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 export default class Menu_listas extends Component {
@@ -141,7 +141,7 @@ export default class Menu_listas extends Component {
                                     style={{ borderRadius: 30,borderRadius: 30,flexDirection: "row", justifyContent: "center", alignItems: "center" }}
                                 >
                                     Listas de tareas
-                            </Button> : null}
+                            </Button> : <Text></Text>}
                             </TouchableHighlight>
                         </View>
                         <View style={styles.buttonContainer}>
@@ -159,8 +159,11 @@ export default class Menu_listas extends Component {
                                     style={{ borderRadius: 30,flexDirection: "row", justifyContent: "center", alignItems: "center" }}
                                 >
                                     Lista de asistencias
-    </Button> : null}
+    </Button> : <Text></Text>}
                             </TouchableHighlight>
+                               {!this.state.tarea && !this.state.asistencias ? <Text style={{ fontSize: 19, textAlign: 'center' }}>
+                                Usted no tiene permisos para hacer operaciones con tareas y asistencias en esta empresa
+              </Text> : null}
                         </View>
                     </View>
                 </ImageBackground>

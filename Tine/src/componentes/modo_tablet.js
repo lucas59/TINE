@@ -41,7 +41,8 @@ export default class modoTablet extends Component {
             mirrorMode: false,
             tablet: false,
             cargando: false,
-            boton_act: false
+            boton_act: false,
+            mensaje_alert: ""
         }
         this.perfil();
 
@@ -90,7 +91,88 @@ export default class modoTablet extends Component {
         console.log('usuario', user);
     }
 
+    comprobar_conexion = async (data) => {
+        NetInfo.isConnected.fetch().done(async (isConnected) => {
+            if (isConnected == true) {
+                this.setState({ connection_Status: "Online" });
+                let session = await AsyncStorage.getItem('usuario');
+                let sesion = JSON.parse(session);
+                let loginDetails = {
+                    id_usuario: idempleado,
+                    id_empresa: sesion.id
+                }
+                fetch(server.api + 'login_tablet', {
+                    method: 'POST',
+                    headers: {
+                        'Aceptar': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(loginDetails)
+                })
+                    .then(res => {
+                        return res.json()
+                    })
+                    .then(async data_1 => {
+                        const retorno = data_1;
+                        console.log(retorno);
+                        if (retorno.retorno == true) {
+                            this.setState({ empleado_id: retorno.id });
+                            await this.setState({ mensaje_alert: retorno.mensaje });
+                        } else {
+                            Toast.show(retorno.mensaje);
+                        }
+                        if (data == 1) {
+                            this.setState({ boton_act: true });
+                            this.setState({ cargando: false });
+                            Toast.show('Buen viaje, seleccione aceptar');
+                        }
+                        else if (data == 2) {
+                            this.setState({ boton_act: true });
+                            this.setState({ cargando: false });
+                            Toast.show('Bienvenido, seleccione aceptar');
+                        }
+                        else if (data == 3) {
+                            this.setState({ boton_act: false });
+                            this.setState({ cargando: false });
+                            Toast.show('Pin incorrecto');
+                        }
+                    })
+                    .catch(function (err) {
+                        console.log('error', err);
+                    })
 
+                console.log("online");
+            }
+            else {
+                this.setState({ connection_Status: "Offline" });
+                this.comprobar_ultima_asistencia_offline().then((data_2) => {
+                    console.log("data", data_2);
+                    if (data_2 == 1) {
+                        this.setState({ mensaje_alert: "Su ultima asistencia fue una entrada,¿Usted esta ingresando o saliendo del establecimiento?" });
+                    }
+                    else if (data_2 == 2) {
+                        this.setState({ mensaje_alert: "¿Usted esta ingresando o saliendo del establecimiento?" });
+                    }
+                    if (data == 1) {
+                        this.setState({ boton_act: true });
+                        this.setState({ cargando: false });
+                        Toast.show('Buen viaje, seleccione aceptar');
+                    }
+                    else if (data == 2) {
+                        this.setState({ boton_act: true });
+                        this.setState({ cargando: false });
+                        Toast.show('Bienvenido, seleccione aceptar');
+                    }
+                    else if (data == 3) {
+                        this.setState({ boton_act: false });
+                        this.setState({ cargando: false });
+                        Toast.show('Pin incorrecto');
+                    }
+                });
+
+            }
+        })
+    }
 
 
     promesa() {
@@ -131,22 +213,9 @@ export default class modoTablet extends Component {
         let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
         this.setState({ empresa_id: sesion.id });
-        this.promesa().then((data) => {
+        this.promesa().then(async (data) => {
             console.log("data", data);
-            if (data == 1) {
-                this.setState({ boton_act: true });
-                this.setState({ cargando: false });
-                Toast.show('Buen viaje, seleccione aceptar');
-            }
-            else if (data == 2) {
-                this.setState({ boton_act: true });
-                this.setState({ cargando: false });
-                Toast.show('Bienvenido, seleccione aceptar');
-            }
-            else if (data == 3) {
-                this.setState({ cargando: false });
-                Toast.show('Pin incorrecto');
-            }
+            await this.comprobar_conexion(data);
         });
     }
 
@@ -215,7 +284,7 @@ export default class modoTablet extends Component {
                     if (retorno.retorno == true) {
 
                         Alert.alert(
-                            "Alerta",
+                            "Mensaje",
                             retorno.mensaje,
                         )
                     } else {
@@ -265,13 +334,13 @@ export default class modoTablet extends Component {
                             {({ camera, status }) => {
                                 if (status !== 'READY') return <PendingView />;
                                 return (
-                                    <View style={{ position: 'absolute', bottom: -100,right:50,left:50 }}>
-                                        {this.state.cargando ? <Button  mode="outlined" color="#00748D"
-                                             disabled={true} loading={true}>
+                                    <View style={{ position: 'absolute', bottom: -100, right: 50, left: 50 }}>
+                                        {this.state.cargando ? <Button mode="outlined" color="#00748D"
+                                            disabled={true} loading={true}>
                                         </Button>
                                             : this.state.boton_act ? <TouchableHighlight onPress={() => Alert.alert(
                                                 "Opciones",
-                                                "¿Usted esta ingresando o saliendo del establecimiento?",
+                                                this.state.mensaje_alert,
                                                 [
                                                     { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
                                                     {
@@ -279,10 +348,10 @@ export default class modoTablet extends Component {
                                                         onPress: () => this.Alta_asistencia(camera, 0),
                                                     },
                                                 ],
-                                            )}><Button  mode="contained" color="#00748D"
-                                                 onPress={() => Alert.alert(
+                                            )}><Button mode="contained" color="#00748D"
+                                                onPress={() => Alert.alert(
                                                     "Opciones",
-                                                    "¿Usted esta ingresando o saliendo del establecimiento?",
+                                                    this.state.mensaje_alert,
                                                     [
                                                         { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
                                                         {
@@ -292,8 +361,8 @@ export default class modoTablet extends Component {
                                                     ],
                                                 )} disabled={false}>
                                                     Aceptar
-                                       </Button></TouchableHighlight> : <Button  mode="contained" color="#00748D"
-                                                disabled={true}>
+                                       </Button></TouchableHighlight> : <Button mode="contained" color="#00748D"
+                                                    disabled={true}>
                                                     Aceptar
                                        </Button>
                                         }
@@ -306,7 +375,7 @@ export default class modoTablet extends Component {
             )
         }
         else {
-            console.log("carga", this.state.cargando);
+            console.log("mensaje: ", this.state.mensaje_alert);
             return (
                 <>
                     <View style={{ alignContent: 'center', alignItems: 'center' }} >
@@ -322,9 +391,9 @@ export default class modoTablet extends Component {
                                         {this.state.cargando ? <Button style={styles.capture} mode="outlined" color="#00748D"
                                             style={{ marginTop: 10, width: 150 }} disabled={true} loading={true}>
                                         </Button>
-                                            : this.state.boton_act ? <TouchableHighlight onPress={() => Alert.alert(
+                                            : this.state.boton_act ? <TouchableHighlight onPress={async () => Alert.alert(
                                                 "Opciones",
-                                                "¿Usted esta ingresando o saliendo del establecimiento?",
+                                                this.state.mensaje_alert,
                                                 [
                                                     { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
                                                     {
@@ -333,9 +402,9 @@ export default class modoTablet extends Component {
                                                     },
                                                 ],
                                             )}><Button style={styles.capture} mode="contained" color="#00748D"
-                                                style={{ marginTop: 10, width: 150 }} onPress={() => Alert.alert(
+                                                style={{ marginTop: 10, width: 150 }} onPress={async () => Alert.alert(
                                                     "Opciones",
-                                                    "¿Usted esta ingresando o saliendo del establecimiento?",
+                                                    this.state.mensaje_alert,
                                                     [
                                                         { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
                                                         {
@@ -355,7 +424,13 @@ export default class modoTablet extends Component {
                             }}
                         </RNCamera>
                     </View>
-                    <View style={{ position: "absolute", left: 0, right: 0, top: 260 }}>
+                    <View style={{
+                        position: "absolute", left: 20, right: 20, top: 260,bottom:10
+                        , borderWidth: 2,
+                        borderRadius: 10,
+                        borderColor: '#ddd',
+                        shadowColor: '#000',
+                    }}>
                         <PinView
                             onComplete={(val, clear) => { this.setState({ codigo: val }), clear(), this.confirmar_usuario() }}
                             pinLength={4}

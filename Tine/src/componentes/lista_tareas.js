@@ -3,7 +3,7 @@ import { View, Text, Alert, ScrollView, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo";
 const { server } = require('../config/keys');
-import { ListItem, Icon, Image } from 'react-native-elements';
+import { ListItem, Icon, Image, Divider } from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
 import moment from "moment";
 import { openDatabase } from 'react-native-sqlite-storage';
@@ -16,6 +16,7 @@ import {
 } from 'react-native-indicators';
 import BackgroundTimer from 'react-native-background-timer';
 export default class lista_tareas extends Component {
+    intervalID = 0;
     llenar_lista() {
         console.log("fgb");
         NetInfo.isConnected.fetch().done((isConnected) => {
@@ -35,16 +36,33 @@ export default class lista_tareas extends Component {
                         else {
                             this.setState({ listaT: null });
                         }
-                    } 
-                       
+                    }
+
                     this.setState({ cargando: false });
 
                 });
             }
-        })
+        });
+        this.promesa_tareas_pausa().then((lista_tareas_pausa) => {
+            console.log("pausa 1", lista_tareas_pausa);
+            if (lista_tareas_pausa) {
+                if (lista_tareas_pausa.length > 0) {
+                    this.setState({ lista_tareas_pausa: lista_tareas_pausa });
+                }
+                else {
+                    this.setState({ lista_tareas_pausa: null });
+                }
+            }
+        });
     }
 
     componentDidMount() {
+        this.intervalID = setInterval(() => {
+            this.setState({
+                curTime: new Date()
+            })
+        }, 1000);
+
         myTimer = BackgroundTimer.setInterval(() => {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
@@ -65,6 +83,7 @@ export default class lista_tareas extends Component {
 
     componentWillUnmount() {
         BackgroundTimer.clearInterval(myTimer);
+        console.log("inter", this.intervalID);
 
     }
 
@@ -95,7 +114,9 @@ export default class lista_tareas extends Component {
             listaT: '',
             usuario: '',
             empresa: '',
-            cargando: true
+            cargando: true,
+            lista_tareas_pausa: '',
+            curTime : new Date()
         }
         cont = 0;
         this.props.navigation.addListener(
@@ -161,6 +182,69 @@ export default class lista_tareas extends Component {
         });
     }
 
+
+    promesa_tareas_pausa = async () => {
+        let session = await AsyncStorage.getItem('usuario');
+        let sesion = JSON.parse(session);
+        let session_2 = await AsyncStorage.getItem('empresa');
+        let empresa = JSON.parse(session_2);
+        console.log(sesion.id);
+        console.log(empresa[0]);
+        console.log("2020 entra");
+        return new Promise(function (resolve, reject) {
+            setTimeout(() => {
+                db.transaction(async function (txn) {
+                    console.log("2020");
+                    txn.executeSql("SELECT * FROM tareas_pausa WHERE id_empleado = ? AND id_empresa = ? GROUP BY fecha ORDER BY fecha DESC;", [sesion.id, empresa[0]], (tx, res) => {
+                        console.log("2021", res.rows.raw());
+                        resolve(res.rows.raw());
+                    });
+                });
+            }, 1000);
+        });
+    }
+    parsedata_2() {
+        if (this.state.lista_tareas_pausa) {
+            var fecha = null;
+            return this.state.lista_tareas_pausa.map((data, i) => {
+                const moment_inicio = moment(data.fecha);
+                const moment_final = moment(this.state.curTime);
+                const diff = moment_final.diff(moment_inicio);
+                const diffDuration = moment.duration(diff);
+                //setear la fecha de la tarea en una variable para luego compararla con la fecha de la tarea actual
+                var comp = fecha;
+                //fecha es igual a la fecha de la tarea actual
+                fecha = moment(data.inicio).format('MMMM Do YYYY');
+                if (fecha == moment(new Date()).format('MMMM Do YYYY')) {
+                    fecha = "Hoy";
+                }
+                return (
+                    <View key={i}>
+                        {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{fecha}</Text> : null}
+                        {comp != fecha ? <Divider style={{ backgroundColor: '#00748D', height: 2, marginTop: 6}} /> : null}
+                        <ListItem
+                            leftIcon={{ name: 'assignment' }}
+                            title={data.titulo != "" ? data.titulo : "Sin nombre"}
+                            rightTitle={diffDuration.days() + "d " + diffDuration.hours() + "h " + diffDuration.minutes() + "m " + diffDuration.seconds() + "s"}
+                            onPress={() => {
+                                const moment_final = moment(new Date());
+                                const diff = moment_final.diff(moment_inicio);
+                                const diffDuration = moment.duration(diff);
+                                clearInterval(this.intervalID), this.props.navigation.navigate('altaTarea', {
+                                    tarea_pausa_id: data.id,
+                                    tarea_pausa_nombre: data.titulo,
+                                    tarea_pausa_longitud: data.longitud,
+                                    tarea_pausa_latitud: data.latitud,
+                                    tarea_pausa_fecha: data.fecha,
+                                    tarea_pausa_milli: diffDuration.asMilliseconds()
+                                });
+                            }}
+                        />
+                    </View>
+                )
+            });
+        }
+    }
     parseData() {
         Keyboard.dismiss();
         if (this.state.listaT) {
@@ -181,10 +265,11 @@ export default class lista_tareas extends Component {
                 return (
                     <View key={i}>
                         {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{fecha}</Text> : null}
+                        {comp != fecha ? <Divider style={{ backgroundColor: '#00748D', height: 2, marginTop: 6}} /> : null}
                         <ListItem
                             leftIcon={{ name: 'assignment' }}
                             title={data.titulo != "" ? data.titulo : "Sin nombre"}
-                            rightTitle={diffDuration.days() + "d " +diffDuration.hours() + "h " + diffDuration.minutes() + "m " + diffDuration.seconds() + "s"}
+                            rightTitle={diffDuration.days() + "d " + diffDuration.hours() + "h " + diffDuration.minutes() + "m " + diffDuration.seconds() + "s"}
                             onPress={() => Alert.alert(
                                 "Opciones",
                                 "de tarea " + data.titulo,
@@ -290,12 +375,15 @@ export default class lista_tareas extends Component {
             <>
                 <PTRView onRefresh={() => this.llenar_lista()} delay={900} >
                     <ScrollView>
+                        {this.state.lista_tareas_pausa ? <Text style={{fontSize: 20, textAlign: 'center'}}>Tareas no finalizadas</Text> : null}
+                        {this.parsedata_2()}
+                        {this.state.listaT ? <Text style={{fontSize: 20, textAlign: 'center'}}>Tareas finalizadas</Text> : null}
                         {this.parseData()}
                     </ScrollView>
                 </PTRView>
                 <ActionButton
                     buttonColor="#00748D"
-                    onPress={() => { this.props.navigation.navigate('altaTarea'); }}
+                    onPress={() => { clearInterval(this.intervalID), this.props.navigation.navigate('altaTarea'); }}
                 />
 
             </>
