@@ -6,6 +6,7 @@ const { server } = require('../config/keys');
 import { ListItem, Image, Icon, Divider } from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
 import moment from "moment";
+import { Card, Surface } from 'react-native-paper';
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 const manejador = require("./manejadorSqlite");
@@ -161,6 +162,7 @@ export default class lista_tareas extends Component {
                 return (
                     <View key={i}>
                         {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{fecha}</Text> : null}
+                        {comp != fecha ? <Divider style={{ backgroundColor: '#00748D', height: 2, marginTop: 6 }} /> : null}
                         <ListItem
                             leftIcon={{ name: icono }}
                             title={data.tipo ? 'Entrada' : 'Salida'}
@@ -180,14 +182,15 @@ export default class lista_tareas extends Component {
                             left: 0,
                             right: 0,
                             bottom: 0,
-                            flex: 1, 
+                            flex: 1,
                             alignItems: 'center',
                             justifyContent: 'center',
-                        height:600}}>
-                        <Image
-                            source={require('../imagenes/cama.png')}
-                            style={{ width: 300, height: 250 }}
-                        />
+                            height: 600
+                        }}>
+                            <Image
+                                source={require('../imagenes/cama.png')}
+                                style={{ width: 300, height: 250 }}
+                            />
                             <Text style={{ fontSize: 19 }}>La lista de asistencias esta vacia</Text>
                         </View>}
                 </View>
@@ -211,16 +214,34 @@ export default class lista_tareas extends Component {
         return (
             <>
                 <PTRView onRefresh={() => this.llenar_lista()}
-                    delay= {900} >
-                <ScrollView>
-                    {this.parseData()}
+                    delay={900} >
+
+                    <ScrollView contentContainerStyle={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
+                        <View style={{ width: 370, marginTop: 10 }} >
+                            <Surface style={{
+                                elevation: 10,
+                                borderRadius: 10
+                            }}>
+                                <Card style={{ borderRadius: 10 }}>
+                                    <Card.Content>
+                                        {this.parseData()}
+                                    </Card.Content>
+                                </Card>
+                            </Surface>
+                        </View>
                     </ScrollView>
-                    </PTRView>
+
+                </PTRView>
                 <ActionButton
                     buttonColor="#00748D"
                     onPress={() => { this.props.navigation.navigate('asistencia_app'); }}
-                    />
-                  
+                />
+
             </>
         )
     }

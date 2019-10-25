@@ -376,25 +376,24 @@ export default class lista_tareas extends Component {
             <>
                 <PTRView onRefresh={() => this.llenar_lista()} delay={900} >
                     <ScrollView contentContainerStyle={{
-                        flex: 1,
-                        flexDirection: 'column',
-                        justifyContent: 'center',
                         alignItems: 'center'
                     }} >
-                        <View style={{ width: 370, marginTop: 10 }} >
-                            <Surface style={{
-                                elevation: 10,
-                                borderRadius: 10
-                            }}>
-                                <Card style={{ borderRadius: 10 }}>
-                                    <Card.Content>
-                                        {this.state.lista_tareas_pausa ? <Text style={{ fontSize: 20, textAlign: 'center' }}>Tareas no finalizadas</Text> : null}
-                                        {this.parsedata_2()}
-                                    </Card.Content>
-                                </Card>
-                            </Surface>
+                        {this.state.lista_tareas_pausa ?
+                            <View style={{ width: 370, marginTop: 10 }} >
+                                <Surface style={{
+                                    elevation: 10,
+                                    borderRadius: 10
+                                }}>
+                                    <Card style={{ borderRadius: 10 }}>
+                                        <Card.Content>
+                                            <Text style={{ fontSize: 20, textAlign: 'center' }}>Tareas no finalizadas</Text>
+                                            {this.parsedata_2()}
+                                        </Card.Content>
+                                    </Card>
+                                </Surface>
+                            </View> : null}
                             <View style={{
-                                width: 370, marginTop: 10, marginBottom: 10
+                                 width: 370,marginTop: 10, marginBottom: 10
                             }}>
                                 <Surface style={{
                                     elevation: 10,
@@ -409,7 +408,7 @@ export default class lista_tareas extends Component {
                                 </Surface>
 
                             </View>
-                        </View>
+                        
                     </ScrollView>
                 </PTRView>
                 <ActionButton
