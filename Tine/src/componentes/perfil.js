@@ -286,7 +286,7 @@ export default class Profile extends Component {
                       Desactivar cuenta
                 </Button>
                   </TouchableHighlight>
-                  <TouchableHighlight onPress={() => { this.props.navigation.navigate('seguridadFoto'); }}>
+                 {this.state.celular ? <TouchableHighlight onPress={() => { this.props.navigation.navigate('seguridadFoto'); }}>
                     <Button
                       style={styles.buttonContainer}
                       color="#00748D"
@@ -294,7 +294,7 @@ export default class Profile extends Component {
                       onPress={() => { this.props.navigation.navigate('seguridadFoto'); }}>
                       Agreagar una foto de seguridad
                 </Button>
-                  </TouchableHighlight>
+                  </TouchableHighlight> : null} 
                   <TouchableHighlight onPress={this.confirmCerrarSession}>
                     <Button
                       style={styles.buttonContainer}

@@ -425,7 +425,7 @@ export default class modoTablet extends Component {
                         </RNCamera>
                     </View>
                     <View style={{
-                        position: "absolute", left: 20, right: 20, top: 260,bottom:10
+                        position: "absolute", left: 20, right: 20, top: 260,bottom:100
                         , borderWidth: 2,
                         borderRadius: 10,
                         borderColor: '#ddd',

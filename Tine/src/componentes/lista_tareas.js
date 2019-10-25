@@ -3,6 +3,7 @@ import { View, Text, Alert, ScrollView, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo";
 const { server } = require('../config/keys');
+import { Card, Surface } from 'react-native-paper';
 import { ListItem, Icon, Image, Divider } from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
 import moment from "moment";
@@ -116,7 +117,7 @@ export default class lista_tareas extends Component {
             empresa: '',
             cargando: true,
             lista_tareas_pausa: '',
-            curTime : new Date()
+            curTime: new Date()
         }
         cont = 0;
         this.props.navigation.addListener(
@@ -221,7 +222,7 @@ export default class lista_tareas extends Component {
                 return (
                     <View key={i}>
                         {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{fecha}</Text> : null}
-                        {comp != fecha ? <Divider style={{ backgroundColor: '#00748D', height: 2, marginTop: 6}} /> : null}
+                        {comp != fecha ? <Divider style={{ backgroundColor: '#00748D', height: 2, marginTop: 6 }} /> : null}
                         <ListItem
                             leftIcon={{ name: 'assignment' }}
                             title={data.titulo != "" ? data.titulo : "Sin nombre"}
@@ -263,9 +264,9 @@ export default class lista_tareas extends Component {
                     fecha = "Hoy";
                 }
                 return (
-                    <View key={i}>
+                    <View key={i} >
                         {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{fecha}</Text> : null}
-                        {comp != fecha ? <Divider style={{ backgroundColor: '#00748D', height: 2, marginTop: 6}} /> : null}
+                        {comp != fecha ? <Divider style={{ backgroundColor: '#00748D', height: 2, marginTop: 6 }} /> : null}
                         <ListItem
                             leftIcon={{ name: 'assignment' }}
                             title={data.titulo != "" ? data.titulo : "Sin nombre"}
@@ -374,11 +375,41 @@ export default class lista_tareas extends Component {
         return (
             <>
                 <PTRView onRefresh={() => this.llenar_lista()} delay={900} >
-                    <ScrollView>
-                        {this.state.lista_tareas_pausa ? <Text style={{fontSize: 20, textAlign: 'center'}}>Tareas no finalizadas</Text> : null}
-                        {this.parsedata_2()}
-                        {this.state.listaT ? <Text style={{fontSize: 20, textAlign: 'center'}}>Tareas finalizadas</Text> : null}
-                        {this.parseData()}
+                    <ScrollView contentContainerStyle={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }} >
+                        <View style={{ width: 370, marginTop: 10 }} >
+                            <Surface style={{
+                                elevation: 10,
+                                borderRadius: 10
+                            }}>
+                                <Card style={{ borderRadius: 10 }}>
+                                    <Card.Content>
+                                        {this.state.lista_tareas_pausa ? <Text style={{ fontSize: 20, textAlign: 'center' }}>Tareas no finalizadas</Text> : null}
+                                        {this.parsedata_2()}
+                                    </Card.Content>
+                                </Card>
+                            </Surface>
+                            <View style={{
+                                width: 370, marginTop: 10, marginBottom: 10
+                            }}>
+                                <Surface style={{
+                                    elevation: 10,
+                                    borderRadius: 10
+                                }}>
+                                    <Card style={{ borderRadius: 10 }}>
+                                        <Card.Content>
+                                            {this.state.listaT ? <Text style={{ fontSize: 20, textAlign: 'center' }}>Tareas finalizadas</Text> : null}
+                                            {this.parseData()}
+                                        </Card.Content>
+                                    </Card>
+                                </Surface>
+
+                            </View>
+                        </View>
                     </ScrollView>
                 </PTRView>
                 <ActionButton

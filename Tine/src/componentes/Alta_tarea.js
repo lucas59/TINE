@@ -53,6 +53,7 @@ export default class Alta_tarea extends Component {
 
     componentDidMount() {
         this.comprobar_conexion();
+        this.toggleStopwatch;
     }
 
     static navigationOptions = ({ navigation }) => {
