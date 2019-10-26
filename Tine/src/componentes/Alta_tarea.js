@@ -135,15 +135,17 @@ export default class Alta_tarea extends Component {
                             });
                         }
                     } else {
-                        this.promesa_ultimo_id().then((data) => {
-                            console.log("ultimo", data);
-                            db.transaction(function (txnn) {
-                                txnn.executeSql("DELETE FROM tareas_pausa WHERE id = " + data, [], function (tx, res) {
-                                    console.log(res.rowsAffected);
-                                    console.log("Eliminando tarea pausa");
+                        if (this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null') == 'tarea_pausa_id_null') {
+                            this.promesa_ultimo_id().then((data) => {
+                                console.log("ultimo", data);
+                                db.transaction(function (txnn) {
+                                    txnn.executeSql("DELETE FROM tareas_pausa WHERE id = " + data, [], function (tx, res) {
+                                        console.log(res.rowsAffected);
+                                        console.log("Eliminando tarea pausa");
+                                    })
                                 })
-                            })
-                        });
+                            });
+                        }
                         console.log("fin" + longitud);
                         console.log("fin" + latitud);
                         this.setState({ fin: fecha });

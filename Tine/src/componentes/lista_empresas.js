@@ -203,19 +203,18 @@ export default class lista_empresas extends Component {
       return this.state.listaT.map((data, i) => {
         console.log(data.fotoPerfil);
         return (
-          <>
+          <View key={i}>
           <ListItem
-            key={i}
             leftAvatar={{ source: { uri: server.img + data.fotoPerfil } }}
             title={data.nombre}
             onPress={() =>
               this.redireccionar_alta(data.id, data.nombre, data.fotoPerfil)
             }
             />
-            <View style={{alignItems: "center"}}>
+            <View style={{ alignItems: "center" }}>
               <Divider style={{ backgroundColor: '#00748D', height: 2 , width: 300}} />
               </View>
-            </>
+            </View>
         );
       });
     } else {
