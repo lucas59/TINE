@@ -80,8 +80,6 @@ export default class lista_tareas extends Component {
 
     componentWillUnmount() {
         BackgroundTimer.clearInterval(myTimer);
-        console.log("inter", this.intervalID);
-
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -251,7 +249,6 @@ export default class lista_tareas extends Component {
         }
     }
     parseData() {
-        Keyboard.dismiss();
         if (this.state.listaT) {
             var fecha = null;
             return this.state.listaT.map((data, i) => {
@@ -370,6 +367,7 @@ export default class lista_tareas extends Component {
     redireccionar_modificar = async (id, inicio, fin, titulo) => {
         var myArray = [id, inicio, fin, titulo];
         AsyncStorage.setItem('tarea_mod', JSON.stringify(myArray));
+        clearInterval(this.intervalID);
         this.props.navigation.navigate('modificar_tarea');
     }
 

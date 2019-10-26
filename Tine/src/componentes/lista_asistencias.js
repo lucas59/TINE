@@ -48,6 +48,10 @@ export default class lista_tareas extends Component {
 
     }
 
+    componentWillUnmount() {
+        BackgroundTimer.clearInterval(myTimer);
+
+    }
     static navigationOptions = ({ navigation }) => {
         return {
             title: 'Listas de asistencias',
