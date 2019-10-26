@@ -53,7 +53,9 @@ export default class Alta_tarea extends Component {
 
     componentDidMount() {
         this.comprobar_conexion();
-        this.toggleStopwatch;
+        if (this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null') != 'tarea_pausa_id_null') {
+            this.toggleStopwatch();
+        }
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -81,6 +83,7 @@ export default class Alta_tarea extends Component {
 
 
     toggleStopwatch = async () => {
+        console.log("entra");
         this.setState({ stopwatchStart: !this.state.stopwatchStart, stopwatchReset: false });
         let fecha = moment(new Date()).format();
         var longitud;
@@ -117,7 +120,7 @@ export default class Alta_tarea extends Component {
                         console.log("entra pausa");
                         var titulo = this.state.titulo;
                         console.log(titulo, fecha, longitud, latitud, sesion.id, empresa[0]);
-                        console.log("no",this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null'));
+                        console.log("no", this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null'));
                         if (this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null') == 'tarea_pausa_id_null') {
                             db.transaction(function (ttxx) {
                                 console.log("pru 1");

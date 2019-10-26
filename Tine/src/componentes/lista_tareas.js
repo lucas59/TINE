@@ -85,7 +85,7 @@ export default class lista_tareas extends Component {
     componentWillUnmount() {
         BackgroundTimer.clearInterval(myTimer);
         console.log("inter", this.intervalID);
-
+        
     }
 
     static navigationOptions = ({ navigation }) => {
