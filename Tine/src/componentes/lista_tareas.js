@@ -58,11 +58,7 @@ export default class lista_tareas extends Component {
     }
 
     componentDidMount() {
-        this.intervalID = setInterval(() => {
-            this.setState({
-                curTime: new Date()
-            })
-        }, 1000);
+
 
         myTimer = BackgroundTimer.setInterval(() => {
             NetInfo.isConnected.fetch().done((isConnected) => {
@@ -85,7 +81,7 @@ export default class lista_tareas extends Component {
     componentWillUnmount() {
         BackgroundTimer.clearInterval(myTimer);
         console.log("inter", this.intervalID);
-        
+
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -124,6 +120,11 @@ export default class lista_tareas extends Component {
             'didFocus',
             payload => {
                 this.llenar_lista();
+                this.intervalID = setInterval(() => {
+                    this.setState({
+                        curTime: new Date()
+                    })
+                }, 1000);
             }
         );
     }
@@ -214,6 +215,9 @@ export default class lista_tareas extends Component {
                 const diffDuration = moment.duration(diff);
                 //setear la fecha de la tarea en una variable para luego compararla con la fecha de la tarea actual
                 var comp = fecha;
+                console.log("1. diff", diffDuration);
+                console.log("2. diff", this.state.curTime);
+                console.log("3. diff", data.fecha);
                 //fecha es igual a la fecha de la tarea actual
                 fecha = moment(data.inicio).format('MMMM Do YYYY');
                 if (fecha == moment(new Date()).format('MMMM Do YYYY')) {
@@ -256,6 +260,7 @@ export default class lista_tareas extends Component {
                 const moment_final = moment(data.fin);
                 const diff = moment_final.diff(moment_inicio);
                 const diffDuration = moment.duration(diff);
+
                 //setear la fecha de la tarea en una variable para luego compararla con la fecha de la tarea actual
                 var comp = fecha;
                 //fecha es igual a la fecha de la tarea actual
@@ -392,23 +397,23 @@ export default class lista_tareas extends Component {
                                     </Card>
                                 </Surface>
                             </View> : null}
-                            <View style={{
-                                 width: 370,marginTop: 10, marginBottom: 10
+                        <View style={{
+                            width: 370, marginTop: 10, marginBottom: 10
+                        }}>
+                            <Surface style={{
+                                elevation: 10,
+                                borderRadius: 10
                             }}>
-                                <Surface style={{
-                                    elevation: 10,
-                                    borderRadius: 10
-                                }}>
-                                    <Card style={{ borderRadius: 10 }}>
-                                        <Card.Content>
-                                            {this.state.listaT ? <Text style={{ fontSize: 20, textAlign: 'center' }}>Tareas finalizadas</Text> : null}
-                                            {this.parseData()}
-                                        </Card.Content>
-                                    </Card>
-                                </Surface>
+                                <Card style={{ borderRadius: 10 }}>
+                                    <Card.Content>
+                                        {this.state.listaT ? <Text style={{ fontSize: 20, textAlign: 'center' }}>Tareas finalizadas</Text> : null}
+                                        {this.parseData()}
+                                    </Card.Content>
+                                </Card>
+                            </Surface>
 
-                            </View>
-                        
+                        </View>
+
                     </ScrollView>
                 </PTRView>
                 <ActionButton

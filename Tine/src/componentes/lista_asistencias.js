@@ -220,9 +220,9 @@ export default class lista_tareas extends Component {
                         flex: 1,
                         flexDirection: 'column',
                         justifyContent: 'center',
-                        alignItems: 'center'
+                        alignItems: 'center',
                     }}>
-                        <View style={{ width: 370, marginTop: 10 }} >
+                        <View style={{ width: 370, marginTop: 10, marginBottom: 10}} >
                             <Surface style={{
                                 elevation: 10,
                                 borderRadius: 10
@@ -235,13 +235,11 @@ export default class lista_tareas extends Component {
                             </Surface>
                         </View>
                     </ScrollView>
-
                 </PTRView>
                 <ActionButton
                     buttonColor="#00748D"
                     onPress={() => { this.props.navigation.navigate('asistencia_app'); }}
                 />
-
             </>
         )
     }
