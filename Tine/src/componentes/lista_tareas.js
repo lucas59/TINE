@@ -278,7 +278,7 @@ export default class lista_tareas extends Component {
                             rightTitle={diffDuration.days() + "d " + diffDuration.hours() + "h " + diffDuration.minutes() + "m " + diffDuration.seconds() + "s"}
                             onPress={() => Alert.alert(
                                 "Opciones",
-                                "de tarea " + data.titulo,
+                                "de tarea " + (data.titulo != '' ? data.titulo : "Sin nombre"),
                                 [
                                     { text: "Modificar", onPress: () => this.redireccionar_modificar(data.id, data.inicio, data.fin, data.titulo) },
                                     {
