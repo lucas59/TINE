@@ -117,7 +117,8 @@ export default class Login extends Component {
             })
             .catch(function (err) {
                 console.log(err);
-                Toast.show('Compruebe su conexion' + err);
+                Toast.show('Compruebe su conexion: ' + err);
+                this.setState({ cargando: false });
             })
 
     }

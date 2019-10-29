@@ -9,16 +9,12 @@ import { Button } from 'react-native-paper';
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 import Toast from 'react-native-simple-toast';
+import styles from "../css/styleasistencia_app";
 
 
 const PendingView = () => (
     <View
-        style={{
-            flex: 1,
-            backgroundColor: '#00748D',
-            justifyContent: 'center',
-            alignItems: 'center',
-        }}
+        style={styles.view_cargando}
     >
         <Text>Cargando</Text>
     </View>
@@ -235,9 +231,9 @@ export default class asistencia_app extends Component {
                         {({ camera, status }) => {
                             if (status !== 'READY') return <PendingView />;
                             return (
-                                <View style={{ position: 'relative', bottom: 20, left: 0, right: 0 }}>
+                                <View style={styles.view_boton}>
 
-                                    {this.state.cargando ? <Button disabled={true} style={{ borderRadius: 30, width: 200, height: 45 }} color="#00748D" loading={true} mode="contained"></Button> :
+                                    {this.state.cargando ? <Button disabled={true} style={styles.boton} color="#00748D" loading={true} mode="contained"></Button> :
                                         <TouchableHighlight onPress={() => Alert.alert(
                                             "Opciones",
                                             this.state.mensaje_alert,
@@ -249,7 +245,7 @@ export default class asistencia_app extends Component {
                                                 },
                                             ],
                                             { cancelable: true }
-                                        )} ><Button style={{ borderRadius: 30, width: 200, height: 45 }} color="#00748D" mode="contained" onPress={() => Alert.alert(
+                                        )} ><Button style={styles.boton} color="#00748D" mode="contained" onPress={() => Alert.alert(
                                             "Opciones",
                                             this.state.mensaje_alert,
                                             [
@@ -261,7 +257,7 @@ export default class asistencia_app extends Component {
                                             ],
                                             { cancelable: true }
                                         )}>
-                                                <Text style={{ fontSize: 14, color: 'white' }}> Capturar y aceptar </Text>
+                                                <Text style={styles.boton_capturar}> Capturar y aceptar </Text>
                                             </Button>
                                         </TouchableHighlight>
                                     }
@@ -272,21 +268,12 @@ export default class asistencia_app extends Component {
                     </RNCamera> :
 
                         <View
-                            style={{
-                                top: 15,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                flex: 1,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                height: 600
-                            }}>
+                            style={styles.view_camara}>
                             <Image
                                 source={require('../imagenes/camara.png')}
-                                style={{ width: 300, height: 250 }}
+                                style={styles.imagen_camaraimagen}
                             />
-                            <Text style={{ fontSize: 19, textAlign: 'center' }}>
+                            <Text style={styles.texto_camaraimagen}>
                                 Usted no tiene permisos para usar la cámara en el teléfono
               </Text>
                             <TouchableOpacity onPress={() => Alert.alert(
@@ -302,7 +289,7 @@ export default class asistencia_app extends Component {
                                 { cancelable: true }
                             )
                             } style={styles.capture}>
-                                <Text style={{ fontSize: 14, color: 'white' }}> Capturar y aceptar </Text>
+                                <Text style={StyleSheet.boton_capturar}> Capturar y aceptar </Text>
                             </TouchableOpacity>
 
                         </View>
@@ -314,24 +301,3 @@ export default class asistencia_app extends Component {
         )
     }
 }
-
-
-const styles = StyleSheet.create({
-    camara: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center'
-    },
-    capture: {
-        flex: 0,
-        backgroundColor: '#00748D',
-        borderRadius: 5,
-        padding: 15,
-        alignSelf: 'center',
-        paddingHorizontal: 20,
-        margin: 20,
-    },
-    main: {
-        flex: 1,
-    }
-});

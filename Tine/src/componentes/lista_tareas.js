@@ -7,6 +7,7 @@ import { Card, Surface } from 'react-native-paper';
 import { ListItem, Icon, Image, Divider } from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
 import moment from "moment";
+import style_lista_tareas from '../css/styleLista';
 import { openDatabase } from 'react-native-sqlite-storage';
 import Toast from 'react-native-simple-toast';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
@@ -19,7 +20,6 @@ import BackgroundTimer from 'react-native-background-timer';
 export default class lista_tareas extends Component {
     intervalID = 0;
     llenar_lista() {
-        console.log("fgb");
         NetInfo.isConnected.fetch().done((isConnected) => {
             if (isConnected == true) {
                 console.log("online");
@@ -45,7 +45,6 @@ export default class lista_tareas extends Component {
             }
         });
         this.promesa_tareas_pausa().then((lista_tareas_pausa) => {
-            console.log("pausa 1", lista_tareas_pausa);
             if (lista_tareas_pausa) {
                 if (lista_tareas_pausa.length > 0) {
                     this.setState({ lista_tareas_pausa: lista_tareas_pausa });
@@ -188,15 +187,10 @@ export default class lista_tareas extends Component {
         let sesion = JSON.parse(session);
         let session_2 = await AsyncStorage.getItem('empresa');
         let empresa = JSON.parse(session_2);
-        console.log(sesion.id);
-        console.log(empresa[0]);
-        console.log("2020 entra");
         return new Promise(function (resolve, reject) {
             setTimeout(() => {
                 db.transaction(async function (txn) {
-                    console.log("2020");
                     txn.executeSql("SELECT * FROM tareas_pausa WHERE id_empleado = ? AND id_empresa = ? GROUP BY fecha ORDER BY fecha DESC;", [sesion.id, empresa[0]], (tx, res) => {
-                        console.log("2021", res.rows.raw());
                         resolve(res.rows.raw());
                     });
                 });
@@ -213,9 +207,6 @@ export default class lista_tareas extends Component {
                 const diffDuration = moment.duration(diff);
                 //setear la fecha de la tarea en una variable para luego compararla con la fecha de la tarea actual
                 var comp = fecha;
-                console.log("1. diff", diffDuration);
-                console.log("2. diff", this.state.curTime);
-                console.log("3. diff", data.fecha);
                 //fecha es igual a la fecha de la tarea actual
                 fecha = moment(data.inicio).format('MMMM Do YYYY');
                 if (fecha == moment(new Date()).format('MMMM Do YYYY')) {
@@ -223,8 +214,8 @@ export default class lista_tareas extends Component {
                 }
                 return (
                     <View key={i}>
-                        {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{fecha}</Text> : null}
-                        {comp != fecha ? <Divider style={{ backgroundColor: '#00748D', height: 2, marginTop: 6 }} /> : null}
+                        {comp != fecha ? <Text style={style_lista_tareas.fecha_lista}>{fecha}</Text> : null}
+                        {comp != fecha ? <Divider style={style_lista_tareas.divisor_lista} /> : null}
                         <ListItem
                             leftIcon={{ name: 'assignment' }}
                             title={data.titulo != "" ? data.titulo : "Sin nombre"}
@@ -267,8 +258,8 @@ export default class lista_tareas extends Component {
                 }
                 return (
                     <View key={i} >
-                        {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{fecha}</Text> : null}
-                        {comp != fecha ? <Divider style={{ backgroundColor: '#00748D', height: 2, marginTop: 6 }} /> : null}
+                        {comp != fecha ? <Text style={style_lista_tareas.fecha_lista}>{fecha}</Text> : null}
+                        {comp != fecha ? <Divider style={style_lista_tareas.divisor_lista} /> : null}
                         <ListItem
                             leftIcon={{ name: 'assignment' }}
                             title={data.titulo != "" ? data.titulo : "Sin nombre"}
@@ -295,21 +286,12 @@ export default class lista_tareas extends Component {
         else {
             return (
                 <View>
-                    {this.state.cargando ? <PulseIndicator color='#00748D' size={60} style={{ marginTop: 30 }} /> : <View style={{
-                        top: 15,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        height: 600
-                    }}>
+                    {this.state.cargando ? <PulseIndicator color='#00748D' size={60} style={style_lista_tareas.cargando_icono} /> : <View style={style_lista_tareas.lista_vacia}>
                         <Image
                             source={require('../imagenes/reloj-durmiendo.png')}
-                            style={{ width: 300, height: 250 }}
+                            style={style_lista_tareas.imagen_vacia}
                         />
-                        <Text style={{ fontSize: 19 }}>La lista de tareas esta vacia</Text>
+                        <Text style={style_lista_tareas.texto_vacio}>La lista de tareas esta vacia</Text>
                     </View>}
                 </View>
             )
@@ -378,40 +360,28 @@ export default class lista_tareas extends Component {
         return (
             <>
                 <PTRView onRefresh={() => this.llenar_lista()} delay={900} >
-                    <ScrollView contentContainerStyle={{
-                        alignItems: 'center'
-                    }} >
+                    <ScrollView contentContainerStyle={style_lista_tareas.scrollview_lista} >
                         {this.state.lista_tareas_pausa ?
-                            <View style={{ width: 370, marginTop: 10 }} >
-                                <Surface style={{
-                                    elevation: 10,
-                                    borderRadius: 10
-                                }}>
-                                    <Card style={{ borderRadius: 10 }}>
+                            <View style={style_lista_tareas.lista_tareas_nofinalizadas} >
+                                <Surface style={style_lista_tareas.surface_lista}>
+                                    <Card style={style_lista_tareas.card_lista}>
                                         <Card.Content>
-                                            <Text style={{ fontSize: 20, textAlign: 'center' }}>Tareas no finalizadas</Text>
+                                            <Text style={style_lista_tareas.titulo_lista}>Tareas no finalizadas</Text>
                                             {this.parsedata_2()}
                                         </Card.Content>
                                     </Card>
                                 </Surface>
                             </View> : null}
-                        <View style={{
-                            width: 370, marginTop: 10, marginBottom: 10
-                        }}>
-                            <Surface style={{
-                                elevation: 10,
-                                borderRadius: 10
-                            }}>
-                                <Card style={{ borderRadius: 10 }}>
+                        <View style={style_lista_tareas.lista_finalizadas}>
+                            <Surface style={style_lista_tareas.surface_lista}>
+                                <Card style={style_lista_tareas.card_lista}>
                                     <Card.Content>
-                                        {this.state.listaT ? <Text style={{ fontSize: 20, textAlign: 'center' }}>Tareas finalizadas</Text> : null}
+                                        {this.state.listaT ? <Text style={style_lista_tareas.titulo_lista}>Tareas finalizadas</Text> : null}
                                         {this.parseData()}
                                     </Card.Content>
                                 </Card>
                             </Surface>
-
                         </View>
-
                     </ScrollView>
                 </PTRView>
                 <ActionButton

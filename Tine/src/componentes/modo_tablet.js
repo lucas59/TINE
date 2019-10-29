@@ -14,6 +14,7 @@ import NetInfo from "@react-native-community/netinfo";
 import BackgroundTimer from 'react-native-background-timer';
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-paper';
+const manejador = require("./manejadorSqlite");
 
 
 const PendingView = () => (
@@ -54,6 +55,7 @@ export default class modoTablet extends Component {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
                     this.setState({ connection_Status: "Online" });
+                    manejador.subirAsistencias();
                 }
                 else {
                     this.setState({ connection_Status: "Offline" });
@@ -89,6 +91,31 @@ export default class modoTablet extends Component {
     perfil = async () => {
         var user = await AsyncStorage.getItem('usuario');
         console.log('usuario', user);
+    }
+
+    comprobar_ultima_asistencia_offline = async () => {
+        let empressa = await AsyncStorage.getItem('usuario');
+        let empresa = JSON.parse(empressa);
+        console.log(empresa);
+        var empresa_id = empresa.id;
+        console.log("entra", idempleado);
+        console.log("entra", empresa_id);
+        return new Promise(function (resolve, reject) {
+            setTimeout(() => {
+                db.transaction(function (tx) {
+                    tx.executeSql('SELECT * FROM asistencia WHERE id=(SELECT MAX(id) from asistencia) AND empleado_id = ? AND empresa_id = ? AND tipo = 1', [idempleado, empresa_id], (tx, results) => {
+                        console.log("eeee");
+                        if (results.rows.length > 0) {
+                            resolve(1);
+                        }
+                        else {
+                            resolve(2);
+                        }
+                    });
+                });
+            }, 1000);
+        });
+
     }
 
     comprobar_conexion = async (data) => {
@@ -229,16 +256,18 @@ export default class modoTablet extends Component {
         this.setState({ fecha: fecha });
         const { foto } = this.state;
         var empresa_id = this.state.empresa_id;
-        console.log(idempleado);
+        console.log("datos", idempleado, foto, fecha, empresa_id, estado);
         if (this.state.connection_Status == "Offline") {
             db.transaction(function (tx) {
                 db.transaction(function (txx) {
                     txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo,estado) VALUES (?,?,?,?,?,?)', [idempleado, foto, fecha, empresa_id, estado, 0], (tx, results) => {
                         console.log(results.rowsAffected);
                         if (results.rowsAffected > 0) {
-                            this.setState({ boton_act: false });
                             console.log("insertó");
-                            Toast.show('La asistencia se insertó correctamente');
+                            Alert.alert(
+                                "Mensaje",
+                                "La asistencia se insertó correctamente",
+                            )
                             db.transaction(function (txr) {
                                 txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
                                     console.log(results.rows.length);
@@ -258,6 +287,7 @@ export default class modoTablet extends Component {
 
             });
             this.setState({ cargando: false });
+            this.setState({ boton_act: false });
         }
         else {
             const { foto } = this.state;
@@ -425,7 +455,7 @@ export default class modoTablet extends Component {
                         </RNCamera>
                     </View>
                     <View style={{
-                        position: "absolute", left: 20, right: 20, top: 260,bottom:10
+                        position: "absolute", left: 20, right: 20, top: 260, bottom: 100
                         , borderWidth: 2,
                         borderRadius: 10,
                         borderColor: '#ddd',

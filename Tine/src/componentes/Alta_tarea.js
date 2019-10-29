@@ -83,7 +83,6 @@ export default class Alta_tarea extends Component {
 
 
     toggleStopwatch = async () => {
-        console.log("entra");
         this.setState({ stopwatchStart: !this.state.stopwatchStart, stopwatchReset: false });
         let fecha = moment(new Date()).format();
         var longitud;
@@ -106,8 +105,6 @@ export default class Alta_tarea extends Component {
                     longitud = JSON.stringify(position.coords.longitude);
                     latitud = JSON.stringify(position.coords.latitude);
                     if (this.state.stopwatchStart) {
-                        console.log("inicio" + longitud);
-                        console.log("inicio" + latitud);
                         if (this.state.inicio == 0) {
                             this.setState({ inicio: fecha });
                         }
@@ -117,13 +114,9 @@ export default class Alta_tarea extends Component {
                         let session = await AsyncStorage.getItem('usuario');
                         let sesion = JSON.parse(session);
                         let empresa = JSON.parse(myArray);
-                        console.log("entra pausa");
                         var titulo = this.state.titulo;
-                        console.log(titulo, fecha, longitud, latitud, sesion.id, empresa[0]);
-                        console.log("no", this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null'));
                         if (this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null') == 'tarea_pausa_id_null') {
                             db.transaction(function (ttxx) {
-                                console.log("pru 1");
                                 ttxx.executeSql('INSERT INTO tareas_pausa (titulo, fecha,longitud,latitud,id_empleado,id_empresa) VALUES (?,?,?,?,?,?)', [titulo, fecha, longitud, latitud, sesion.id, empresa[0]], (tx, results) => {
                                     if (results.rowsAffected > 0) {
                                         console.log("insertó tarea_pausa");
@@ -137,7 +130,6 @@ export default class Alta_tarea extends Component {
                     } else {
                         if (this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null') == 'tarea_pausa_id_null') {
                             this.promesa_ultimo_id().then((data) => {
-                                console.log("ultimo", data);
                                 db.transaction(function (txnn) {
                                     txnn.executeSql("DELETE FROM tareas_pausa WHERE id = " + data, [], function (tx, res) {
                                         console.log(res.rowsAffected);
@@ -146,8 +138,6 @@ export default class Alta_tarea extends Component {
                                 })
                             });
                         }
-                        console.log("fin" + longitud);
-                        console.log("fin" + latitud);
                         this.setState({ fin: fecha });
                         this.setState({ long_fin: longitud });
                         this.setState({ lat_fin: latitud });
@@ -194,7 +184,6 @@ export default class Alta_tarea extends Component {
     saveData = async () => {
         this.comprobar_conexion();
         if (this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null') != 'tarea_pausa_id_null') {
-            console.log("tarea pa", this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null'));
             var id = this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null');
             db.transaction(function (txnn) {
                 txnn.executeSql("DELETE FROM tareas_pausa WHERE id = " + id, [], function (tx, res) {
@@ -283,11 +272,7 @@ export default class Alta_tarea extends Component {
             <ImageBackground
                 resizeMode='cover'
                 source={require('../imagenes/main.png')}
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    flex: 1
-                }}>
+                style={styles.imagen_fondo}>
                 <View style={styles.container}>
                     <Stopwatch laps msecs start={this.state.stopwatchStart}
                         reset={this.state.stopwatchReset}
@@ -298,7 +283,7 @@ export default class Alta_tarea extends Component {
 
                     <TextInput
                         label="Titulo de la tarea"
-                        style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 30 }}
+                        style={styles.input_altatarea}
                         onChangeText={(titulo) => this.setState({ titulo })}
                         placeholder="¿En qué estás trabajando?"
                         selectionColor="#00748D"
@@ -313,9 +298,9 @@ export default class Alta_tarea extends Component {
                         }}
                         value={this.state.titulo}
                     />
-                    {this.state.cargando ? <Button disabled={true} style={{ borderRadius: 30, width: 160, height: 50 }} color="#00748D" loading={true} mode={!this.state.stopwatchStart ? "outlined" : "contained"}></Button> :
-                        <TouchableHighlight onPress={this.toggleStopwatch}><Button style={{ borderRadius: 30, width: 160, height: 50 }} color="#00748D" mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}>
-                            <Text style={{ fontSize: 23 }}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
+                    {this.state.cargando ? <Button disabled={true} style={styles.boton} color="#00748D" loading={true} mode={!this.state.stopwatchStart ? "outlined" : "contained"}></Button> :
+                        <TouchableHighlight onPress={this.toggleStopwatch}><Button style={styles.boton} color="#00748D" mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}>
+                            <Text style={styles.texto_boton}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
                         </Button></TouchableHighlight>
                     }
                 </View>
