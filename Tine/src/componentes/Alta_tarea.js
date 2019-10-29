@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableHighlight, BackHandler, Alert, ImageBackground } from 'react-native';
+import { Text, View, PermissionsAndroid, TouchableHighlight, BackHandler, Alert, ImageBackground } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { Icon } from 'react-native-elements';
 import { Stopwatch } from 'react-native-stopwatch-timer';
-//import Geolocation from '@react-native-community/geolocation';
 import Geolocation from 'react-native-geolocation-service';
 import NetInfo from "@react-native-community/netinfo";
 import moment from "moment";
@@ -14,7 +13,6 @@ var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 import styles from '../css/styleAlta_tarea';
 import { Button } from 'react-native-paper';
 import Toast from 'react-native-simple-toast';
-import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 export default class Alta_tarea extends Component {
     comprobar_conexion() {
         NetInfo.isConnected.fetch().done((isConnected) => {
@@ -27,49 +25,37 @@ export default class Alta_tarea extends Component {
             }
         })
     }
-    componentDidMount() {
-        this.comprobar_conexion();
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-    }
+
 
     constructor(props) {
         super(props);
         this.state = {
-            titulo: '',
-            inicio: '',
+            titulo: this.props.navigation.getParam('tarea_pausa_nombre', ''),
+            inicio: this.props.navigation.getParam('tarea_pausa_fecha', ''),
             fin: '',
             timerStart: false,
             stopwatchStart: false,
             totalDuration: 90000,
             timerReset: false,
             stopwatchReset: false,
-            long_ini: null,
-            lat_ini: null,
+            long_ini: this.props.navigation.getParam('tarea_pausa_longitud', null),
+            lat_ini: this.props.navigation.getParam('tarea_pausa_latitud', null),
             lat_fin: null,
             long_fin: null,
             cargando: false,
-            permisos: 0
+            permisos: 0,
+            tiempo_inicio: this.props.navigation.getParam('tarea_pausa_milli', 0)
         };
         this.toggleStopwatch = this.toggleStopwatch.bind(this);
         this.resetStopwatch = this.resetStopwatch.bind(this);
-        this.handleBackPress = this.handleBackPress.bind(this);
 
     }
 
-    handleBackPress = () => {
-        Alert.alert(
-            'Salir de la tarea',
-            '¿Está seguro de salir de la tarea?',
-            [
-                { text: 'Si', onPress: () => this.props.navigation.goBack() },
-                { text: 'No' }
-            ]
-        );
-        return true;
-    };
-
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    componentDidMount() {
+        this.comprobar_conexion();
+        if (this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null') != 'tarea_pausa_id_null') {
+            this.toggleStopwatch();
+        }
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -97,72 +83,73 @@ export default class Alta_tarea extends Component {
 
 
     toggleStopwatch = async () => {
+        this.setState({ cargando: true });
         this.setState({ stopwatchStart: !this.state.stopwatchStart, stopwatchReset: false });
         let fecha = moment(new Date()).format();
         var longitud;
         var latitud;
-        
+        console.log(Platform.OS);
         if (Platform.OS == 'ios') {
             await Geolocation.requestAuthorization();
-            this.setState({permisos : 1});
+            this.setState({ permisos: 1 });
         } else if (Platform.OS == 'android') {
-            await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-                .then(result => {
-                    switch (result) {
-                        case RESULTS.UNAVAILABLE:
-                            alert("Geolocalización no permitida");
-                                this.props.navigation.navigate('lista_tareas');
-                            break;
-                        case RESULTS.DENIED:
-                                alert("Sin permisos");
-                                this.props.navigation.navigate('lista_tareas');
-                            break;
-                        case RESULTS.GRANTED:
-                            console.log('granted 1: ', this.state.permisos);
-                            this.setState({ permisos: 1 });
-                            console.log('3.permiso aceptado');
-                            break;
-                        case RESULTS.BLOCKED:
-                                alert("bloquedo");
-                                this.props.navigation.navigate('lista_tareas');
-                            break;
-                    }
-                })
-                .catch(error => {
-                    alert("error");
-                });
+            this.granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+            )
+            console.log("perm", this.granted);
+            if (this.granted == PermissionsAndroid.RESULTS.GRANTED) { this.setState({ permisos: 1 }); }
         }
         console.log('granted: ', this.state.permisos);
         if (this.state.permisos === 1) {
             await Geolocation.getCurrentPosition(
-                (position) => {
+                async (position) => {
                     longitud = JSON.stringify(position.coords.longitude);
                     latitud = JSON.stringify(position.coords.latitude);
                     if (this.state.stopwatchStart) {
-                        console.log("inicio" + longitud);
-                        console.log("inicio" + latitud);
-                        this.setState({ inicio: fecha });
+                        if (this.state.inicio == 0) {
+                            this.setState({ inicio: fecha });
+                        }
                         this.setState({ long_ini: longitud });
                         this.setState({ lat_ini: latitud });
-                        var tarea_pausa = {
-                            titulo: this.state.titulo,
-                            fecha: fecha,
-                            longitud: longitud,
-                            latitud:latitud
+                        let myArray = await AsyncStorage.getItem('empresa');
+                        let session = await AsyncStorage.getItem('usuario');
+                        let sesion = JSON.parse(session);
+                        let empresa = JSON.parse(myArray);
+                        var titulo = this.state.titulo;
+                        if (this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null') == 'tarea_pausa_id_null') {
+                            db.transaction(function (ttxx) {
+                                ttxx.executeSql('INSERT INTO tareas_pausa (titulo, fecha,longitud,latitud,id_empleado,id_empresa) VALUES (?,?,?,?,?,?)', [titulo, fecha, longitud, latitud, sesion.id, empresa[0]], (tx, results) => {
+                                    if (results.rowsAffected > 0) {
+                                        console.log("insertó tarea_pausa");
+                                    } else {
+                                        console.log("error tarea_pausa");
+                                    }
+                                }
+                                );
+                            });
                         }
-                        console.log(tarea_pausa);
-                        AsyncStorage.setItem('tarea', JSON.stringify(tarea_pausa));
+                        this.setState({ cargando: false });
                     } else {
-                        console.log("fin" + longitud);
-                        console.log("fin" + latitud);
+                        if (this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null') == 'tarea_pausa_id_null') {
+                            this.promesa_ultimo_id().then((data) => {
+                                db.transaction(function (txnn) {
+                                    txnn.executeSql("DELETE FROM tareas_pausa WHERE id = " + data, [], function (tx, res) {
+                                        console.log(res.rowsAffected);
+                                        console.log("Eliminando tarea pausa");
+                                    })
+                                })
+                            });
+                        }
                         this.setState({ fin: fecha });
                         this.setState({ long_fin: longitud });
                         this.setState({ lat_fin: latitud });
                         this.saveData();
                     }
                 },
-                (error) => {alert(error.message);
-                     this.props.navigation.navigate('lista_tareas');},
+                (error) => {
+                    alert(error.message);
+                    this.props.navigation.navigate('lista_tareas');
+                },
                 { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
             );
         } else {
@@ -183,11 +170,11 @@ export default class Alta_tarea extends Component {
         this.currentTime = time;
     };
 
-    promesa() {
+    promesa_ultimo_id() {
         return new Promise(function (resolve, reject) {
             setTimeout(() => {
                 db.transaction(function (txn) {
-                    txn.executeSql("SELECT seq FROM sqlite_sequence where name = 'tarea'", [], (tx, res) => {
+                    txn.executeSql("SELECT seq FROM sqlite_sequence where name = 'tareas_pausa'", [], (tx, res) => {
                         resolve(res.rows.item(0).seq);
                     });
                 });
@@ -197,7 +184,15 @@ export default class Alta_tarea extends Component {
 
     saveData = async () => {
         this.comprobar_conexion();
-        this.setState({ cargando: true });
+        if (this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null') != 'tarea_pausa_id_null') {
+            var id = this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null');
+            db.transaction(function (txnn) {
+                txnn.executeSql("DELETE FROM tareas_pausa WHERE id = " + id, [], function (tx, res) {
+                    console.log(res.rowsAffected);
+                    console.log("Eliminando tarea pausa");
+                })
+            })
+        }
         let myArray = await AsyncStorage.getItem('empresa');
         let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
@@ -257,7 +252,6 @@ export default class Alta_tarea extends Component {
                     const retorno = data;
                     console.log(retorno.mensaje);
                     if (retorno.retorno == true) {
-                        this.setState({ cargando: false });
                         Toast.show('La tarea se ingresó correctamente');
                         this.props.navigation.navigate('lista_tareas');
                     } else {
@@ -277,20 +271,18 @@ export default class Alta_tarea extends Component {
             <ImageBackground
                 resizeMode='cover'
                 source={require('../imagenes/main.png')}
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    flex: 1
-                }}>
+                style={styles.imagen_fondo}>
                 <View style={styles.container}>
                     <Stopwatch laps msecs start={this.state.stopwatchStart}
                         reset={this.state.stopwatchReset}
                         options={options}
                         msecs={false}
-                        getTime={this.getFormattedTime} />
+                        getTime={this.getFormattedTime}
+                        startTime={this.state.tiempo_inicio} />
+
                     <TextInput
                         label="Titulo de la tarea"
-                        style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 30 }}
+                        style={styles.input_altatarea}
                         onChangeText={(titulo) => this.setState({ titulo })}
                         placeholder="¿En qué estás trabajando?"
                         selectionColor="#00748D"
@@ -305,9 +297,9 @@ export default class Alta_tarea extends Component {
                         }}
                         value={this.state.titulo}
                     />
-                    {this.state.cargando ? <Button disabled={true} style={{ borderRadius: 30,width: 160, height: 50 }} color="#00748D" loading={true} mode={!this.state.stopwatchStart ? "outlined" : "contained"}></Button> :
-                        <TouchableHighlight onPress={this.toggleStopwatch}><Button style={{borderRadius: 30, width: 160, height: 50 }} color="#00748D" mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}>
-                            <Text style={{ fontSize: 23 }}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
+                    {this.state.cargando ? <Button disabled={true} style={styles.boton} color="#00748D" loading={true} mode={!this.state.stopwatchStart ? "outlined" : "contained"}></Button> :
+                        <TouchableHighlight onPress={this.toggleStopwatch}><Button style={styles.boton} color="#00748D" mode={!this.state.stopwatchStart ? "outlined" : "contained"} onPress={this.toggleStopwatch}>
+                            <Text style={styles.texto_boton}>{!this.state.stopwatchStart ? "Iniciar" : "Parar"}</Text>
                         </Button></TouchableHighlight>
                     }
                 </View>

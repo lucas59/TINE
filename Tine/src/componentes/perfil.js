@@ -45,6 +45,14 @@ export default class Profile extends Component {
     });
   };
 
+  actualizarState_empresa = datos => {
+    console.log('datos', datos);
+    datos.datos.forEach(element => {
+      console.log(element);
+      this.setState(element);
+    });
+  };
+
   bajarDatos = () => {
     const { navigation } = this.props;
     const session = JSON.parse(navigation.getParam('session'));
@@ -62,7 +70,7 @@ export default class Profile extends Component {
         .then(res => {
           return res.json();
         })
-        .then(data => this.actualizarState(data))
+        .then(data => this.actualizarState_empresa(data))
 
         .catch(function (err) {
           console.log('error', err);
@@ -257,16 +265,16 @@ export default class Profile extends Component {
                     flexDirection: "row",
                     alignItems: "center"
                   }}>
-                    <Icon
+                    {this.state.email ? <Icon
                       name='email'
                       type='material-community'
                       color="#00748D"
-                    />
+                    />:null}
                     <Text style={styles.info}> {this.state.email}      </Text>
-                    <Icon
+                    {this.state.celular ? <Icon
                       name='phone'
                       type='material-community'
-                      color="#00748D" />
+                      color="#00748D" /> : null}
                     <Text style={styles.info}> {this.state.celular} </Text>
                   </View>
                   <TouchableHighlight onPress={this.desactivarCuenta}>
@@ -278,7 +286,7 @@ export default class Profile extends Component {
                       Desactivar cuenta
                 </Button>
                   </TouchableHighlight>
-                  <TouchableHighlight onPress={() => { this.props.navigation.navigate('seguridadFoto'); }}>
+                 {this.state.celular ? <TouchableHighlight onPress={() => { this.props.navigation.navigate('seguridadFoto'); }}>
                     <Button
                       style={styles.buttonContainer}
                       color="#00748D"
@@ -286,7 +294,7 @@ export default class Profile extends Component {
                       onPress={() => { this.props.navigation.navigate('seguridadFoto'); }}>
                       Agreagar una foto de seguridad
                 </Button>
-                  </TouchableHighlight>
+                  </TouchableHighlight> : null} 
                   <TouchableHighlight onPress={this.confirmCerrarSession}>
                     <Button
                       style={styles.buttonContainer}
@@ -330,7 +338,6 @@ export default class Profile extends Component {
                 flex: 1
               }}>
               <View style={styles.container}>
-
                 <Image style={styles.avatar} source={{ uri: imagen }} />
                 <View style={styles.body_m}>
                   <View style={styles.bodyContent}>

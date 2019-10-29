@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Keyboard, Alert, TouchableOpacity, StyleSheet, Text, TouchableHighlight } from 'react-native';
+import { View, Alert, TouchableOpacity, StyleSheet, Text, TouchableHighlight } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { RNCamera } from 'react-native-camera';
@@ -14,6 +14,7 @@ import NetInfo from "@react-native-community/netinfo";
 import BackgroundTimer from 'react-native-background-timer';
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-paper';
+const manejador = require("./manejadorSqlite");
 
 
 const PendingView = () => (
@@ -41,7 +42,8 @@ export default class modoTablet extends Component {
             mirrorMode: false,
             tablet: false,
             cargando: false,
-            boton_act: false
+            boton_act: false,
+            mensaje_alert: ""
         }
         this.perfil();
 
@@ -53,6 +55,7 @@ export default class modoTablet extends Component {
             NetInfo.isConnected.fetch().done((isConnected) => {
                 if (isConnected == true) {
                     this.setState({ connection_Status: "Online" });
+                    manejador.subirAsistencias();
                 }
                 else {
                     this.setState({ connection_Status: "Offline" });
@@ -90,7 +93,113 @@ export default class modoTablet extends Component {
         console.log('usuario', user);
     }
 
+    comprobar_ultima_asistencia_offline = async () => {
+        let empressa = await AsyncStorage.getItem('usuario');
+        let empresa = JSON.parse(empressa);
+        console.log(empresa);
+        var empresa_id = empresa.id;
+        console.log("entra", idempleado);
+        console.log("entra", empresa_id);
+        return new Promise(function (resolve, reject) {
+            setTimeout(() => {
+                db.transaction(function (tx) {
+                    tx.executeSql('SELECT * FROM asistencia WHERE id=(SELECT MAX(id) from asistencia) AND empleado_id = ? AND empresa_id = ? AND tipo = 1', [idempleado, empresa_id], (tx, results) => {
+                        console.log("eeee");
+                        if (results.rows.length > 0) {
+                            resolve(1);
+                        }
+                        else {
+                            resolve(2);
+                        }
+                    });
+                });
+            }, 1000);
+        });
 
+    }
+
+    comprobar_conexion = async (data) => {
+        NetInfo.isConnected.fetch().done(async (isConnected) => {
+            if (isConnected == true) {
+                this.setState({ connection_Status: "Online" });
+                let session = await AsyncStorage.getItem('usuario');
+                let sesion = JSON.parse(session);
+                let loginDetails = {
+                    id_usuario: idempleado,
+                    id_empresa: sesion.id
+                }
+                fetch(server.api + 'login_tablet', {
+                    method: 'POST',
+                    headers: {
+                        'Aceptar': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(loginDetails)
+                })
+                    .then(res => {
+                        return res.json()
+                    })
+                    .then(async data_1 => {
+                        const retorno = data_1;
+                        console.log(retorno);
+                        if (retorno.retorno == true) {
+                            this.setState({ empleado_id: retorno.id });
+                            await this.setState({ mensaje_alert: retorno.mensaje });
+                        } else {
+                            Toast.show(retorno.mensaje);
+                        }
+                        if (data == 1) {
+                            this.setState({ boton_act: true });
+                            this.setState({ cargando: false });
+                            Toast.show('Buen viaje, seleccione aceptar');
+                        }
+                        else if (data == 2) {
+                            this.setState({ boton_act: true });
+                            this.setState({ cargando: false });
+                            Toast.show('Bienvenido, seleccione aceptar');
+                        }
+                        else if (data == 3) {
+                            this.setState({ boton_act: false });
+                            this.setState({ cargando: false });
+                            Toast.show('Pin incorrecto');
+                        }
+                    })
+                    .catch(function (err) {
+                        console.log('error', err);
+                    })
+
+                console.log("online");
+            }
+            else {
+                this.setState({ connection_Status: "Offline" });
+                this.comprobar_ultima_asistencia_offline().then((data_2) => {
+                    console.log("data", data_2);
+                    if (data_2 == 1) {
+                        this.setState({ mensaje_alert: "Su ultima asistencia fue una entrada,¿Usted esta ingresando o saliendo del establecimiento?" });
+                    }
+                    else if (data_2 == 2) {
+                        this.setState({ mensaje_alert: "¿Usted esta ingresando o saliendo del establecimiento?" });
+                    }
+                    if (data == 1) {
+                        this.setState({ boton_act: true });
+                        this.setState({ cargando: false });
+                        Toast.show('Buen viaje, seleccione aceptar');
+                    }
+                    else if (data == 2) {
+                        this.setState({ boton_act: true });
+                        this.setState({ cargando: false });
+                        Toast.show('Bienvenido, seleccione aceptar');
+                    }
+                    else if (data == 3) {
+                        this.setState({ boton_act: false });
+                        this.setState({ cargando: false });
+                        Toast.show('Pin incorrecto');
+                    }
+                });
+
+            }
+        })
+    }
 
 
     promesa() {
@@ -127,22 +236,13 @@ export default class modoTablet extends Component {
 
     }
     confirmar_usuario = async () => {
+        this.setState({ cargando: true });
         let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
         this.setState({ empresa_id: sesion.id });
-        this.promesa().then((data) => {
+        this.promesa().then(async (data) => {
             console.log("data", data);
-            if (data == 1) {
-                this.setState({ boton_act: true });
-                Toast.show('Buen viaje, seleccione aceptar');
-            }
-            else if (data == 2) {
-                this.setState({ boton_act: true });
-                Toast.show('Bienvenido, seleccione aceptar');
-            }
-            else if (data == 3) {
-                Toast.show('Pin incorrecto');
-            }
+            await this.comprobar_conexion(data);
         });
     }
 
@@ -162,9 +262,11 @@ export default class modoTablet extends Component {
                     txx.executeSql('INSERT INTO asistencia (empleado_id,foto,fecha,empresa_id,tipo,estado) VALUES (?,?,?,?,?,?)', [idempleado, foto, fecha, empresa_id, estado, 0], (tx, results) => {
                         console.log(results.rowsAffected);
                         if (results.rowsAffected > 0) {
-                            this.setState({ boton_act: false });
                             console.log("insertó");
-                            Toast.show('La asistencia se insertó correctamente');
+                            Alert.alert(
+                                "Mensaje",
+                                "La asistencia se insertó correctamente",
+                            )
                             db.transaction(function (txr) {
                                 txr.executeSql('SELECT * FROM asistencia', [], (tx, results) => {
                                     console.log(results.rows.length);
@@ -184,6 +286,7 @@ export default class modoTablet extends Component {
 
             });
             this.setState({ cargando: false });
+            this.setState({ boton_act: false });
         }
         else {
             const { foto } = this.state;
@@ -210,7 +313,7 @@ export default class modoTablet extends Component {
                     if (retorno.retorno == true) {
 
                         Alert.alert(
-                            "Alerta",
+                            "Mensaje",
                             retorno.mensaje,
                         )
                     } else {
@@ -228,7 +331,6 @@ export default class modoTablet extends Component {
     async establet() {
         try {
             await DeviceInfo.isTablet().then(async isTablet => {
-                console.log("es t", isTablet);
                 this.setState({ tablet: isTablet });
             });
         } catch (e) {
@@ -261,22 +363,38 @@ export default class modoTablet extends Component {
                             {({ camera, status }) => {
                                 if (status !== 'READY') return <PendingView />;
                                 return (
-                                    <View style={{ position: 'relative', top: 300 }}>
-                                        <TouchableOpacity onPress={() => Alert.alert(
-                                            "Opciones",
-                                            "¿Usted esta ingresando o saliendo del establecimiento?",
-                                            [
-                                                { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
-                                                {
-                                                    text: "Saliendo",
-                                                    onPress: () => this.Alta_asistencia(camera, 0),
-                                                },
-                                            ],
-                                            { cancelable: true }
-                                        )
-                                        } style={styles.capture}>
-                                            <Text style={{ fontSize: 14, color: 'white' }}> Aceptar </Text>
-                                        </TouchableOpacity>
+                                    <View style={{ position: 'absolute', bottom: -100, right: 50, left: 50 }}>
+                                        {this.state.cargando ? <Button mode="outlined" color="#00748D"
+                                            disabled={true} loading={true}>
+                                        </Button>
+                                            : this.state.boton_act ? <TouchableHighlight onPress={() => Alert.alert(
+                                                "Opciones",
+                                                this.state.mensaje_alert,
+                                                [
+                                                    { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
+                                                    {
+                                                        text: "Saliendo",
+                                                        onPress: () => this.Alta_asistencia(camera, 0),
+                                                    },
+                                                ],
+                                            )}><Button mode="contained" color="#00748D"
+                                                onPress={() => Alert.alert(
+                                                    "Opciones",
+                                                    this.state.mensaje_alert,
+                                                    [
+                                                        { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
+                                                        {
+                                                            text: "Saliendo",
+                                                            onPress: () => this.Alta_asistencia(camera, 0),
+                                                        },
+                                                    ],
+                                                )} disabled={false}>
+                                                    Aceptar
+                                       </Button></TouchableHighlight> : <Button mode="contained" color="#00748D"
+                                                    disabled={true}>
+                                                    Aceptar
+                                       </Button>
+                                        }
                                     </View>
                                 );
                             }}
@@ -286,7 +404,7 @@ export default class modoTablet extends Component {
             )
         }
         else {
-            console.log("carga", this.state.cargando);
+            console.log("mensaje: ", this.state.mensaje_alert);
             return (
                 <>
                     <View style={{ alignContent: 'center', alignItems: 'center' }} >
@@ -302,9 +420,9 @@ export default class modoTablet extends Component {
                                         {this.state.cargando ? <Button style={styles.capture} mode="outlined" color="#00748D"
                                             style={{ marginTop: 10, width: 150 }} disabled={true} loading={true}>
                                         </Button>
-                                            : this.state.boton_act ? <TouchableHighlight onPress={() => Alert.alert(
+                                            : this.state.boton_act ? <TouchableHighlight onPress={async () => Alert.alert(
                                                 "Opciones",
-                                                "¿Usted esta ingresando o saliendo del establecimiento?",
+                                                this.state.mensaje_alert,
                                                 [
                                                     { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
                                                     {
@@ -313,9 +431,9 @@ export default class modoTablet extends Component {
                                                     },
                                                 ],
                                             )}><Button style={styles.capture} mode="contained" color="#00748D"
-                                                style={{ marginTop: 10, width: 150 }} onPress={() => Alert.alert(
+                                                style={{ marginTop: 10, width: 150 }} onPress={async () => Alert.alert(
                                                     "Opciones",
-                                                    "¿Usted esta ingresando o saliendo del establecimiento?",
+                                                    this.state.mensaje_alert,
                                                     [
                                                         { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
                                                         {
@@ -335,7 +453,13 @@ export default class modoTablet extends Component {
                             }}
                         </RNCamera>
                     </View>
-                    <View style={{ position: "absolute", left: 0, right: 0, top: 260 }}>
+                    <View style={{
+                        position: "absolute", left: 20, right: 20, top: 260, bottom: 100
+                        , borderWidth: 2,
+                        borderRadius: 10,
+                        borderColor: '#ddd',
+                        shadowColor: '#000',
+                    }}>
                         <PinView
                             onComplete={(val, clear) => { this.setState({ codigo: val }), clear(), this.confirmar_usuario() }}
                             pinLength={4}
@@ -374,7 +498,7 @@ const styles = StyleSheet.create({
     camara: {
         width: 400,
         height: 300,
-        position: 'absolute', top: 180, right: 100, bottom: 0
+        position: 'absolute', top: 160, right: 100, bottom: 0
     },
     capture: {
         flex: 0,

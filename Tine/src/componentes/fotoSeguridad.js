@@ -2,29 +2,21 @@ import React, {Component} from 'react';
 import {
   View,
   Keyboard,
-  Alert,
-  TouchableOpacity,
   StyleSheet,
   Text,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {RNCamera} from 'react-native-camera';
-import moment from 'moment';
 const {server} = require('../config/keys');
-import NetInfo from '@react-native-community/netinfo';
 import {Button} from 'react-native-paper';
 import {openDatabase} from 'react-native-sqlite-storage';
 var db = openDatabase({name: 'sqlliteTesis.db', createFromLocation: 1});
 import Toast from 'react-native-simple-toast';
+import styles from "../css/styleasistencia_app";
 
 const PendingView = () => (
   <View
-    style={{
-      flex: 1,
-      backgroundColor: '#00748D',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}>
+    style={styles.view_cargando}>
     <Text>Cargando</Text>
   </View>
 );
@@ -137,21 +129,21 @@ export default class seguridadFoto extends Component {
               if (status !== 'READY') return <PendingView />;
               return (
                 <View
-                  style={{position: 'relative', bottom: 20, left: 0, right: 0}}>
+                  style={styles.view_boton}>
                   {this.state.cargando ? (
                     <Button
                       disabled={true}
-                      style={{width: 200, height: 45}}
+                      style={styles.boton}
                       color="#00748D"
                       loading={true}
                       mode="contained"></Button>
                   ) : (
                     <Button
-                      style={{width: 200, height: 45}}
+                      style={styles.boton}
                       color="#00748D"
                       mode="contained"
                       onPress={() => this.subirfoto(camera, 1)}>
-                      <Text style={{fontSize: 14, color: 'white'}}>
+                      <Text style={styles.boton_capturar}>
                         {' '}
                         Capturar{' '}
                       </Text>
@@ -167,22 +159,3 @@ export default class seguridadFoto extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  camara: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  capture: {
-    flex: 0,
-    backgroundColor: '#00748D',
-    borderRadius: 5,
-    padding: 15,
-    alignSelf: 'center',
-    paddingHorizontal: 20,
-    margin: 20,
-  },
-  main: {
-    flex: 1,
-  },
-});

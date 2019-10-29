@@ -9,11 +9,12 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import NetInfo from '@react-native-community/netinfo';
-import { ListItem, Icon, Image } from 'react-native-elements';
+import { ListItem, Icon,Divider, Image } from 'react-native-elements';
 const manejador = require('./manejadorSqlite');
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 import MqttService from '../core/services/MqttService';
+import { Card, Surface } from 'react-native-paper';
 import OfflineNotification from '../componentes/OfflineNotification';
 import OnlineNotification from '../componentes/OnlineNotification';
 import PTRView from 'react-native-pull-to-refresh';
@@ -202,14 +203,18 @@ export default class lista_empresas extends Component {
       return this.state.listaT.map((data, i) => {
         console.log(data.fotoPerfil);
         return (
+          <View key={i}>
           <ListItem
-            key={i}
             leftAvatar={{ source: { uri: server.img + data.fotoPerfil } }}
             title={data.nombre}
             onPress={() =>
               this.redireccionar_alta(data.id, data.nombre, data.fotoPerfil)
             }
-          />
+            />
+            <View style={{ alignItems: "center" }}>
+              <Divider style={{ backgroundColor: '#00748D', height: 2 , width: 300}} />
+              </View>
+            </View>
         );
       });
     } else {
@@ -254,7 +259,24 @@ export default class lista_empresas extends Component {
         {isConnected && <OnlineNotification />}
 
         <PTRView onRefresh={() => this.listar_empresa()}>
-          <ScrollView>{this.parseData()}</ScrollView>
+          <ScrollView contentContainerStyle={{
+            alignItems: 'center'
+          }} >
+            <View style={{
+              width: 370, marginTop: 10, marginBottom: 10
+            }}>
+              <Surface style={{
+                elevation: 10,
+                borderRadius: 10
+              }}>
+                <Card style={{ borderRadius: 10 }}>
+                  <Card.Content>
+                    <ScrollView>{this.parseData()}</ScrollView>
+                  </Card.Content>
+                </Card>
+              </Surface>
+            </View>
+          </ScrollView>
         </PTRView>
       </>
     );

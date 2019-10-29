@@ -6,6 +6,7 @@ const { server } = require('../config/keys');
 import { ListItem, Image, Icon, Divider } from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
 import moment from "moment";
+import { Card, Surface } from 'react-native-paper';
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 const manejador = require("./manejadorSqlite");
@@ -13,6 +14,7 @@ import PTRView from 'react-native-pull-to-refresh';
 import {
     PulseIndicator
 } from 'react-native-indicators';
+import styles from "../css/styleLista";
 import BackgroundTimer from 'react-native-background-timer';
 export default class lista_tareas extends Component {
     llenar_lista() {
@@ -47,6 +49,10 @@ export default class lista_tareas extends Component {
 
     }
 
+    componentWillUnmount() {
+        BackgroundTimer.clearInterval(myTimer);
+
+    }
     static navigationOptions = ({ navigation }) => {
         return {
             title: 'Listas de asistencias',
@@ -160,7 +166,8 @@ export default class lista_tareas extends Component {
                 }
                 return (
                     <View key={i}>
-                        {comp != fecha ? <Text style={{ marginTop: 5, marginLeft: 10, fontSize: 15 }}>{fecha}</Text> : null}
+                        {comp != fecha ? <Text style={styles.fecha_lista}>{fecha}</Text> : null}
+                        {comp != fecha ? <Divider style={styles.divisor_lista} /> : null}
                         <ListItem
                             leftIcon={{ name: icono }}
                             title={data.tipo ? 'Entrada' : 'Salida'}
@@ -174,21 +181,13 @@ export default class lista_tareas extends Component {
         else {
             return (
                 <View>
-                    {this.state.cargando ? <PulseIndicator color='#00748D' size={60} style={{ marginTop: 30 }} /> :
-                        <View style={{
-                            top: 15,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            flex: 1, 
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        height:600}}>
-                        <Image
-                            source={require('../imagenes/cama.png')}
-                            style={{ width: 300, height: 250 }}
-                        />
-                            <Text style={{ fontSize: 19 }}>La lista de asistencias esta vacia</Text>
+                    {this.state.cargando ? <PulseIndicator color='#00748D' size={60} style={styles.cargando_icono} /> :
+                        <View style={styles.lista_vacia}>
+                            <Image
+                                source={require('../imagenes/cama.png')}
+                                style={styles.imagen_vacia}
+                            />
+                            <Text style={styles.texto_vacio}>La lista de asistencias esta vacia</Text>
                         </View>}
                 </View>
             )
@@ -211,46 +210,26 @@ export default class lista_tareas extends Component {
         return (
             <>
                 <PTRView onRefresh={() => this.llenar_lista()}
-                    delay= {900} >
-                <ScrollView>
-                    {this.parseData()}
+                    delay={900} >
+
+                    <ScrollView contentContainerStyle={styles.scrollview_lista}>
+                        <View style={styles.lista_finalizadas} >
+                            <Surface style={styles.surface_lista}>
+                                <Card style={styles.card_lista}>
+                                    <Card.Content>
+                                        {this.parseData()}
+                                    </Card.Content>
+                                </Card>
+                            </Surface>
+                        </View>
                     </ScrollView>
-                    </PTRView>
+                </PTRView>
                 <ActionButton
                     buttonColor="#00748D"
                     onPress={() => { this.props.navigation.navigate('asistencia_app'); }}
-                    />
-                  
+                />
             </>
         )
     }
 
 }
-
-
-const styles = StyleSheet.create({
-    container: {
-        justifyContent: 'center'
-    },
-    titulo: {
-        fontSize: 20,
-        textAlign: 'center',
-        fontWeight: 'bold'
-    },
-    button: {
-        width: 300,
-        backgroundColor: '#00748D',
-        borderRadius: 25,
-        marginVertical: 10,
-        paddingVertical: 12
-    },
-    lista: {
-        marginTop: 5,
-        marginBottom: 5
-    },
-    flotante: {
-        position: 'absolute',
-        bottom: 10,
-        right: 10,
-    }
-});

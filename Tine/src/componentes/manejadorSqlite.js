@@ -3,13 +3,20 @@ import { openDatabase } from 'react-native-sqlite-storage';
 const { server } = require('../config/keys');
 import AsyncStorage from '@react-native-community/async-storage';
 var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
-const manejador = {};
+const manejador = require("./manejadorSqlite");
+var PushNotification = require("react-native-push-notification");
 
 manejador.subirTareas = () => {
     db.transaction(function (txn) {
         txn.executeSql("SELECT * FROM tarea WHERE estado = 0", [], (tx, res) => {
-
             if (res.rows.length > 0) {
+                PushNotification.localNotification({
+                    id: '1',
+                    priority: "high",
+                    importance: "high",
+                    title: "Conexión con el servidor",
+                    message: "Subiendo tareas",
+                });
                 for (var i = 0; i < res.rows.length; i++) {
                     let tarea = {
                         id: res.rows.item(i).id,
@@ -23,9 +30,6 @@ manejador.subirTareas = () => {
                         lat_fin: res.rows.item(i).latitud_fin,
                         long_fin: res.rows.item(i).longitud_fin
                     }
-
-
-
                     fetch(server.api + 'Alta_tarea', {
                         method: 'POST',
                         headers: {
@@ -46,6 +50,7 @@ manejador.subirTareas = () => {
                             } else {
                                 alert(retorno.mensaje);
                             }
+                            PushNotification.cancelAllLocalNotifications();
                         })
                         .catch(function (err) {
                             console.log('error', err);
@@ -68,6 +73,13 @@ manejador.subirTareas = () => {
 
 
 promesasubirAsistencia = async (datos) => {
+    PushNotification.localNotification({
+        id: '1',
+        priority: "high",
+        importance: "high",
+        title: "Conexión con el servidor",
+        message: "Subiendo asistencias",
+    });
     return new Promise(function (resolve, reject) {
         fetch(server.api + 'Alta_asistencia', {
             method: 'POST',
@@ -88,6 +100,7 @@ promesasubirAsistencia = async (datos) => {
                         console.log("retorno de marca: ", retorno);
                         resolve(true);
                     });
+                    PushNotification.cancelAllLocalNotifications();
                 } else {
                     console.log("Error al subir la asistencia");
                 }
@@ -151,31 +164,31 @@ manejador.subirAsistencias = () => {
                         console.log("retornoFinal: ", retorno);
                     });
 
-                  /*  fetch(server.api + 'Alta_asistencia', {
-                        method: 'POST',
-                        headers: {
-                            'Aceptar': 'application/json',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(datos)
-                    })
-                        .then(res => {
-                            return res.json()
-                        })
-                        .then(async data => {
-                            console.log("data", data);
-
-                            if (data.retorno == true) {
-                                console.log("La marca se dio de alta correctamente");
-                                manejador.marcarAsistencia(datos.id);
-                            } else {
-                                console.log("Error al subir la asistencia");
-                            }
-                        })
-                        .catch(function (err) {
-                            console.log('error', err);
-                        })
-*/
+                    /*  fetch(server.api + 'Alta_asistencia', {
+                          method: 'POST',
+                          headers: {
+                              'Aceptar': 'application/json',
+                              'Content-Type': 'application/json',
+                          },
+                          body: JSON.stringify(datos)
+                      })
+                          .then(res => {
+                              return res.json()
+                          })
+                          .then(async data => {
+                              console.log("data", data);
+  
+                              if (data.retorno == true) {
+                                  console.log("La marca se dio de alta correctamente");
+                                  manejador.marcarAsistencia(datos.id);
+                              } else {
+                                  console.log("Error al subir la asistencia");
+                              }
+                          })
+                          .catch(function (err) {
+                              console.log('error', err);
+                          })
+  */
 
                 }
             } else {
@@ -222,7 +235,7 @@ manejador.bajarEmpleadosEmpresa = (documento) => { ///baja los empleado al inici
 
 
 manejador.borrarTareas = () => {
-    Toast.show('pueba',);
+    Toast.show('pueba');
 }
 
 manejador.listarempresas = (id_usuario) => {
