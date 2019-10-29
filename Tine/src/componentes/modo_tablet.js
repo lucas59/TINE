@@ -127,7 +127,6 @@ export default class modoTablet extends Component {
 
     }
     confirmar_usuario = async () => {
-        Keyboard.dismiss();
         let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
         this.setState({ empresa_id: sesion.id });
@@ -150,8 +149,6 @@ export default class modoTablet extends Component {
 
     Alta_asistencia = async (camera, estado) => {
         this.setState({ cargando: true });
-        console.log(camera);
-        Keyboard.dismiss();
         const options = { quality: 0.5, base64: true, captureAudio: false };
         const data = await camera.takePictureAsync(options);
         this.setState({ foto: data.base64 });
@@ -159,7 +156,6 @@ export default class modoTablet extends Component {
         this.setState({ fecha: fecha });
         const { foto } = this.state;
         var empresa_id = this.state.empresa_id;
-        console.log(idempleado);
         if (this.state.connection_Status == "Offline") {
             db.transaction(function (tx) {
                 db.transaction(function (txx) {
