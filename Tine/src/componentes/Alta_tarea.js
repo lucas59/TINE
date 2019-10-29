@@ -83,6 +83,7 @@ export default class Alta_tarea extends Component {
 
 
     toggleStopwatch = async () => {
+        this.setState({ cargando: true });
         this.setState({ stopwatchStart: !this.state.stopwatchStart, stopwatchReset: false });
         let fecha = moment(new Date()).format();
         var longitud;
@@ -127,6 +128,7 @@ export default class Alta_tarea extends Component {
                                 );
                             });
                         }
+                        this.setState({ cargando: false });
                     } else {
                         if (this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null') == 'tarea_pausa_id_null') {
                             this.promesa_ultimo_id().then((data) => {
@@ -142,7 +144,6 @@ export default class Alta_tarea extends Component {
                         this.setState({ long_fin: longitud });
                         this.setState({ lat_fin: latitud });
                         this.saveData();
-
                     }
                 },
                 (error) => {
@@ -192,7 +193,6 @@ export default class Alta_tarea extends Component {
                 })
             })
         }
-        this.setState({ cargando: true });
         let myArray = await AsyncStorage.getItem('empresa');
         let session = await AsyncStorage.getItem('usuario');
         let sesion = JSON.parse(session);
@@ -252,7 +252,6 @@ export default class Alta_tarea extends Component {
                     const retorno = data;
                     console.log(retorno.mensaje);
                     if (retorno.retorno == true) {
-                        this.setState({ cargando: false });
                         Toast.show('La tarea se ingresó correctamente');
                         this.props.navigation.navigate('lista_tareas');
                     } else {
