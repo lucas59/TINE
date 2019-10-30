@@ -16,7 +16,7 @@
     "moment": "^2.24.0",
     "mqtt": "^3.0.0",
     "react": "16.8.6",
-    "react-native": "0.59.4",
+    "react-native": "0.60.5",
     "react-native-action-button": "^2.8.5",
     "react-native-background-task": "^0.2.1",
     "react-native-background-timer": "^2.1.1",
