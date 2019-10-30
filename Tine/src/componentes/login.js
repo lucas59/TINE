@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Alert, View, Keyboard, Text, ScrollView, ImageBackground,TouchableHighlight } from 'react-native';
+import { Alert, View, Keyboard, Text, ScrollView, ImageBackground, TouchableHighlight } from 'react-native';
 import { Image } from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import { TextInput } from 'react-native-paper';
 const { server } = require('../config/keys');
 import styles from '../css/styleLogin';
 const manejador = require("./manejadorSqlite");
-import DeviceInfo from 'react-native-device-info';
+
 import { Button } from 'react-native-paper';
 import Toast from 'react-native-simple-toast';
 var timer;
@@ -174,20 +174,14 @@ export default class Login extends Component {
 
     render() {
         return (
-            <ScrollView contentContainerStyle={{
-                flex: 1
-            }}>
-                <ImageBackground style={styles.imgBackground}
+            <View  style={{flex: 1}}>
+                <ImageBackground 
                     resizeMode='cover'
                     source={require('../imagenes/login.png')}
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        flex: 1
-                    }}>
+                    >
 
                     <View style={styles.container}>
-                        <View>
+                        
                             <Image
                                 source={require('../imagenes/Tesis-logo.png')}
                                 style={{ width: 300, height: 300 }}
@@ -207,8 +201,6 @@ export default class Login extends Component {
                                 }}
                                 value={this.state.email}
                             />
-                        </View>
-                        <View>
                             <TextInput
                                 label="Contraseña"
                                 style={{ width: 300, fontSize: 20, marginTop: 30, marginBottom: 30 }}
@@ -225,17 +217,17 @@ export default class Login extends Component {
                                 value={this.state.password}
                                 secureTextEntry={true}
                             />
-                        </View>
+                            
 
-                        {this.state.cargando ? <Button loading={true} disabled={true} style={{ borderRadius: 30,width: 220, marginBottom: 30 }} color="#007D8D" mode="contained"></Button> :
-                            <TouchableHighlight onPress={this.saveData}><Button style={{ borderRadius: 30,width: 220, marginBottom: 30 }} color="#007D8D" mode="contained" onPress={this.saveData}>
+                        {this.state.cargando ? <Button loading={true} disabled={true} style={{ borderRadius: 30, width: 220, marginBottom: 30 }} color="#007D8D" mode="contained"></Button> :
+                            <TouchableHighlight onPress={this.saveData}><Button style={{ borderRadius: 30, width: 220, marginBottom: 30 }} color="#007D8D" mode="contained" onPress={this.saveData}>
                                 Iniciar
   </Button></TouchableHighlight>}
                         <Text style={{ color: "white" }}>¿Nuevo aquí?</Text>
                         <Text style={{ color: '#41d1f0' }} onPress={this.openSignup}>Registrate</Text>
                     </View>
                 </ImageBackground>
-            </ScrollView>
+            </View>
 
         )
     }
