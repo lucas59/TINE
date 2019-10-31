@@ -175,10 +175,10 @@ export default class modoTablet extends Component {
                 this.comprobar_ultima_asistencia_offline().then((data_2) => {
                     console.log("data", data_2);
                     if (data_2 == 1) {
-                        this.setState({ mensaje_alert: "Su ultima asistencia fue una entrada,¿Usted esta ingresando o saliendo del establecimiento?" });
+                        this.setState({ mensaje_alert: "Su ultima asistencia fue una entrada,¿Usted esta ingresando o saliendo de la empresa?" });
                     }
                     else if (data_2 == 2) {
-                        this.setState({ mensaje_alert: "¿Usted esta ingresando o saliendo del establecimiento?" });
+                        this.setState({ mensaje_alert: "¿Usted esta ingresando o saliendo de la empresa?" });
                     }
                     if (data == 1) {
                         this.setState({ boton_act: true });

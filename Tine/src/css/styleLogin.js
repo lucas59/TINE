@@ -2,8 +2,9 @@ import { StyleSheet } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 module.exports = StyleSheet.create({
     container: {
-        width: wp('100%'),
-    height: hp('17%'),
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     }, inputContainer: {
         borderBottomColor: '#8594A6',
         backgroundColor: '#FFFF',
@@ -53,4 +54,3 @@ module.exports = StyleSheet.create({
         borderRadius: 30,
     },
 });
-
