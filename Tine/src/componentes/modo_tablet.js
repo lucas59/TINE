@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Alert, TouchableOpacity, StyleSheet, Text, TouchableHighlight } from 'react-native';
+import { View, Alert, ScrollView, StyleSheet, Text, TouchableHighlight } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { RNCamera } from 'react-native-camera';
@@ -175,7 +175,7 @@ export default class modoTablet extends Component {
                 this.comprobar_ultima_asistencia_offline().then((data_2) => {
                     console.log("data", data_2);
                     if (data_2 == 1) {
-                        this.setState({ mensaje_alert: "Su ultima asistencia fue una entrada,¿Usted esta ingresando o saliendo de la empresa?" });
+                        this.setState({ mensaje_alert: "Su última asistencia fue una entrada,¿Usted esta ingresando o saliendo de la empresa?" });
                     }
                     else if (data_2 == 2) {
                         this.setState({ mensaje_alert: "¿Usted esta ingresando o saliendo de la empresa?" });
@@ -344,7 +344,7 @@ export default class modoTablet extends Component {
         console.log(this.state.tablet);
         if (this.state.tablet) {
             return (
-                <>
+                <ScrollView >
                     <View style={styles.pin}>
                         <PinView
 
@@ -401,7 +401,7 @@ export default class modoTablet extends Component {
                             }}
                         </RNCamera>
                     </View>
-                </>
+                </ScrollView>
             )
         }
         else {
@@ -492,7 +492,6 @@ const styles = StyleSheet.create({
         marginRight: 5
     },
     container: {
-        flex: 1,
         flexDirection: 'column',
         backgroundColor: 'black',
     },
@@ -502,7 +501,6 @@ const styles = StyleSheet.create({
         position: 'absolute', top: 160, right: 100, bottom: 0
     },
     capture: {
-        flex: 0,
         backgroundColor: '#1E8AF1',
         borderRadius: 5,
         padding: 15,

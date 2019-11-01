@@ -95,7 +95,7 @@ export default class asistencia_app extends Component {
                 this.comprobar_ultima_asistencia_offline().then((data) => {
                     console.log("data", data);
                     if (data == 1) {
-                        this.setState({ mensaje_alert: "Su ultima asistencia fue una entrada,¿Usted esta ingresando o saliendo de la empresa?" });
+                        this.setState({ mensaje_alert: "Su última asistencia fue una entrada,¿Usted está ingresando o saliendo de la empresa?" });
                     }
                     else if (data == 2) {
                         this.setState({ mensaje_alert: "¿Usted esta ingresando o saliendo de la empresa?" });

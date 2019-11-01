@@ -203,7 +203,7 @@ export default class Alta_tarea extends Component {
                 }}>
                 <View style={styles.container}>
                     <TextInput
-                        label="Titulo de la tarea"
+                        label="Título de la tarea"
                         style={{ width: 300, fontSize: 20, marginTop: 30 }}
                         onChangeText={(tarea_titulo) => this.setState({ tarea_titulo })}
                         placeholder="¿En qué estás trabajando?"

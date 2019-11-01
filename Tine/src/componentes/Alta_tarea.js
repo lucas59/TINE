@@ -233,7 +233,7 @@ export default class Alta_tarea extends Component {
                 }
                 );
             });
-            Toast.show('La tarea se ingreso correctamente');
+            Toast.show('La tarea se ingresó correctamente');
             this.props.navigation.navigate('lista_tareas');
         }
         else {
@@ -281,7 +281,7 @@ export default class Alta_tarea extends Component {
                         startTime={this.state.tiempo_inicio} />
 
                     <TextInput
-                        label="Titulo de la tarea"
+                        label="Título de la tarea"
                         style={styles.input_altatarea}
                         onChangeText={(titulo) => this.setState({ titulo })}
                         placeholder="¿En qué estás trabajando?"

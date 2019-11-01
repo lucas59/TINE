@@ -291,7 +291,7 @@ export default class lista_tareas extends Component {
                             source={require('../imagenes/reloj-durmiendo.png')}
                             style={style_lista_tareas.imagen_vacia}
                         />
-                        <Text style={style_lista_tareas.texto_vacio}>La lista de tareas esta vacia</Text>
+                        <Text style={style_lista_tareas.texto_vacio}>La lista de tareas está vacia</Text>
                     </View>}
                 </View>
             )

@@ -6,9 +6,10 @@ import { TextInput } from 'react-native-paper';
 const { server } = require('../config/keys');
 import styles from '../css/styleLogin';
 const manejador = require("./manejadorSqlite");
-import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-paper';
 import Toast from 'react-native-simple-toast';
+import {Dimensions} from 'react-native';
+
 var timer;
 
 export default class Login extends Component {
@@ -174,9 +175,7 @@ export default class Login extends Component {
 
     render() {
         return (
-            <ScrollView contentContainerStyle={{
-                flex: 1
-            }}>
+            <ScrollView >
                 <ImageBackground style={styles.imgBackground}
                     resizeMode='cover'
                     source={require('../imagenes/login.png')}

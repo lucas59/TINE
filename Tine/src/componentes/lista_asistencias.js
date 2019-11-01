@@ -187,7 +187,7 @@ export default class lista_tareas extends Component {
                                 source={require('../imagenes/cama.png')}
                                 style={styles.imagen_vacia}
                             />
-                            <Text style={styles.texto_vacio}>La lista de asistencias esta vacia</Text>
+                            <Text style={styles.texto_vacio}>La lista de asistencias está vacía</Text>
                         </View>}
                 </View>
             )
