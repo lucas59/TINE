@@ -257,7 +257,6 @@ export default class modoTablet extends Component {
         this.setState({ fecha: fecha });
         const { foto } = this.state;
         var empresa_id = this.state.empresa_id;
-        console.log("datos", idempleado, foto, fecha, empresa_id, estado);
         if (this.state.connection_Status == "Offline") {
             db.transaction(function (tx) {
                 db.transaction(function (txx) {
