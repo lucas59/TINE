@@ -17,6 +17,7 @@ import MqttService from '../core/services/MqttService';
 import { Card, Surface } from 'react-native-paper';
 import OfflineNotification from '../componentes/OfflineNotification';
 import OnlineNotification from '../componentes/OnlineNotification';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import PTRView from 'react-native-pull-to-refresh';
 
 var PushNotification = require("react-native-push-notification");
@@ -74,13 +75,24 @@ export default class lista_empresas extends Component {
   }
 
   onWORLD = mensaje => {
-    PushNotification.localNotification({
-      title: 'Mensaje de la empresa',
-      message: mensaje,
-      playSound: true,
-      soundName: 'default',
-      importance: 'high',
-    });
+    console.log(mensaje);
+    
+    if (Platform.OS == 'ios') {
+
+      PushNotificationIOS.presentLocalNotification({
+        alertBody: 'Mensaje de la empresa, ' + mensaje,
+        applicationIconBadgeNumber: 1
+      });
+    
+    } else if (Platform.OS == 'android') {
+      PushNotification.localNotification({
+        title: 'Mensaje de la empresa',
+        message: mensaje,
+        playSound: true,
+        soundName: 'default',
+        importance: 'high',
+      });
+    }
   };
 
   mqttSuccessHandler = async () => {

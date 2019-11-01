@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Alert, ScrollView, StyleSheet, Text, TouchableHighlight } from 'react-native';
+import { View, Alert, TouchableOpacity, StyleSheet, Text, TouchableHighlight } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { RNCamera } from 'react-native-camera';
@@ -14,6 +14,7 @@ import NetInfo from "@react-native-community/netinfo";
 import BackgroundTimer from 'react-native-background-timer';
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
 const manejador = require("./manejadorSqlite");
 
 
@@ -407,7 +408,7 @@ export default class modoTablet extends Component {
         else {
             console.log("mensaje: ", this.state.mensaje_alert);
             return (
-                <>
+                <ScrollView>
                     <View style={{ alignContent: 'center', alignItems: 'center' }} >
                         <RNCamera
                             type={RNCamera.Constants.Type.front}
@@ -469,7 +470,7 @@ export default class modoTablet extends Component {
 
                         />
                     </View>
-                </>
+                </ScrollView>
             )
         }
 
@@ -492,6 +493,7 @@ const styles = StyleSheet.create({
         marginRight: 5
     },
     container: {
+        flex: 1,
         flexDirection: 'column',
         backgroundColor: 'black',
     },
@@ -501,6 +503,7 @@ const styles = StyleSheet.create({
         position: 'absolute', top: 160, right: 100, bottom: 0
     },
     capture: {
+        flex: 0,
         backgroundColor: '#1E8AF1',
         borderRadius: 5,
         padding: 15,
