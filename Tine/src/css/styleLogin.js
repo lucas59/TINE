@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 module.exports = StyleSheet.create({
     container: {
         flex: 1,
@@ -53,4 +54,3 @@ module.exports = StyleSheet.create({
         borderRadius: 30,
     },
 });
-

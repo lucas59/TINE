@@ -103,7 +103,7 @@ export default class Signup extends React.Component {
     render() {
         var radio_props = [
             { label: 'Empresa', value: 0 },
-            { label: 'Colaborador', value: 1 }
+            { label: 'Empleado', value: 1 }
         ];
         return (
             <ImageBackground
