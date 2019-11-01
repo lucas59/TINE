@@ -239,7 +239,10 @@ export default class Profile extends Component {
       imagen = server.img + 'user.jpg';
     }
     return (
-        <ScrollView >
+    
+      <ScrollView contentContainerStyle={{
+        flex: 1
+      }}>
           <ImageBackground
             resizeMode='cover'
             source={require('../imagenes/perfil.png')}
