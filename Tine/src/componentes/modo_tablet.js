@@ -205,7 +205,7 @@ export default class modoTablet extends Component {
                             console.log("pin a ", results.rows.item(i).pin);
                             console.log("pin b ", codigo);
                             if (results.rows.item(i).pin == codigo) {
-
+                                idempleado = results.rows.item(i).id;
                                 resolve(1);
 
                             }
