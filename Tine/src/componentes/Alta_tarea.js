@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, PermissionsAndroid, TouchableHighlight, BackHandler, Alert, ImageBackground } from 'react-native';
+import { Text, View, PermissionsAndroid, TouchableHighlight,  ImageBackground } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');

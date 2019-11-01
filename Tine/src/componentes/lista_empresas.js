@@ -7,6 +7,7 @@ import {
   View
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import Toast from 'react-native-simple-toast';
 const { server } = require('../config/keys');
 import NetInfo from '@react-native-community/netinfo';
 import { ListItem, Icon,Divider, Image } from 'react-native-elements';
@@ -78,11 +79,12 @@ export default class lista_empresas extends Component {
     console.log(mensaje);
     
     if (Platform.OS == 'ios') {
-
+      Toast.show(mensaje);
       PushNotificationIOS.presentLocalNotification({
         alertBody: 'Mensaje de la empresa, ' + mensaje,
         applicationIconBadgeNumber: 1
       });
+      
     
     } else if (Platform.OS == 'android') {
       PushNotification.localNotification({

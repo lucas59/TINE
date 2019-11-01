@@ -105,7 +105,7 @@ export default class modoTablet extends Component {
             setTimeout(() => {
                 db.transaction(function (tx) {
                     tx.executeSql('SELECT * FROM asistencia WHERE id=(SELECT MAX(id) from asistencia) AND empleado_id = ? AND empresa_id = ? AND tipo = 1', [idempleado, empresa_id], (tx, results) => {
-                        console.log("eeee");
+
                         if (results.rows.length > 0) {
                             resolve(1);
                         }
@@ -152,11 +152,6 @@ export default class modoTablet extends Component {
                         if (data == 1) {
                             this.setState({ boton_act: true });
                             this.setState({ cargando: false });
-                            Toast.show('Buen viaje, seleccione aceptar');
-                        }
-                        else if (data == 2) {
-                            this.setState({ boton_act: true });
-                            this.setState({ cargando: false });
                             Toast.show('Bienvenido, seleccione aceptar');
                         }
                         else if (data == 3) {
@@ -184,11 +179,7 @@ export default class modoTablet extends Component {
                     if (data == 1) {
                         this.setState({ boton_act: true });
                         this.setState({ cargando: false });
-                        Toast.show('Buen viaje, seleccione aceptar');
-                    }
-                    else if (data == 2) {
-                        this.setState({ boton_act: true });
-                        this.setState({ cargando: false });
+                       
                         Toast.show('Bienvenido, seleccione aceptar');
                     }
                     else if (data == 3) {
@@ -214,17 +205,9 @@ export default class modoTablet extends Component {
                             console.log("pin a ", results.rows.item(i).pin);
                             console.log("pin b ", codigo);
                             if (results.rows.item(i).pin == codigo) {
-                                idempleado = results.rows.item(i).id;
-                                tx.executeSql('SELECT * FROM asistencia WHERE empleado_id = ? AND empresa_id = ? AND tipo = 0', [results.rows.item(i).id, empresa_id], (tx, results) => {
-                                    console.log("numero", results.rows.length);
-                                    if (results.rows.length > 0) {
-                                        resolve(1);
-                                    }
-                                    else {
-                                        resolve(2);
-                                    }
-                                });
-                                break;
+
+                                resolve(1);
+
                             }
                             else {
                                 resolve(3);
@@ -344,7 +327,7 @@ export default class modoTablet extends Component {
         console.log(this.state.tablet);
         if (this.state.tablet) {
             return (
-                <ScrollView >
+                <>
                     <View style={styles.pin}>
                         <PinView
 
@@ -401,13 +384,13 @@ export default class modoTablet extends Component {
                             }}
                         </RNCamera>
                     </View>
-                </ScrollView>
+                </>
             )
         }
         else {
             console.log("mensaje: ", this.state.mensaje_alert);
             return (
-                <ScrollView>
+                <>
                     <View style={{ alignContent: 'center', alignItems: 'center' }} >
                         <RNCamera
                             type={RNCamera.Constants.Type.front}
@@ -469,7 +452,7 @@ export default class modoTablet extends Component {
 
                         />
                     </View>
-                </ScrollView>
+                </>
             )
         }
 

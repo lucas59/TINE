@@ -239,10 +239,7 @@ export default class Profile extends Component {
       imagen = server.img + 'user.jpg';
     }
     return (
-      <>
-        <ScrollView contentContainerStyle={{
-          flex: 1
-        }}>
+        <ScrollView >
           <ImageBackground
             resizeMode='cover'
             source={require('../imagenes/perfil.png')}
@@ -308,7 +305,7 @@ export default class Profile extends Component {
               </View>
             </View>
           </ImageBackground>
-        </ScrollView>
+        
         <ActionButton
           renderIcon={active => <Icon name="edit" color="white" />}
           buttonColor="#00748D"
@@ -427,7 +424,7 @@ export default class Profile extends Component {
             </ImageBackground>
           </ScrollView>
         </Modal>
-      </>
+        </ScrollView>
     );
   }
 }
