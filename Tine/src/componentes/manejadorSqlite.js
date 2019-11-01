@@ -153,9 +153,8 @@ manejador.subirAsistencias = () => {
                         fecha: res.rows.item(i).fecha,
                         foto: res.rows.item(i).foto,
                         empleado_id: res.rows.item(i).empleado_id,
-                        tipo: res.rows.item(i).tipo,
-                        empresa_id: res.rows.item(i).empresa_id,
-                        estado: res.rows.item(i).estado
+                        estado: res.rows.item(i).tipo,
+                        empresa_id: res.rows.item(i).empresa_id
                     }
 
                     console.log("datos: ", datos);

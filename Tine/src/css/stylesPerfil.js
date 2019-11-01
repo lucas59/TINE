@@ -19,12 +19,10 @@ module.exports = StyleSheet.create({
     body: {
         top: 290,
         alignSelf: 'center',
-        position: 'absolute',
     },
     body_m: {
         top:270,
     alignSelf: 'center',
-    position: 'absolute',
 },
     bodyContent: {
         flex: 1,

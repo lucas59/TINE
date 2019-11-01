@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Alert, TouchableOpacity, StyleSheet, Text, TouchableHighlight } from 'react-native';
+import { View, Alert, ScrollView, StyleSheet, Text, TouchableHighlight } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { RNCamera } from 'react-native-camera';
@@ -14,7 +14,6 @@ import NetInfo from "@react-native-community/netinfo";
 import BackgroundTimer from 'react-native-background-timer';
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-paper';
-import { ScrollView } from 'react-native-gesture-handler';
 const manejador = require("./manejadorSqlite");
 
 
@@ -179,7 +178,7 @@ export default class modoTablet extends Component {
                     if (data == 1) {
                         this.setState({ boton_act: true });
                         this.setState({ cargando: false });
-                       
+
                         Toast.show('Bienvenido, seleccione aceptar');
                     }
                     else if (data == 3) {
@@ -391,31 +390,24 @@ export default class modoTablet extends Component {
             console.log("mensaje: ", this.state.mensaje_alert);
             return (
                 <>
-                    <View style={{ alignContent: 'center', alignItems: 'center' }} >
-                        <RNCamera
-                            type={RNCamera.Constants.Type.front}
-                            captureAudio={false}
-                            style={{ top: 100, width: 150 }}
-                        >
-                            {({ camera, status }) => {
-                                if (status !== 'READY') return <PendingView />;
-                                return (
-                                    <View style={{ position: 'relative', top: 570 }}>
-                                        {this.state.cargando ? <Button style={styles.capture} mode="outlined" color="#00748D"
-                                            style={{ marginTop: 10, width: 150 }} disabled={true} loading={true}>
-                                        </Button>
-                                            : this.state.boton_act ? <TouchableHighlight onPress={async () => Alert.alert(
-                                                "Opciones",
-                                                this.state.mensaje_alert,
-                                                [
-                                                    { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
-                                                    {
-                                                        text: "Saliendo",
-                                                        onPress: () => this.Alta_asistencia(camera, 0),
-                                                    },
-                                                ],
-                                            )}><Button style={styles.capture} mode="contained" color="#00748D"
-                                                style={{ marginTop: 10, width: 150 }} onPress={async () => Alert.alert(
+                    <ScrollView
+                        contentContainerStyle={{
+                            top: 0, bottom: 0, height: 750
+                        }}>
+                        <View style={{ alignContent: 'center', alignItems: 'center' }} >
+                            <RNCamera
+                                type={RNCamera.Constants.Type.front}
+                                captureAudio={false}
+                                style={{ top: 100, width: 150 }}
+                            >
+                                {({ camera, status }) => {
+                                    if (status !== 'READY') return <PendingView />;
+                                    return (
+                                        <View style={{ position: 'relative', top: 570 }}>
+                                            {this.state.cargando ? <Button style={styles.capture} mode="outlined" color="#00748D"
+                                                style={{ marginTop: 10, width: 150 }} disabled={true} loading={true}>
+                                            </Button>
+                                                : this.state.boton_act ? <TouchableHighlight onPress={async () => Alert.alert(
                                                     "Opciones",
                                                     this.state.mensaje_alert,
                                                     [
@@ -425,33 +417,46 @@ export default class modoTablet extends Component {
                                                             onPress: () => this.Alta_asistencia(camera, 0),
                                                         },
                                                     ],
-                                                )} disabled={false}>
-                                                    Aceptar
+                                                )}><Button style={styles.capture} mode="contained" color="#00748D"
+                                                    style={{ marginTop: 10, width: 150 }} onPress={async () => Alert.alert(
+                                                        "Opciones",
+                                                        this.state.mensaje_alert,
+                                                        [
+                                                            { text: "Entrando", onPress: () => this.Alta_asistencia(camera, 1) },
+                                                            {
+                                                                text: "Saliendo",
+                                                                onPress: () => this.Alta_asistencia(camera, 0),
+                                                            },
+                                                        ],
+                                                    )} disabled={false}>
+                                                        Aceptar
                                        </Button></TouchableHighlight> : <Button style={styles.capture} mode="contained" color="#00748D"
-                                                    style={{ marginTop: 10, width: 150 }} disabled={true}>
-                                                    Aceptar
+                                                        style={{ marginTop: 10, width: 150 }} disabled={true}>
+                                                        Aceptar
                                        </Button>
-                                        }
-                                    </View>
-                                );
-                            }}
-                        </RNCamera>
-                    </View>
-                    <View style={{
-                        position: "absolute", left: 20, right: 20, top: 260, bottom: 100
-                        , borderWidth: 2,
-                        borderRadius: 10,
-                        borderColor: '#ddd',
-                        shadowColor: '#000',
-                    }}>
-                        <PinView
-                            onComplete={(val, clear) => { this.setState({ codigo: val }), clear(), this.confirmar_usuario() }}
-                            pinLength={4}
-                            inputBgColor="#0083D0"
-                            inputBgOpacity={0.6}
+                                            }
+                                        </View>
+                                    );
+                                }}
+                            </RNCamera>
+                        </View>
 
-                        />
-                    </View>
+                        <View style={{
+                            position: "absolute", left: 6, right: 'auto', top: 260, bottom: 120
+                            , borderWidth: 2,
+                            borderRadius: 10,
+                            borderColor: '#ddd',
+                            shadowColor: '#000',
+                        }}>
+                            <PinView
+                                onComplete={(val, clear) => { this.setState({ codigo: val }), clear(), this.confirmar_usuario() }}
+                                pinLength={4}
+                                inputBgColor="#0083D0"
+                                inputBgOpacity={0.6}
+
+                            />
+                        </View>
+                    </ScrollView>
                 </>
             )
         }

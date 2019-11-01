@@ -239,10 +239,10 @@ export default class Profile extends Component {
       imagen = server.img + 'user.jpg';
     }
     return (
-    
-      <ScrollView contentContainerStyle={{
-        flex: 1
-      }}>
+         <ScrollView
+        contentContainerStyle={{
+          top: 0, bottom: 0, height: 700
+        }}>
           <ImageBackground
             resizeMode='cover'
             source={require('../imagenes/perfil.png')}
@@ -326,20 +326,20 @@ export default class Profile extends Component {
           onRequestClose={() => {
             this.setModalVisible(false);
           }}>
-          <ScrollView contentContainerStyle={{
-            flex: 1
-          }}>
+           <ScrollView
+        contentContainerStyle={{
+          top: 0, bottom: 0, height: 800
+        }}>
             <ImageBackground
               resizeMode='cover'
               source={require('../imagenes/perfil.png')}
               style={{
                 width: '100%',
-                height: '100%',
-                flex: 1
+                height: '100%'
               }}>
               <View style={styles.container}>
                 <Image style={styles.avatar} source={{ uri: imagen }} />
-                <View style={styles.body_m}>
+                <View style={styles.body}>
                   <View style={styles.bodyContent}>
                     <TextInput
                       label="Correo"
@@ -425,7 +425,7 @@ export default class Profile extends Component {
                 </View>
               </View>
             </ImageBackground>
-          </ScrollView>
+            </ScrollView>
         </Modal>
         </ScrollView>
     );

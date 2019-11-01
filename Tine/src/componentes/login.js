@@ -175,7 +175,10 @@ export default class Login extends Component {
 
     render() {
         return (
-            <ScrollView >
+            <ScrollView
+            contentContainerStyle={{
+                top: 0, bottom: 0, height: 720
+            }}>
                 <ImageBackground style={styles.imgBackground}
                     resizeMode='cover'
                     source={require('../imagenes/login.png')}
