@@ -1,13 +1,12 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 module.exports = StyleSheet.create({
     header: {
-        height: 200,
+        height: Math.round(Dimensions.get('window').height),
         width: 395
     },
     avatar: {
         width: 170,
         height: 170,
-        top: 120,
         alignSelf: 'center',
         position: 'absolute'
     },
@@ -17,17 +16,19 @@ module.exports = StyleSheet.create({
         fontWeight: '600',
     },
     body: {
-        top: 290,
         alignSelf: 'center',
+        bottom: 60,
+        position: 'absolute'
+
     },
     body_m: {
-        top:270,
-    alignSelf: 'center',
+        alignSelf: 'center',
 },
     bodyContent: {
         flex: 1,
         alignItems: 'center',
         padding: 30,
+       
     },
     name: {
         fontSize: 28,

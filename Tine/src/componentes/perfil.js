@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
-import { Alert, Text, View, Modal, Image, ImageBackground, TouchableHighlight } from 'react-native';
+import { Alert, Text, View, Modal, Image, ImageBackground, TouchableHighlight, Dimensions } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import styles from '../css/stylesPerfil';
 import { Icon } from 'react-native-elements';
@@ -239,76 +239,72 @@ export default class Profile extends Component {
       imagen = server.img + 'user.jpg';
     }
     return (
-         <ScrollView
-        contentContainerStyle={{
-          top: 0, bottom: 0, height: 700
-        }}>
-          <ImageBackground
-            resizeMode='cover'
-            source={require('../imagenes/perfil.png')}
-            style={{
-              width: '100%',
-              height: '100%',
-              flex: 1
-            }}>
-            <View style={styles.container}>
-              <Image style={styles.avatar} source={{ uri: imagen }} />
-
-              <View style={styles.body}>
-                <View style={styles.bodyContent}>
-                  <Text style={styles.name}>
-                    {this.state.nombre} {this.state.apellido}{' '}
-                  </Text>
-                  <View style={{
-                    paddingVertical: 15,
-                    paddingHorizontal: 10,
-                    flexDirection: "row",
-                    alignItems: "center"
-                  }}>
-                    {this.state.email ? <Icon
-                      name='email'
-                      type='material-community'
-                      color="#00748D"
-                    />:null}
-                    <Text style={styles.info}> {this.state.email}      </Text>
-                    {this.state.celular ? <Icon
-                      name='phone'
-                      type='material-community'
-                      color="#00748D" /> : null}
-                    <Text style={styles.info}> {this.state.celular} </Text>
-                  </View>
-                  <TouchableHighlight onPress={this.desactivarCuenta}>
-                    <Button
-                      style={styles.buttonContainer}
-                      color="#00748D"
-                      mode="contained"
-                      onPress={this.desactivarCuenta}>
-                      Desactivar cuenta
-                </Button>
-                  </TouchableHighlight>
-                 {this.state.celular ? <TouchableHighlight onPress={() => { this.props.navigation.navigate('seguridadFoto'); }}>
-                    <Button
-                      style={styles.buttonContainer}
-                      color="#00748D"
-                      mode="contained"
-                      onPress={() => { this.props.navigation.navigate('seguridadFoto'); }}>
-                      Agreagar una foto de seguridad
-                </Button>
-                  </TouchableHighlight> : null} 
-                  <TouchableHighlight onPress={this.confirmCerrarSession}>
-                    <Button
-                      style={styles.buttonContainer}
-                      color="#00748D"
-                      mode="contained"
-                      onPress={this.confirmCerrarSession}>
-                      Cerrar sesión
-                </Button>
-                  </TouchableHighlight>
+      <>
+        <ImageBackground
+          resizeMode='cover'
+          source={require('../imagenes/perfil.png')}
+          style={{
+            width: '100%',
+            height: Math.round(Dimensions.get('window').height),
+            flex: 1
+          }}>
+          <View style={{ height: Math.round(Dimensions.get('window').height) }}>
+            <Image style={styles.avatar} source={{ uri: imagen }} />
+            <View style={styles.body}>
+              <View style={styles.bodyContent}>
+                <Text style={styles.name}>
+                  {this.state.nombre} {this.state.apellido}{' '}
+                </Text>
+                <View style={{
+                  paddingVertical: 15,
+                  paddingHorizontal: 10,
+                  flexDirection: "row",
+                  alignItems: "center"
+                }}>
+                  {this.state.email ? <Icon
+                    name='email'
+                    type='material-community'
+                    color="#00748D"
+                  /> : null}
+                  <Text style={styles.info}> {this.state.email}      </Text>
+                  {this.state.celular ? <Icon
+                    name='phone'
+                    type='material-community'
+                    color="#00748D" /> : null}
+                  <Text style={styles.info}> {this.state.celular} </Text>
                 </View>
+                <TouchableHighlight onPress={this.desactivarCuenta}>
+                  <Button
+                    style={styles.buttonContainer}
+                    color="#00748D"
+                    mode="contained"
+                    onPress={this.desactivarCuenta}>
+                    Desactivar cuenta
+                </Button>
+                </TouchableHighlight>
+                {this.state.celular ? <TouchableHighlight onPress={() => { this.props.navigation.navigate('seguridadFoto'); }}>
+                  <Button
+                    style={styles.buttonContainer}
+                    color="#00748D"
+                    mode="contained"
+                    onPress={() => { this.props.navigation.navigate('seguridadFoto'); }}>
+                    Agreagar una foto de seguridad
+                </Button>
+                </TouchableHighlight> : null}
+                <TouchableHighlight onPress={this.confirmCerrarSession}>
+                  <Button
+                    style={styles.buttonContainer}
+                    color="#00748D"
+                    mode="contained"
+                    onPress={this.confirmCerrarSession}>
+                    Cerrar sesión
+                </Button>
+                </TouchableHighlight>
               </View>
             </View>
-          </ImageBackground>
-        
+          </View>
+        </ImageBackground>
+
         <ActionButton
           renderIcon={active => <Icon name="edit" color="white" />}
           buttonColor="#00748D"
@@ -319,6 +315,7 @@ export default class Profile extends Component {
           >
         </ActionButton>
 
+        
         <Modal
           animationType="slide"
           transparent={false}
@@ -326,10 +323,6 @@ export default class Profile extends Component {
           onRequestClose={() => {
             this.setModalVisible(false);
           }}>
-           <ScrollView
-        contentContainerStyle={{
-          top: 0, bottom: 0, height: 800
-        }}>
             <ImageBackground
               resizeMode='cover'
               source={require('../imagenes/perfil.png')}
@@ -338,8 +331,7 @@ export default class Profile extends Component {
                 height: '100%'
               }}>
               <View style={styles.container}>
-                <Image style={styles.avatar} source={{ uri: imagen }} />
-                <View style={styles.body}>
+                <View style={styles.body_m}>
                   <View style={styles.bodyContent}>
                     <TextInput
                       label="Correo"
@@ -352,7 +344,6 @@ export default class Profile extends Component {
                           primary: '#00748D',
                           underlineColor: 'transparent'
                         }
-
                       }}
                       value={this.state.email}
                     />
@@ -425,9 +416,8 @@ export default class Profile extends Component {
                 </View>
               </View>
             </ImageBackground>
-            </ScrollView>
         </Modal>
-        </ScrollView>
+      </>
     );
   }
 }

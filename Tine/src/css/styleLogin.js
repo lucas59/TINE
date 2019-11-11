@@ -1,8 +1,8 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 module.exports = StyleSheet.create({
     container: {
-        justifyContent: 'center',
+        height: Math.round(Dimensions.get('window').height),
         alignItems: 'center',
     }, inputContainer: {
         borderBottomColor: '#8594A6',
@@ -11,7 +11,6 @@ module.exports = StyleSheet.create({
         borderBottomWidth: 1,
         width: 250,
         height: 45,
-        marginBottom: 20,
         flexDirection: 'row',
         alignItems: 'center'
     },
@@ -41,14 +40,12 @@ module.exports = StyleSheet.create({
     inputIcon: {
         width: 30,
         height: 30,
-        marginLeft: 15,
         justifyContent: 'center'
     }, buttonContainer: {
         height: 45,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 20,
         width: 250,
         borderRadius: 30,
     },
