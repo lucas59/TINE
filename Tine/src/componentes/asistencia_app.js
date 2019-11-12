@@ -6,11 +6,20 @@ import moment from "moment";
 const { server } = require('../config/keys');
 import NetInfo from "@react-native-community/netinfo";
 import { Button } from 'react-native-paper';
-import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
+import SQLite from 'react-native-sqlite-storage';
 import Toast from 'react-native-simple-toast';
 import styles from "../css/styleasistencia_app";
-
+const db = SQLite.openDatabase(
+    {
+      name: 'sqlliteTesis.db',
+      location: 'default',
+      createFromLocation: '~www/sqlliteTesis.db',
+    },
+    () => {},
+    error => {
+      console.log(error);
+    }
+  );
 
 const PendingView = () => (
     <View

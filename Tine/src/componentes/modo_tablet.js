@@ -7,15 +7,24 @@ import PinView from 'react-native-pin-view'
 import { Icon } from 'react-native-elements';
 import Toast from 'react-native-simple-toast';
 import moment from "moment";
-import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
+import SQLite from 'react-native-sqlite-storage';
 var idempleado;
 import NetInfo from "@react-native-community/netinfo";
 import BackgroundTimer from 'react-native-background-timer';
 import DeviceInfo from 'react-native-device-info';
 import { Button } from 'react-native-paper';
 const manejador = require("./manejadorSqlite");
-
+const db = SQLite.openDatabase(
+    {
+      name: 'sqlliteTesis.db',
+      location: 'default',
+      createFromLocation: '~www/sqlliteTesis.db',
+    },
+    () => {},
+    error => {
+      console.log(error);
+    }
+  );
 
 const PendingView = () => (
     <View

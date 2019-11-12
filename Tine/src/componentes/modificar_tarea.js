@@ -6,12 +6,21 @@ import { TextInput, Button } from 'react-native-paper';
 import { Icon, Divider } from 'react-native-elements';
 import DateTimePicker from "react-native-modal-datetime-picker";
 import moment from "moment";
-import { openDatabase } from 'react-native-sqlite-storage';
+import SQLite from 'react-native-sqlite-storage';
 import Toast from 'react-native-simple-toast';
-var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 import NetInfo from "@react-native-community/netinfo";
 import BackgroundTimer from 'react-native-background-timer';
-
+const db = SQLite.openDatabase(
+    {
+      name: 'sqlliteTesis.db',
+      location: 'default',
+      createFromLocation: '~www/sqlliteTesis.db',
+    },
+    () => {},
+    error => {
+      console.log(error);
+    }
+  );
 
 export default class Alta_tarea extends Component {
     static navigationOptions = ({ navigation }) => {

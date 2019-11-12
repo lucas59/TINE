@@ -1,11 +1,20 @@
 import Toast from 'react-native-simple-toast';
-import { openDatabase } from 'react-native-sqlite-storage';
+import SQLite from 'react-native-sqlite-storage';
 const { server } = require('../config/keys');
 import AsyncStorage from '@react-native-community/async-storage';
-var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
 const manejador = require("./manejadorSqlite");
 var PushNotification = require("react-native-push-notification");
-
+const db = SQLite.openDatabase(
+    {
+      name: 'sqlliteTesis.db',
+      location: 'default',
+      createFromLocation: '~www/sqlliteTesis.db',
+    },
+    () => {},
+    error => {
+      console.log(error);
+    }
+  );
 manejador.subirTareas = () => {
     db.transaction(function (txn) {
         txn.executeSql("SELECT * FROM tarea WHERE estado = 0", [], (tx, res) => {

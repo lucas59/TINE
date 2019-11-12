@@ -12,15 +12,24 @@ const { server } = require('../config/keys');
 import NetInfo from '@react-native-community/netinfo';
 import { ListItem, Icon,Divider, Image } from 'react-native-elements';
 const manejador = require('./manejadorSqlite');
-import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
+import SQLite from 'react-native-sqlite-storage';
 import MqttService from '../core/services/MqttService';
 import { Card, Surface } from 'react-native-paper';
 import OfflineNotification from '../componentes/OfflineNotification';
 import OnlineNotification from '../componentes/OnlineNotification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import PTRView from 'react-native-pull-to-refresh';
-
+const db = SQLite.openDatabase(
+  {
+    name: 'sqlliteTesis.db',
+    location: 'default',
+    createFromLocation: '~www/sqlliteTesis.db',
+  },
+  () => {},
+  error => {
+    console.log(error);
+  }
+);
 var PushNotification = require("react-native-push-notification");
 _isMounted = false;
 import { PulseIndicator } from 'react-native-indicators';

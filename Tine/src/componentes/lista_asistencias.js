@@ -7,8 +7,7 @@ import { ListItem, Image, Icon, Divider } from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
 import moment from "moment";
 import { Card, Surface } from 'react-native-paper';
-import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
+import SQLite from 'react-native-sqlite-storage';
 const manejador = require("./manejadorSqlite");
 import PTRView from 'react-native-pull-to-refresh';
 import {
@@ -16,6 +15,17 @@ import {
 } from 'react-native-indicators';
 import styles from "../css/styleLista";
 import BackgroundTimer from 'react-native-background-timer';
+const db = SQLite.openDatabase(
+    {
+      name: 'sqlliteTesis.db',
+      location: 'default',
+      createFromLocation: '~www/sqlliteTesis.db',
+    },
+    () => {},
+    error => {
+      console.log(error);
+    }
+  );
 export default class lista_tareas extends Component {
     llenar_lista() {
         NetInfo.isConnected.fetch().done((isConnected) => {

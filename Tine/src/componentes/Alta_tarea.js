@@ -8,8 +8,7 @@ import { Stopwatch } from 'react-native-stopwatch-timer';
 import Geolocation from 'react-native-geolocation-service';
 import NetInfo from "@react-native-community/netinfo";
 import moment from "moment";
-import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'sqlliteTesis.db', createFromLocation: 1 });
+import SQLite from 'react-native-sqlite-storage';
 import styles from '../css/styleAlta_tarea';
 import { Button } from 'react-native-paper';
 import Toast from 'react-native-simple-toast';
@@ -29,7 +28,19 @@ export default class Alta_tarea extends Component {
 
     constructor(props) {
         super(props);
+        const db = SQLite.openDatabase(
+            {
+              name: 'sqlliteTesis.db',
+              location: 'default',
+              createFromLocation: '~www/sqlliteTesis.db',
+            },
+            () => {},
+            error => {
+              console.log(error);
+            }
+          );
         this.state = {
+            db,
             titulo: this.props.navigation.getParam('tarea_pausa_nombre', ''),
             inicio: this.props.navigation.getParam('tarea_pausa_fecha', ''),
             fin: '',
@@ -117,7 +128,7 @@ export default class Alta_tarea extends Component {
                         let empresa = JSON.parse(myArray);
                         var titulo = this.state.titulo;
                         if (this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null') == 'tarea_pausa_id_null') {
-                            db.transaction(function (ttxx) {
+                            this.state.db.transaction(function (ttxx) {
                                 ttxx.executeSql('INSERT INTO tareas_pausa (titulo, fecha,longitud,latitud,id_empleado,id_empresa) VALUES (?,?,?,?,?,?)', [titulo, fecha, longitud, latitud, sesion.id, empresa[0]], (tx, results) => {
                                     if (results.rowsAffected > 0) {
                                         console.log("insertó tarea_pausa");
@@ -132,7 +143,7 @@ export default class Alta_tarea extends Component {
                     } else {
                         if (this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null') == 'tarea_pausa_id_null') {
                             this.promesa_ultimo_id().then((data) => {
-                                db.transaction(function (txnn) {
+                                this.state.db.transaction(function (txnn) {
                                     txnn.executeSql("DELETE FROM tareas_pausa WHERE id = " + data, [], function (tx, res) {
                                         console.log(res.rowsAffected);
                                         console.log("Eliminando tarea pausa");
@@ -173,7 +184,7 @@ export default class Alta_tarea extends Component {
     promesa_ultimo_id() {
         return new Promise(function (resolve, reject) {
             setTimeout(() => {
-                db.transaction(function (txn) {
+                this.state.db.transaction(function (txn) {
                     txn.executeSql("SELECT seq FROM sqlite_sequence where name = 'tareas_pausa'", [], (tx, res) => {
                         resolve(res.rows.item(0).seq);
                     });
@@ -186,7 +197,7 @@ export default class Alta_tarea extends Component {
         this.comprobar_conexion();
         if (this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null') != 'tarea_pausa_id_null') {
             var id = this.props.navigation.getParam('tarea_pausa_id', 'tarea_pausa_id_null');
-            db.transaction(function (txnn) {
+            this.state.db.transaction(function (txnn) {
                 txnn.executeSql("DELETE FROM tareas_pausa WHERE id = " + id, [], function (tx, res) {
                     console.log(res.rowsAffected);
                     console.log("Eliminando tarea pausa");
@@ -223,7 +234,7 @@ export default class Alta_tarea extends Component {
             console.log("latitud fin: " + lat_fin);
             console.log("long fin: " + long_fin);
             var ult_tarea;
-            db.transaction(function (txx) {
+            this.state.db.transaction(function (txx) {
                 txx.executeSql('INSERT INTO tarea (fin, inicio,titulo,empleado_id,empresa_id, latitud_ini, longitud_ini, latitud_fin, longitud_fin, estado) VALUES (?,?,?,?,?,?,?,?,?,?)', [fin, inicio, titulo, tarea_send.empleado_id, tarea_send.empresa_id, lat_ini, long_ini, lat_fin, long_fin, 0], (tx, results) => {
                     if (results.rowsAffected > 0) {
                         console.log("insertó");
