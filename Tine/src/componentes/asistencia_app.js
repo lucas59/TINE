@@ -140,7 +140,8 @@ export default class asistencia_app extends Component {
         console.log("el tipo: ", tipo);
         Keyboard.dismiss();
         this.comprobar_conexion();
-        const options = { quality: 0.5, base64: true, captureAudio: false };
+        const options = { quality: 0.5, base64: true, captureAudio: false , orientation: RNCamera.Constants.Orientation.auto,
+            fixOrientation: true};
         if (camera != null) {
             const data = await camera.takePictureAsync(options);
             this.setState({ foto: data.base64 });
