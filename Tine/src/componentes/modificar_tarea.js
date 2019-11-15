@@ -4,23 +4,24 @@ import AsyncStorage from '@react-native-community/async-storage';
 const { server } = require('../config/keys');
 import { TextInput, Button } from 'react-native-paper';
 import { Icon, Divider } from 'react-native-elements';
-import DateTimePicker from "react-native-modal-datetime-picker";
+import DatePicker from 'react-native-date-picker';
 import moment from "moment";
 import SQLite from 'react-native-sqlite-storage';
 import Toast from 'react-native-simple-toast';
 import NetInfo from "@react-native-community/netinfo";
 import BackgroundTimer from 'react-native-background-timer';
+
 const db = SQLite.openDatabase(
     {
-      name: 'sqlliteTesis.db',
-      location: 'default',
-      createFromLocation: '~www/sqlliteTesis.db',
+        name: 'sqlliteTesis.db',
+        location: 'default',
+        createFromLocation: '~www/sqlliteTesis.db',
     },
-    () => {},
+    () => { },
     error => {
-      console.log(error);
+        console.log(error);
     }
-  );
+);
 
 export default class Alta_tarea extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -148,7 +149,7 @@ export default class Alta_tarea extends Component {
     }
 
     showDateTimePicker_inicio = () => {
-        this.setState({ isDateTimePickerVisible_inicio: true });
+        this.setState({ isDateTimePickerVisible_inicio: !this.state.isDateTimePickerVisible_inicio });
     };
 
     hideDateTimePicker_inicio = () => {
@@ -156,7 +157,7 @@ export default class Alta_tarea extends Component {
     };
 
     showDateTimePicker_fin = () => {
-        this.setState({ isDateTimePickerVisible_fin: true });
+        this.setState({ isDateTimePickerVisible_fin: !this.state.isDateTimePickerVisible_fin });
     };
 
     hideDateTimePicker_fin = () => {
@@ -168,10 +169,13 @@ export default class Alta_tarea extends Component {
         var horainicio_comp = moment(pickeddate).format('HH:mm:ss');
         var fechafin_comp = moment(this.state.tarea_fin).format('MMMM Do, YYYY');
         var fechainicio_comp = moment(pickeddate).format('MMMM Do, YYYY');
-        console.log(horainicio_comp);
+        console.log("hora ios",fechainicio_comp);
+        console.log("hora ios",fechafin_comp);
         if (fechafin_comp < fechainicio_comp) {
             var fin = moment(pickeddate).add(1, 'hours');
+            console.log("entra ios", pickeddate);
             this.setState({ tarea_fin: moment(fin).format() });
+            
         }
         else if (fechafin_comp == fechainicio_comp && horafin_comp <= horainicio_comp) {
             var fin = moment(pickeddate).add(1, 'hours');
@@ -201,6 +205,7 @@ export default class Alta_tarea extends Component {
     };
 
     render() {
+        console.log("visible: ", this.state.isDateTimePickerVisible_inicio);
         return (
             <ImageBackground
                 resizeMode='cover'
@@ -231,35 +236,37 @@ export default class Alta_tarea extends Component {
                     <Divider style={{ backgroundColor: '#00748D' }} />
                     <Button
                         onPress={this.showDateTimePicker_inicio}
-                        style={{ borderRadius: 30,height: 50, marginTop: 10 }} color="#00748D" mode="outlined"
+                        style={{ borderRadius: 30, height: 50, marginTop: 10 }} color="#00748D" mode="outlined"
                     >
-                        <DateTimePicker
-                            isVisible={this.state.isDateTimePickerVisible_inicio}
-                            onConfirm={(date) => this.handleDatePicked_inicio(date)}
-                            onCancel={this.hideDateTimePicker_inicio}
-                            mode={'datetime'}
-                            date={moment(this.state.tarea_inicio).toDate()}
-                        />
+                        
+
+                      
                         <Text>{"Fecha de inicio: " + moment(this.state.tarea_inicio).format('MMMM Do YYYY, HH:mm:ss').toString()}</Text>
                     </Button>
+                    {this.state.isDateTimePickerVisible_inicio && <DatePicker
+                            date={moment(this.state.tarea_inicio).toDate()}
+                            onDateChange={(date) => this.handleDatePicked_inicio(date)}
+                            mode={'datetime'}
+                            locale='es-UY'
+                        />}
                     <Divider style={{ backgroundColor: '#00748D' }} />
                     <Button
                         onPress={this.showDateTimePicker_fin}
-                        style={{ borderRadius: 30,height: 50, marginTop: 10, marginBottom: 10 }} color="#00748D" mode="outlined"
+                        style={{ borderRadius: 30, height: 50, marginTop: 10, marginBottom: 10 }} color="#00748D" mode="outlined"
                     >
-                        <DateTimePicker
-                            isVisible={this.state.isDateTimePickerVisible_fin}
-                            onConfirm={(date) => this.handleDatePicked_fin(date)}
-                            onCancel={this.hideDateTimePicker_fin}
-                            mode={'datetime'}
-                            date={moment(this.state.tarea_fin).toDate()}
-                        />
+                    
                         <Text>{"Fecha de fin: " + moment(this.state.tarea_fin).format('MMMM Do YYYY, HH:mm:ss').toString()}</Text>
                     </Button>
+                    {this.state.isDateTimePickerVisible_fin && <DatePicker
+                            date={moment(this.state.tarea_fin).toDate()}
+                            onDateChange={(date) => this.handleDatePicked_fin(date)}
+                            mode={'datetime'}
+                            locale='es-UY'
+                        />}
                     <Divider style={{ backgroundColor: '#00748D' }} />
-                    {this.state.cargando ? <Button style={{ borderRadius: 30,width: 160, height: 50 }} color="#00748D" loading={true} mode="contained" disabled={true} ></Button> :
+                    {this.state.cargando ? <Button style={{ borderRadius: 30, width: 160, height: 50 }} color="#00748D" loading={true} mode="contained" disabled={true} ></Button> :
                         <TouchableHighlight onPress={this.saveData}>
-                            <Button style={{ borderRadius: 30,width: 160, height: 50 }} color="#00748D" mode="contained" onPress={this.saveData}>
+                            <Button style={{ borderRadius: 30, width: 160, height: 50 }} color="#00748D" mode="contained" onPress={this.saveData}>
                                 Aceptar
                     </Button></TouchableHighlight>
                     }

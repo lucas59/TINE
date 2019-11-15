@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, ImageBackground, TouchableHighlight } from 'react-native';
 import Toast from 'react-native-simple-toast';
 import AsyncStorage from '@react-native-community/async-storage';
-import DateTimePicker from "react-native-modal-datetime-picker";
+import DatePicker from 'react-native-date-picker';
 const { server } = require('../config/keys');
 import { TextInput, Button } from 'react-native-paper';
 
@@ -26,7 +26,7 @@ export default class Signup2 extends React.Component {
             nombre: null,
             apellido: null,
             celular: null,
-            nacimiento: null,
+            nacimiento: new Date(),
             cargando: false
         };
     }
@@ -49,7 +49,7 @@ export default class Signup2 extends React.Component {
      };*/
 
     showDateTimePicker_inicio = () => {
-        this.setState({ isDateTimePickerVisible_inicio: true });
+        this.setState({ isDateTimePickerVisible_inicio: !this.state.isDateTimePickerVisible_inicio });
     };
 
     hideDateTimePicker_inicio = () => {
@@ -60,6 +60,7 @@ export default class Signup2 extends React.Component {
         this.setState({ nacimiento: pickeddate })
         // const value = await AsyncStorage.getItem('usuario')
         this.hideDateTimePicker_inicio();
+        console.log(pickeddate);
     };
 
     enviarDatosEmpleado = async () => {
@@ -278,12 +279,13 @@ export default class Signup2 extends React.Component {
                         <TouchableHighlight onPress={this.showDateTimePicker_inicio}>
                             <Button style={{ borderRadius: 30,width: 220, marginBottom: 20 }} color="#00748D" mode="outlined" title="Fecha de nacimiento" onPress={this.showDateTimePicker_inicio}>Fecha de nacimiento</Button>
                         </TouchableHighlight>
-                        <DateTimePicker
-                            isVisible={this.state.isDateTimePickerVisible_inicio}
-                            onConfirm={this.handleDatePicked_inicio}
-                            onCancel={this.hideDateTimePicker_inicio}
+                       
+                        {this.state.isDateTimePickerVisible_inicio && <DatePicker
+                            date={this.state.nacimiento}
+                            onDateChange={(date) => this.handleDatePicked_inicio(date)}
                             mode={'date'}
-                        />
+                            locale='es-UY'
+                        />}
                         {this.state.cargando ? <Button disabled={true} style={{ width: 220, height: 30 }} color="#00748D" loading={true} mode="contained" ></Button> :
                             <TouchableHighlight onPress={this.enviarDatosEmpleado}>
                                 <Button style={{ borderRadius: 30,width: 220, marginBottom: 30 }} color="#00748D" mode="contained" onPress={this.enviarDatosEmpleado}>
