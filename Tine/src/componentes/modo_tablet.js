@@ -336,7 +336,7 @@ export default class modoTablet extends Component {
         if (this.state.tablet) {
             return (
                 <>
-                    <View style={styles.pin}>
+                    <View style={styles.pin_tablet}>
                         <PinView
 
                             onComplete={(val, clear) => { this.setState({ codigo: val }), clear(), this.confirmar_usuario() }}
@@ -348,7 +348,7 @@ export default class modoTablet extends Component {
                     </View>
                     <View >
                         <RNCamera
-                            style={styles.camara}
+                            style={styles.camara_tablet}
                             type={RNCamera.Constants.Type.front}
                             captureAudio={false}
                         >
@@ -487,6 +487,11 @@ const styles = StyleSheet.create({
         elevation: 3,
         marginLeft: 5,
         marginRight: 5
+    },pin_tablet: {
+        position: 'absolute', top: 70, left: 100, bottom: 100, justifyContent: 'center', alignContent: 'center',
+     
+        marginLeft: 5,
+        marginRight: 5
     },
     container: {
         flex: 1,
@@ -497,6 +502,11 @@ const styles = StyleSheet.create({
         width: 400,
         height: 300,
         position: 'absolute', top: 160, right: 100, bottom: 0
+    },
+    camara_tablet: {
+        width: 300,
+        height: 200,
+        position: 'absolute', top: 100, right: 80, bottom: 0
     },
     capture: {
         flex: 0,
